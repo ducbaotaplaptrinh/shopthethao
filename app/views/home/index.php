@@ -1,33 +1,73 @@
-<?php
-if (!isset($featuredProducts)) {
-    $featuredProducts = [];
-}
-?>
-
-<section class="hero">
-    <div>
-        <span class="eyebrow">Giao diện mẫu</span>
-        <h1>Xây dựng website bán dụng cụ cầu lông theo từng khối nhỏ</h1>
-        <p>
-            Đây là trang home đầu tiên để bạn nhìn rõ luồng: router chọn view,
-            view được bọc bởi layout, rồi layout ghép header, sidebar, footer.
-        </p>
-
-        <div class="hero-actions">
-            <a class="btn btn-primary" href="?page=product">Xem sản phẩm</a>
-            <a class="btn btn-secondary" href="#">Tìm hiểu thêm</a>
-        </div>
+<section class="container-fluid slider-section">
+    <div class="row align-items-center g-4 g-lg-5 ">
+        <?php require __DIR__ . '/../components/banner.php'; ?>
     </div>
 </section>
+<div class="container-xl">
+    <section class="quick-info py-5">
+        <div class="row g-3">
+            <div class="col-6 col-lg-3">
+                <div class="info-card">
+                    <div class="info-card__icon">
+                        <img
+                            class="icon"
+                            src="assets/images/favicons/img-vanchuyen.svg"
+                            alt="" />
+                    </div>
+                    <div>
+                        <h3>Vận chuyển toàn quốc</h3>
+                        <p>Thanh toán khi nhận hàng</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="info-card">
+                    <div class="info-card__icon">
+                        <img
+                            class="icon"
+                            src="assets/images/favicons/img-chatluong.svg"
+                            alt="" />
+                    </div>
+                    <div>
+                        <h3>Bảo đảm chất lượng</h3>
+                        <p>Sản phẩm đảm bảo chất lượng</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="info-card">
+                    <div class="info-card__icon">
+                        <img
+                            class="icon"
+                            src="assets/images/favicons/img-thanhtoan.svg"
+                            alt="" />
+                    </div>
+                    <div>
+                        <h3>Tiến hành thanh toán</h3>
+                        <p>Với nhiều phương thức</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="info-card">
+                    <div class="info-card__icon">
+                        <img
+                            class="icon"
+                            src="assets/images/favicons/img-doitra.svg"
+                            alt="" />
+                    </div>
+                    <div>
+                        <h3>Đổi sản phẩm mới</h3>
+                        <p>Nếu sản phẩm lỗi</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="product-new">
+        <div class="product-new__title">
+            <h2>Sản phẩm mới</h2>
+        </div>
 
-<section class="product-grid">
-    <?php foreach ($featuredProducts as $product): ?>
-        <article class="product-card">
-            <span class="product-badge"><?php echo htmlspecialchars($product['tag'], ENT_QUOTES, 'UTF-8'); ?></span>
-            <div class="product-image">Ảnh</div>
-            <h3><?php echo htmlspecialchars($product['name'], ENT_QUOTES, 'UTF-8'); ?></h3>
-            <p class="product-price"><?php echo htmlspecialchars($product['price'], ENT_QUOTES, 'UTF-8'); ?></p>
-            <button type="button">Thêm vào giỏ</button>
-        </article>
-    <?php endforeach; ?>
-</section>
+    </section>
+</div>

@@ -8,8 +8,6 @@ if (!isset($content)) {
 <?php require __DIR__ . '/navbar.php'; ?>
 
 <main class="page-shell">
-    <?php require __DIR__ . '/sidebar.php'; ?>
-
     <section class="page-content">
         <?php echo $content; ?>
     </section>
