@@ -29,10 +29,6 @@ class App
 		require $view;
 		$content = ob_get_clean();
 
-		// expose some debug variables to the layout so we can diagnose stale renders
-		$currentView = $view;
-		$renderTime = date('Y-m-d H:i:s');
-
 		require BASE_PATH . '/app/views/layouts/main.php';
 	}
 }

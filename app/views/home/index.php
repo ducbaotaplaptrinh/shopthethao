@@ -6,7 +6,7 @@ if (!isset($featuredProducts)) {
 
 <section class="hero">
     <div>
-        <span class="eyebrow">Giao diện </span>
+        <span class="eyebrow">Giao diện mẫu</span>
         <h1>Xây dựng website bán dụng cụ cầu lông theo từng khối nhỏ</h1>
         <p>
             Đây là trang home đầu tiên để bạn nhìn rõ luồng: router chọn view,
