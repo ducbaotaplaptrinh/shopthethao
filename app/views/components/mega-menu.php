@@ -220,6 +220,78 @@
 
                 </ul>
             </div>
+            <!-- PICKLEBALL -->
+            <div class="col-6 col-lg-3">
+                <h4 class="mega-menu__title">Pickleball</h4>
+
+                <ul class="mega-menu_list">
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Vợt Pickleball</a>
+                    </li>
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Bóng Pickleball</a>
+                    </li>
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Giày Pickleball</a>
+                    </li>
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Túi Pickleball</a>
+                    </li>
+
+                </ul>
+            </div>
+            <!-- PICKLEBALL -->
+            <div class="col-6 col-lg-3">
+                <h4 class="mega-menu__title">Pickleball</h4>
+
+                <ul class="mega-menu_list">
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Vợt Pickleball</a>
+                    </li>
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Bóng Pickleball</a>
+                    </li>
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Giày Pickleball</a>
+                    </li>
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Túi Pickleball</a>
+                    </li>
+
+                </ul>
+            </div>
+            <!-- PICKLEBALL -->
+            <div class="col-6 col-lg-3">
+                <h4 class="mega-menu__title">Pickleball</h4>
+
+                <ul class="mega-menu_list">
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Vợt Pickleball</a>
+                    </li>
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Bóng Pickleball</a>
+                    </li>
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Giày Pickleball</a>
+                    </li>
+
+                    <li class="mega-menu__item">
+                        <a href="#" class="mega-menu__link">Túi Pickleball</a>
+                    </li>
+
+                </ul>
+            </div>
 
             <!-- THƯƠNG HIỆU -->
             <div class="col-6 col-lg-3">

@@ -1,4 +1,5 @@
 @import url("navbar.css");
+@import url("product-new.css");
 
 :root {
     --bg-dark: #111111;
@@ -26,7 +27,7 @@ body {
     font-family: "Poppins", sans-serif;
     font-size: 1.6rem;
     color: var(--text-dark);
-    background: #fffdfb;
+    background: var(--surface);
 }
 
 a {
@@ -129,7 +130,7 @@ img {
 
 .quick-info,
 .section-surface {
-    background: var(--surface);
+    margin: 70px 0;
 }
 
 .info-card,

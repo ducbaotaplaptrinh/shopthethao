@@ -6,14 +6,13 @@
     background: linear-gradient(135deg, var(--orange), var(--orange-2));
 }
 .container-nav {
-    background: var(--bg-light);
+    background: var(--surface);
     border-bottom: 1px solid var(--muted);
 }
 .menu_chinh .navbar-nav {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    background: var(--bg-light);
 }
 .nav-item {
     border-radius: 5px;

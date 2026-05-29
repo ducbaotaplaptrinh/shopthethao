@@ -64,10 +64,5 @@
             </div>
         </div>
     </section>
-    <section class="product-new">
-        <div class="product-new__title">
-            <h2>Sản phẩm mới</h2>
-        </div>
-
-    </section>
+    <?php require __DIR__ . "/../components/product-new.php" ?>
 </div>
