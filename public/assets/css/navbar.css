@@ -1,0 +1,246 @@
+.topbar {
+    background: linear-gradient(90deg, #1e1e1e, #2a1300);
+}
+
+.main-nav {
+    background: linear-gradient(135deg, var(--orange), var(--orange-2));
+}
+.container-nav {
+    background: var(--bg-light);
+    border-bottom: 1px solid var(--muted);
+}
+.menu_chinh .navbar-nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background: var(--bg-light);
+}
+.nav-item {
+    border-radius: 5px;
+}
+.menu_chinh .nav-item {
+    flex: 1;
+    text-align: center;
+    transition: all 0.3s;
+}
+.menu_chinh .nav-link {
+    display: block;
+    width: 100%;
+    padding: 10px 0;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+.menu_chinh .nav-link:hover,
+.menu_chinh .nav-item.active > .nav-link {
+    background: var(--orange-2);
+    color: white;
+}
+.menu_chinh .fa-angle-down {
+    transition: all 0.3s;
+}
+.menu_chinh .nav-link:hover .fa-angle-down,
+.menu_chinh .dropdown:hover .fa-angle-down {
+    transform: rotate(-180deg);
+}
+.menu_chinh .dropdown:hover .nav-link {
+    background: var(--orange-2);
+    color: white;
+}
+/* navbar mobile */
+.navbar-collapse {
+    display: block;
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    left: -100%;
+    height: 100vh;
+    background: var(--bg-light);
+    transition: all 0.3s;
+}
+.navbar-collapse .nav-item {
+    padding-left: 10px;
+}
+.navbar-collapse.show {
+    left: 0;
+}
+.close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    border: none;
+    background: none;
+
+    font-size: 28px;
+}
+/* mega menu  */
+.mega-menu__content {
+    width: 100vw;
+    transform: translateX(-50%) !important;
+    inset: 100% auto auto 50% !important;
+    border: none;
+    border-radius: 0;
+
+    padding: 30px;
+    max-height: calc(100vh - 400px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+
+    margin-top: 0;
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--orange-2) #f1f1f1;
+}
+.mega-menu:hover .dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+
+    position: absolute !important;
+}
+.menu_chinh .dropdown {
+    position: static !important;
+}
+.mega-menu__title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--orange-2);
+    padding: 10px 0 5px 0;
+    border-bottom: 1px solid var(--orange);
+    opacity: 0.8;
+    margin: 10px 10px 5px 0;
+}
+.mega-menu__link {
+    color: var(--text-dark);
+    font-weight: 500;
+    padding-bottom: 5px;
+    transition: all 0.3s;
+}
+
+.mega-menu__link:hover {
+    color: var(--orange-2);
+}
+/* Thanh cuộn mega menu */
+/* Chrome, Edge, Safari */
+.mega-menu__content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.mega-menu__content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 999px;
+}
+
+.mega-menu__content::-webkit-scrollbar-thumb {
+    background: var(--orange-2);
+    border-radius: 999px;
+}
+
+.mega-menu__content::-webkit-scrollbar-thumb:hover {
+    background: var(--orange);
+}
+/* Search */
+.mySearch {
+    max-width: 400px;
+    width: 100%;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 999px;
+    margin-right: 10px;
+}
+.search-input {
+    width: 100%;
+    border: none;
+    padding: 0 10px;
+    background: white;
+    color: #000;
+    transition: all 0.3s ease;
+}
+.search-input:focus {
+    border-color: transparent;
+    outline-color: transparent;
+}
+.search-btn {
+    height: 40px;
+    width: 40px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background: var(--card);
+    transition: all 0.3s ease;
+}
+.search-btn:hover {
+    background-color: var(--orange-2);
+    color: #fff;
+}
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.navbar-toggler {
+    color: #fff;
+    padding: 10px;
+    border: none;
+    margin-right: 10px;
+}
+
+/* dropdowns used in navbar */
+.dropdown-toggle::after {
+    display: none;
+}
+.dropdown:hover .dropdown-menu {
+    display: block;
+    top: 100%;
+    right: 0;
+}
+.dropdown-item {
+    transition: all 0.3s;
+}
+.dropdown-menu {
+    font-size: 1.6rem;
+}
+.dropdown-item:hover {
+    background-color: var(--orange-2);
+    color: #fff;
+}
+
+/* Logo */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+.logo-container_title {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+.logo-container__link {
+    align-items: end;
+    gap: 10px;
+}
+.logo-container__icon {
+    width: 50px;
+    height: 50px;
+}
+
+@media (min-width: 991.98px) {
+    .mySearch {
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+}
+@media (max-width: 991.98px) {
+    .mySearch {
+        margin-left: auto;
+    }
+}

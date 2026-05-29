@@ -1,12 +1,15 @@
+@import url("navbar.css");
+
 :root {
     --bg-dark: #111111;
+    --bg-light: #fff;
     --text-dark: #1f1f1f;
     --orange: #ff8a00;
     --orange-2: #ff5f1f;
     --gold: #ffcc4d;
     --surface: #fff8f1;
     --card: #ffffff;
-    --muted: #6d6d6d;
+    --muted: #6d6d6d89;
     --border: rgba(255, 138, 0, 0.15);
 }
 
@@ -28,6 +31,7 @@ body {
 
 a {
     color: inherit;
+    text-decoration: none;
 }
 img {
     user-select: none;
@@ -37,94 +41,7 @@ img {
     background: linear-gradient(135deg, var(--orange), var(--orange-2));
 }
 
-.topbar {
-    background: linear-gradient(90deg, #1e1e1e, #2a1300);
-}
-
-.main-nav {
-    background: linear-gradient(135deg, var(--orange), var(--orange-2));
-    box-shadow: 0 12px 30px rgba(255, 95, 31, 0.25);
-}
-/* Search */
-.mySearch {
-    max-width: 400px;
-    width: 100%;
-    height: 40px;
-    overflow: hidden;
-    border-radius: 999px;
-    margin-right: 10px;
-}
-.search-input {
-    width: 100%;
-    border: none;
-    padding: 0 10px;
-    background: white;
-    color: #000;
-    transition: all 0.3s ease;
-}
-.search-input:focus {
-    border-color: transparent;
-    outline-color: transparent;
-}
-.search-btn {
-    height: 40px;
-    width: 40px;
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    background: var(--card);
-    transition: all 0.3s ease;
-}
-.search-btn:hover {
-    background-color: var(--orange-2);
-    color: #fff;
-}
-.brand-mark {
-    width: 38px;
-    height: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
-}
-.navbar-collapse {
-    flex-grow: 0;
-    padding: 0 10px;
-}
-
-.navbar-dark .navbar-nav .nav-link {
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 500;
-    padding-left: 0.8rem;
-    padding-right: 0.8rem;
-    white-space: nowrap;
-    position: relative;
-}
-.nav-link::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    width: 0%;
-    height: 2px;
-    background: #fff;
-    transition: all 0.3s;
-}
-.navbar-nav .nav-link:hover::after,
-.navbar-nav .nav-link.active .nav-link::after {
-    color: #fff;
-    width: 100%;
-    left: 0;
-}
-.navbar-toggler {
-    color: #fff;
-    padding: 10px;
-    border: none;
-    margin-right: 10px;
-}
+@import url("navbar.css");
 
 .hero-copy {
     position: relative;
@@ -586,57 +503,7 @@ img {
     background: var(--card);
     color: red;
 }
-/* style icon toggle */
-.dropdown-toggle::after {
-    display: none;
-}
-.dropdown:hover .dropdown-menu {
-    display: block;
-    top: 100%;
-    right: 0;
-}
-.dropdown-item {
-    transition: all 0.3s;
-}
-.dropdown-menu {
-    font-size: 1.6rem;
-}
-.dropdown-item:hover {
-    background-color: var(--orange-2);
-    color: #fff;
-}
-
-/* Logo */
-.logo-container {
-    width: 50px;
-    height: 50px;
-    flex-shrink: 0;
-}
-.logo-container__icon {
-    width: 100%;
-}
-@media (min-width: 991.98px) {
-    .mySearch {
-        border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-}
-@media (max-width: 991.98px) {
-    .navbar-collapse {
-        padding: 1rem 0 1.25rem;
-    }
-
-    .hero-visual img {
-        min-height: 340px;
-    }
-
-    .floating-card {
-        position: static;
-        margin-top: 0.75rem;
-    }
-    .mySearch {
-        margin-left: auto;
-    }
-}
+/* Navbar styles moved to navbar.css */
 
 @media (max-width: 575.98px) {
     .hero-section .container,

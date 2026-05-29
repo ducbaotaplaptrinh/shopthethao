@@ -5,7 +5,6 @@ if (!isset($content)) {
 ?>
 
 <?php require __DIR__ . '/header.php'; ?>
-<?php require __DIR__ . '/navbar.php'; ?>
 
 <main class="page-shell">
     <section class="page-content">

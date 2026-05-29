@@ -23,8 +23,8 @@
         </div>
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-dark main-nav">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg  main-nav">
+        <div class="container justify-content-between ">
             <button
                 class="navbar-toggler"
                 type="button"
@@ -36,36 +36,17 @@
                 <i class="fa-solid fa-bars fa-lg "></i>
             </button>
 
-            <div class="logo-container">
-                <a class="logo-container__link" href="#home">
+            <div class="logo-container ">
+                <a class="logo-container__link d-flex" href="#home">
                     <img
                         src="assets/images/favicons/Logo.png"
                         alt="Logo"
                         class="logo-container__icon" />
+                    <h3 class="logo-container_title">Bảo Đạt Sport</h3>
+
                 </a>
             </div>
-
-            <div class="collapse navbar-collapse" id="mainMenu">
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 gap-lg-2">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#home">Trang chủ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#products">Sản phẩm</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#flash-sale">Giảm giá</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">Giới thiệu</a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a class="nav-link" href="#contact">Liên hệ</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="d-none d-lg-flex align-items-center mySearch  justify-content-end">
+            <div class="ms-auto d-none d-lg-flex align-items-center mySearch  justify-content-end">
                 <input
                     class="h-100 search-input d-none d-lg-block"
                     type="text"
@@ -171,4 +152,73 @@
             </div>
         </div>
     </nav>
+    <div class="collapse navbar-collapse w-50" id="mainMenu">
+        <div class="d-flex justify-content-between">
+            <div class="logo-container ">
+                <a class="logo-container__link" href="#home">
+                    <img
+                        src="assets/images/favicons/Logo.png"
+                        alt="Logo"
+                        class="logo-container__icon" />
+                </a>
+                <h3 class="logo-container_title">Bảo Đạt Sport</h3>
+            </div>
+            <button
+                class="close-btn"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainMenu">
+                ✕
+            </button>
+        </div>
+        <ul class="navbar-nav mt-5 mx-auto  mb-lg-0 w-100">
+            <li class="nav-item active">
+                <a class="nav-link " href="#home">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link " href="#products">Sản phẩm</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#flash-sale">Giảm giá</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#about">Tin tức</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#about">Giới thiệu</a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="#contact">Liên hệ</a>
+            </li>
+        </ul>
+    </div>
+    <div class="container-nav">
+        <div class="container-xl">
+            <nav class=" menu_chinh d-none d-lg-block">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 position-relative ">
+                    <li class="nav-item ">
+                        <a class="nav-link " href="#home">Trang chủ</a>
+                    </li>
+                    <li class="nav-item dropdown mega-menu ">
+                        <a class="nav-link dropdown-toggle" href="#products">Sản phẩm <i class="fa-solid fa-angle-down fa-md"></i></a>
+                        <?php require __DIR__ . '/mega-menu.php'; ?>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#flash-sale">Giảm giá</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Tin tức</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#about">Giới thiệu</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#contact">Liên hệ</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
 </header>
