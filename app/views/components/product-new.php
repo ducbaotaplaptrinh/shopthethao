@@ -26,7 +26,7 @@ if (!isset($products) || !is_array($products)) {
             'category_id' => ($i % 5) + 1,
             'name' => "Vợt Cầu Lông Mẫu $i",
             'price' => 529000 + ($i % 5) * 50000,
-            'image' => 'assets/images/sample/racket-' . ($i % 5 + 1) . '.png'
+            'image' => 'assets/images/products/racket-' . ($i % 5 + 1) . '.webp'
         ];
     }
 }
@@ -34,7 +34,7 @@ if (!isset($products) || !is_array($products)) {
 
 <div class="product-new py-4">
     <div class="container-xl ">
-        <h2 class="porduct-new__title">
+        <h2 class="product-new__title ">
             Sản phẩm mới
         </h2>
         <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
@@ -55,9 +55,9 @@ if (!isset($products) || !is_array($products)) {
             </div>
         </div>
 
-        <div class="product-frame p-3 rounded" style="background: var(--orange); opacity:0.7;">
-            <div class="swiper product-swiper">
-                <div class="swiper-wrapper">
+        <div class="product-frame p-3  rounded">
+            <div class=" swiper product-swiper ">
+                <div class=" swiper-wrapper">
                     <?php foreach ($products as $p): ?>
                         <div class="swiper-slide product-item" data-category-id="<?php echo htmlspecialchars($p['category_id'] ?? 0) ?>">
                             <div class="card product-card">
@@ -65,7 +65,7 @@ if (!isset($products) || !is_array($products)) {
                                     <div class="product-thumb bg-white d-flex align-items-center justify-content-center" style="height:220px;">
                                         <img src="<?php echo htmlspecialchars($p['image']) ?>" alt="<?php echo htmlspecialchars($p['name']) ?>" style="max-height:200px; width:auto; object-fit:contain;">
                                     </div>
-                                    <div class="p-3 bg-white">
+                                    <div class="p-3  product-item__info">
                                         <h6 class="product-name mb-2" style="min-height:48px;"><?php echo htmlspecialchars($p['name']) ?></h6>
                                         <div class="product-price text-danger fw-bold"><?php echo number_format($p['price'], 0, ',', '.') ?> đ</div>
                                     </div>

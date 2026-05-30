@@ -1,4 +1,4 @@
-<header class="site-header sticky-top">
+<header class="site-header sticky-top ">
     <div class="topbar py-2 d-none d-lg-block">
         <div
             class="container-xl d-flex align-items-lg-center justify-content-between gap-2">
@@ -42,7 +42,7 @@
                         src="assets/images/favicons/Logo.png"
                         alt="Logo"
                         class="logo-container__icon" />
-                    <h3 class="logo-container_title">Bảo Đạt Sport</h3>
+                    <h3 class="logo-container_title d-none d-md-block">BẢO ĐẠT SPORT</h3>
 
                 </a>
             </div>
@@ -53,7 +53,7 @@
                     name="search"
                     id=""
                     placeholder="Tìm kiếm" />
-                <button class="navlink search-btn bg-transparent">
+                <button class="navlink search-btn ">
                     <i
                         class="fa-solid fa-magnifying-glass fa-lg"></i>
                 </button>

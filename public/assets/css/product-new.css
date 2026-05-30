@@ -2,15 +2,29 @@
     margin: 70px 0;
     background: var(--surface);
 }
-
-.porduct-new__title {
-    text-align: center;
+.product-new .swiper {
+    background: var(--bg-light);
+}
+.product-new__title {
+    position: relative;
+    display: inline-block;
     font-size: 3rem;
-    font-weight: 700;
-    color: var(--orange-2);
-    padding: 0 0 30px 0;
+    font-weight: 800;
+    background: linear-gradient(90deg, #ff7b00, #ff9500, #ffb700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
+.product-new__title::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: -35px;
+    width: 30px;
+    height: 5px;
+    background: linear-gradient(90deg, #ff7b00, #ff9500, #ffb700);
+}
 .product-cats-swiper {
     position: relative;
 }
@@ -23,8 +37,9 @@
     text-align: center;
     font-size: 1.8rem;
     min-width: 140px;
-    padding: 0.9rem 1.4rem;
+    padding: 10px 14px;
     border-radius: 0;
+    border-left: 1px solid rgba(255, 89, 0, 0.355);
     background: #fff;
     color: #555;
     font-weight: 700;
@@ -55,7 +70,12 @@
 }
 
 .product-frame {
-    border-radius: 8px;
+    border-radius: 5px;
+    background: linear-gradient(135deg, #ff7b00, #ff9500);
+}
+.product-frame .swiper {
+    padding: 10px 5px 40px;
+    background: linear-gradient(135deg, #ff7b00, #ff9500);
 }
 
 .swiper-button-prev {
@@ -75,10 +95,20 @@
 .product-frame:hover .swiper-button-next {
     right: 0 !important;
 }
+.product-frame .swiper-pagination {
+    width: fit-content;
+    left: 50% !important;
+}
 
 .product-card {
     border: none;
     box-shadow: none;
+}
+.product-item {
+    transition: transform 0.5s;
+}
+.product-item:hover .product-thumb img {
+    transform: scale(1.1);
 }
 
 .product-card .product-thumb img {
@@ -88,4 +118,7 @@
 .product-card .product-name,
 .product-card .product-price {
     font-size: 1.6rem;
+}
+.product-item__info {
+    background: var(--surface);
 }
