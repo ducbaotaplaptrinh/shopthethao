@@ -103,9 +103,16 @@
 .product-card {
     border: none;
     box-shadow: none;
+    transition:
+        transform 0.35s ease,
+        box-shadow 0.35s ease;
 }
-.product-item {
-    transition: transform 0.5s;
+.product-item:hover .product-card {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+.product-card .product-thumb img {
+    transition: transform 0.45s ease;
 }
 .product-item:hover .product-thumb img {
     transform: scale(1.1);
@@ -119,6 +126,14 @@
 .product-card .product-price {
     font-size: 1.6rem;
 }
+.product-name {
+    overflow: hidden;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
 .product-item__info {
-    background: var(--surface);
+    border-top: 1px solid rgba(98, 98, 98, 0.25);
+    background: var(--bg-light);
 }
