@@ -33,7 +33,7 @@ if (!isset($sale_products) || !is_array($sale_products)) {
     }
 }
 ?>
-<div class="product-sale py-4">
+<section class="product-sale py-4">
 
     <div class="container-xl">
 
@@ -60,7 +60,7 @@ if (!isset($sale_products) || !is_array($sale_products)) {
 
                     <?php foreach ($sale_products as $p): ?>
 
-                        <div
+                        <a href="#!"
                             class="swiper-slide sale-product-item">
 
                             <div class="card sale-card border-0">
@@ -111,7 +111,7 @@ if (!isset($sale_products) || !is_array($sale_products)) {
 
                             </div>
 
-                        </div>
+                        </a>
 
                     <?php endforeach; ?>
 
@@ -129,4 +129,4 @@ if (!isset($sale_products) || !is_array($sale_products)) {
 
     </div>
 
-</div>
+</section>

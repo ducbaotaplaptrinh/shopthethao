@@ -82,8 +82,15 @@
     left: -100% !important;
     transition: all 0.3s;
 }
+.swiper-button-prev,
+.swiper-button-next {
+    width: 4.5rem !important;
+    height: 4.5rem !important;
+    color: var(--orange-2) !important;
+}
 
-.product-frame:hover .swiper-button-prev {
+.product-new:hover .swiper-button-prev,
+.product-sale:hover .swiper-button-prev {
     left: 0 !important;
 }
 
@@ -92,7 +99,8 @@
     transition: all 0.3s;
 }
 
-.product-frame:hover .swiper-button-next {
+.product-new:hover .swiper-button-next,
+.product-sale:hover .swiper-button-next {
     right: 0 !important;
 }
 .product-frame .swiper-pagination {
@@ -101,18 +109,30 @@
 }
 
 .product-card {
-    border: none;
-    box-shadow: none;
-    transition:
-        transform 0.35s ease,
-        box-shadow 0.35s ease;
+    position: relative;
+    height: 100%;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 18px 40px rgba(17, 17, 17, 0.06);
+    transition: all 0.3s;
 }
-.product-item:hover .product-card {
+
+.product-card .card-body {
+    padding: 1.2rem;
+}
+
+.product-item:hover .product-card,
+.product-item:hover::after {
     transform: translateY(-8px);
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
 }
 .product-card .product-thumb img {
     transition: transform 0.45s ease;
+
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
 }
 .product-item:hover .product-thumb img {
     transform: scale(1.1);
@@ -121,11 +141,33 @@
 .product-card .product-thumb img {
     max-width: 100%;
 }
+.product-new .product-card::after {
+    content: "Xem ngay";
+    color: var(--orange-2);
+    text-shadow: 2px 2px 10px var(--orange-2);
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+.product-new .product-card:hover::after {
+    opacity: 1;
+}
 
 .product-card .product-name,
 .product-card .product-price {
     font-size: 1.6rem;
 }
+
 .product-name {
     overflow: hidden;
 

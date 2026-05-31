@@ -1,4 +1,4 @@
-<div class=" swiper col-12">
+<section class=" swiper col-12">
     <div class="swiper-wrapper">
         <div class="swiper-slide">
             <a href="#" class="slide">
@@ -25,4 +25,4 @@
             </a>
         </div>
     </div>
-</div>
+</section>

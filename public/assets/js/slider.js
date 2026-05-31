@@ -147,6 +147,17 @@ document.addEventListener("DOMContentLoaded", function () {
         watchOverflow: true,
     });
 
+    // Home/banner slider on top of the homepage
+    initSwiper(".slider-section .swiper", {
+        slidesPerView: 1,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+        },
+        watchOverflow: true,
+    });
+
     const productSwiper = initSwiper(".product-swiper", {
         slidesPerView: 1.2,
 

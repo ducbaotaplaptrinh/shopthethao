@@ -32,7 +32,7 @@ if (!isset($products) || !is_array($products)) {
 }
 ?>
 
-<div class="product-new py-4">
+<section class="product-new py-4">
     <div class="container-xl ">
         <h2 class="product-new__title ">
             Sản phẩm mới
@@ -57,9 +57,9 @@ if (!isset($products) || !is_array($products)) {
 
         <div class="product-frame p-3  rounded">
             <div class=" swiper product-swiper ">
-                <div class=" swiper-wrapper">
+                <div class="swiper-wrapper">
                     <?php foreach ($products as $p): ?>
-                        <div class="swiper-slide product-item" data-category-id="<?php echo htmlspecialchars($p['category_id'] ?? 0) ?>">
+                        <a href="#!" class="swiper-slide product-item" data-category-id="<?php echo htmlspecialchars($p['category_id'] ?? 0) ?>">
                             <div class="card product-card">
                                 <div class="card-body p-0">
                                     <div class="product-thumb bg-white d-flex align-items-center justify-content-center" style="height:220px;">
@@ -71,7 +71,7 @@ if (!isset($products) || !is_array($products)) {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     <?php endforeach; ?>
                 </div>
                 <!-- Add Arrows -->
@@ -82,4 +82,4 @@ if (!isset($products) || !is_array($products)) {
             </div>
         </div>
     </div>
-</div>
+</section>
