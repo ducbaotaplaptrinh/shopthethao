@@ -67,5 +67,6 @@
     <?php require __DIR__ . "/../components/product-new.php" ?>
     <?php require __DIR__ . '/../components/product-sale.php'; ?>
     <?php require __DIR__ . '/../components/categories.php'; ?>
+    <?php require __DIR__ . '/../components/review.php'; ?>
 
 </div>

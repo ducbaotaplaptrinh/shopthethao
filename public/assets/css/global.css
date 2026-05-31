@@ -2,6 +2,7 @@
 @import url("product-new.css");
 @import url("product-sale.css");
 @import url("categories.css");
+@import url("review.css");
 
 :root {
     --bg-dark: #111111;
@@ -55,6 +56,9 @@ img {
 /* common */
 .btn-common {
     background: linear-gradient(135deg, var(--orange), var(--orange-2));
+}
+.navbar-toggler:focus {
+    box-shadow: none !important;
 }
 
 .hero-copy {
@@ -116,11 +120,6 @@ img {
 .swiper {
     width: 100%;
 }
-.swiper-slide img {
-    max-width: 100%;
-    height: 100%;
-}
-
 .floating-card {
     position: absolute;
     left: 18px;

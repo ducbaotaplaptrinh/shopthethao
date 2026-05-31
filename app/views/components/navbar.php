@@ -39,10 +39,9 @@
             <div class="logo-container ">
                 <a class="logo-container__link d-flex" href="#home">
                     <img
-                        src="assets/images/favicons/Logo.png"
+                        src="assets/images/favicons/logo.png"
                         alt="Logo"
                         class="logo-container__icon" />
-                    <h3 class="logo-container_title d-none d-md-block">BẢO ĐẠT SPORT</h3>
 
                 </a>
             </div>
@@ -152,16 +151,15 @@
             </div>
         </div>
     </nav>
-    <div class="collapse navbar-collapse w-50" id="mainMenu">
+    <div class="collapse navbar-collapse w-100" id="mainMenu">
         <div class="d-flex justify-content-between">
             <div class="logo-container ">
                 <a class="logo-container__link" href="#home">
                     <img
-                        src="assets/images/favicons/Logo.png"
+                        src="assets/images/favicons/logo.png"
                         alt="Logo"
                         class="logo-container__icon" />
                 </a>
-                <h3 class="logo-container_title">Bảo Đạt Sport</h3>
             </div>
             <button
                 class="close-btn"
