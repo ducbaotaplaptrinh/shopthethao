@@ -204,10 +204,6 @@
 }
 
 @media (max-width: 768px) {
-    .product-sale__title {
-        font-size: 2.2rem;
-    }
-
     .sale-thumb {
         height: 190px;
     }

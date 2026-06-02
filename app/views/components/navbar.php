@@ -59,14 +59,15 @@
             </div>
 
             <div class="d-flex gap-1 gap-lg-3 align-items-center">
-                <div class="icon-btn  d-lg-none rounded-circle">
+                <div class="icon-btn d-lg-none rounded-circle">
                     <button class="nav-link ">
                         <i
                             class="fa-solid fa-magnifying-glass fa-lg"></i>
                     </button>
                 </div>
                 <div
-                    class="dropdown position-relative border-lg border-lg-2 rounded-circle icon-btn">
+                    class="dropdown navbar-cart position-relative border-lg border-lg-2 rounded-circle icon-btn "
+                    data-bs-toggle="dropdown">
                     <button class="btn nav-link position-relative">
                         <i
                             class="fa-solid fa-cart-arrow-down fa-lg"></i>
@@ -79,8 +80,7 @@
                     </button>
 
                     <div
-                        class="dropdown-menu p-3 rounded-4 shadow-lg"
-                        style="width: 300px">
+                        class="dropdown-menu cart p-3 rounded-4 shadow-lg">
                         <div class="list-card mb-3 text-center">
                             <i
                                 class="fa-solid fa-bag-shopping fa-3x"></i>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="dropdown position-relative">
                     <button
-                        class="nav-link dropdown-toggle icon-btn border-lg border-lg-2 rounded-circle p-1"
+                        class="nav-link dropdown-toggle icon-btn  border-lg border-lg-2 rounded-circle p-1"
                         href="#">
                         <svg
                             version="1.1"
@@ -136,16 +136,16 @@
 
                 <div class="dropdown position-relative">
                     <button
-                        class="nav-link icon-btn border-lg border-lg-2 rounded-circle"
+                        class="nav-link icon-btn  border-lg border-lg-2 rounded-circle"
                         href="#">
                         <i class="fa-solid fa-user fa-lg"></i>
                     </button>
 
                     <div
                         class="dropdown-menu p-3 rounded-4 shadow-lg position-absolute">
-                        <a class="dropdown-item" href="#"><i
+                        <a class="dropdown-item" href="?page=login"><i
                                 class="fa-solid fa-arrow-right-from-bracket pe-1"></i>Đăng nhập</a>
-                        <a class="dropdown-item" href="#"><i class="fa-solid fa-user-plus pe-1"></i>Đăng ký</a>
+                        <a class="dropdown-item" href="?page=register"><i class="fa-solid fa-user-plus pe-1"></i>Đăng ký</a>
                     </div>
                 </div>
             </div>
@@ -170,19 +170,19 @@
         </div>
         <ul class="navbar-nav mt-5 mx-auto  mb-lg-0 w-100">
             <li class="nav-item active">
-                <a class="nav-link " href="#home">Trang chủ</a>
+                <a class="nav-link " href="?page=home">Trang chủ</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="#products">Sản phẩm</a>
+                <a class="nav-link " href="?page=products">Sản phẩm</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#flash-sale">Giảm giá</a>
+                <a class="nav-link" href="?page=flash-sale">Giảm giá</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#about">Tin tức</a>
+                <a class="nav-link" href="?page=new">Tin tức</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#about">Giới thiệu</a>
+                <a class="nav-link" href="?page=about">Giới thiệu</a>
             </li>
 
             <li class="nav-item">
@@ -195,25 +195,25 @@
             <nav class=" menu_chinh d-none d-lg-block">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0 position-relative ">
                     <li class="nav-item ">
-                        <a class="nav-link " href="#home">Trang chủ</a>
+                        <a class="nav-link " href="?page=home">Trang chủ</a>
                     </li>
                     <li class="nav-item dropdown mega-menu ">
-                        <a class="nav-link dropdown-toggle" href="#products">Sản phẩm <i class="fa-solid fa-angle-down fa-md"></i></a>
+                        <a class="nav-link dropdown-toggle" href="?page=products">Sản phẩm <i class="fa-solid fa-angle-down fa-md"></i></a>
                         <?php require __DIR__ . '/mega-menu.php'; ?>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#flash-sale">Giảm giá</a>
+                        <a class="nav-link" href="?page=flash-sale">Giảm giá</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">Tin tức</a>
+                        <a class="nav-link" href="?page=new">Tin tức</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">Giới thiệu</a>
+                        <a class="nav-link" href="?page=about">Giới thiệu</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="#contact">Liên hệ</a>
+                        <a class="nav-link" href="?page=contact">Liên hệ</a>
                     </li>
                 </ul>
             </nav>

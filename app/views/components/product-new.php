@@ -32,7 +32,7 @@ if (!isset($products) || !is_array($products)) {
 }
 ?>
 
-<section class="product-new py-4">
+<section class="product-new py-4 my-16-mobile py-0-mobile">
     <div class="container-xl ">
         <h2 class="product-new__title ">
             Sản phẩm mới

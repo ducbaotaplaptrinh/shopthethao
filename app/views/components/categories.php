@@ -42,7 +42,7 @@ $sportCategories = [
 ];
 ?>
 <div class="container-xl">
-    <section class="categories">
+    <section class="categories my-16-mobile py-0-mobile">
 
         <?php foreach ($sportCategories as $cate): ?>
 

@@ -1,10 +1,12 @@
-<section class="container-fluid slider-section">
+<section class="container-fluid slider-section" style="
+    overflow: hidden;
+">
     <div class="row align-items-center g-4 g-lg-5 ">
         <?php require __DIR__ . '/../components/banner.php'; ?>
     </div>
 </section>
 <div class="container-xl">
-    <section class="quick-info py-5">
+    <section class="quick-info py-5 my-16-mobile  py-0-mobile">
         <div class="row g-3">
             <div class="col-6 col-lg-3">
                 <div class="info-card">
