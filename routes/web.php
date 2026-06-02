@@ -18,6 +18,10 @@ return [
 		'title' => 'Đăng Ký',
 		'view' => 'auth/register.php',
 	],
+	'about' => [
+		'title' => 'Giới thiệu',
+		'view' => 'about/about.php',
+	],
 	'404' => [
 		'title' => 'Không tìm thấy trang',
 		'view' => 'errors/404.php',
