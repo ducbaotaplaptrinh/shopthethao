@@ -1,6 +1,16 @@
 <?php
 
 return [
+	'login' => [
+		'title' => 'Đăng nhập',
+		'view' => 'auth/login.php',
+
+	],
+	'register' => [
+		'title' => 'Đăng ký',
+		'view' => 'auth/register.php',
+
+	],
 	'home' => [
 		'title' => 'Trang chủ',
 		'view' => 'home/index.php',

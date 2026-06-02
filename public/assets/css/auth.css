@@ -5,6 +5,12 @@
 .login {
     padding: 70px 0;
 }
+.login .card-body,
+.register .card-body {
+    gap: 35px;
+    display: flex;
+    flex-direction: column;
+}
 .register {
     padding: 20px;
     margin: 70px 0;
@@ -46,28 +52,39 @@
 
 .login-form__group .login-form__label,
 .register-form__group .register-form__label {
+    color: rgba(104, 104, 104, 0.408);
     margin: 0;
     padding: 0;
     bottom: 50%;
     left: 10px;
     z-index: 2;
     transform: translateY(50%);
-    background: var(--surface);
     pointer-events: none;
+    background: var(--bg-light);
     transition: all 0.3s;
 }
 
 .login-form__input:focus + .login-form__label,
+.login-form__input:not(:placeholder-shown) + .login-form__label,
+.register-form__input:not(:placeholder-shown) + .register-form__label,
 .register-form__input:focus + .register-form__label {
-    transform: translateY(-50%);
-    pointer-events: inherit;
+    bottom: 100%;
     color: var(--orange);
+}
+.login-form__input:not(:placeholder-shown),
+.register-form__input:not(:placeholder-shown) {
+    border: 2px solid var(--orange);
+    box-shadow: none;
 }
 
 .login-form__input:focus,
 .register-form__input:focus {
     border: 2px solid var(--orange);
     box-shadow: none;
+}
+.login-form__group.invalid > .login-form__input,
+.register-form__group.invalid .register-form__input {
+    border: 3px solid red;
 }
 
 .login-form__input,
@@ -103,6 +120,11 @@
     display: block;
     outline: none;
     border: none;
+}
+.form-message {
+    font-size: 1.4rem;
+    color: red;
+    bottom: -20px;
 }
 
 .form-login__btn:hover,
