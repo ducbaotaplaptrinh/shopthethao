@@ -16,12 +16,12 @@ class App
 
 		$view = BASE_PATH . '/app/views/' . $route['view'];
 		$data = $route['data'] ?? [];
-		$title = $route['title'] ?? 'Shop Thể Thao';
+		$title = $route['title'] ?? 'Bảo Đạt Sport';
 
 		$this->render($view, $data, $title);
 	}
 
-	private function render(string $view, array $data = [], string $title = 'Shop Thể Thao'): void
+	private function render(string $view, array $data = [], string $title = 'Bảo Đạt Sport'): void
 	{
 		extract($data, EXTR_SKIP);
 

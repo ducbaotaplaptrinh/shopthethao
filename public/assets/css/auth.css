@@ -1,0 +1,126 @@
+.login,
+.register {
+    border-radius: 10px;
+}
+.login {
+    padding: 70px 0;
+}
+.register {
+    padding: 20px;
+    margin: 70px 0;
+}
+.login-title,
+.register-title {
+    font-size: clamp(3rem, 4vw, 4rem);
+    font-weight: 800;
+    color: #ff6f00;
+    background: linear-gradient(180deg, #ffb347, #ff7a00, #ff5e00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow:
+        0 2px 4px rgba(0, 0, 0, 0.15),
+        0 4px 10px rgba(255, 122, 0, 0.2);
+    margin-bottom: 10px;
+}
+
+.login-form,
+.register-form {
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+    width: 100%;
+}
+
+.login-form__group,
+.register-form__group {
+    position: relative;
+    height: 45px;
+}
+
+.login-form__group > *,
+.register-form__group > * {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.login-form__group .login-form__label,
+.register-form__group .register-form__label {
+    margin: 0;
+    padding: 0;
+    bottom: 50%;
+    left: 10px;
+    z-index: 2;
+    transform: translateY(50%);
+    background: var(--surface);
+    pointer-events: none;
+    transition: all 0.3s;
+}
+
+.login-form__input:focus + .login-form__label,
+.register-form__input:focus + .register-form__label {
+    transform: translateY(-50%);
+    pointer-events: inherit;
+    color: var(--orange);
+}
+
+.login-form__input:focus,
+.register-form__input:focus {
+    border: 2px solid var(--orange);
+    box-shadow: none;
+}
+
+.login-form__input,
+.register-form__input {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    font-size: 1.6rem;
+    padding: 5px;
+}
+
+.form-login__btn,
+.register-btn {
+    background-image: linear-gradient(
+        to right,
+        #ff512f 0%,
+        #f09819 51%,
+        #ff512f 100%
+    );
+}
+
+.form-login__btn,
+.register-btn {
+    font-size: 1.8rem;
+    padding: 15px 45px;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    box-shadow: 0 0 20px #eee;
+    border-radius: 10px;
+    display: block;
+    outline: none;
+    border: none;
+}
+
+.form-login__btn:hover,
+.register-btn:hover {
+    background-position: right center;
+    color: #fff;
+    text-decoration: none;
+}
+
+.login-form__link,
+.register-link {
+    color: red;
+    font-weight: 500;
+    padding-left: 5px;
+    transition: all 0.3s;
+}
+
+.login-form__link:hover,
+.register-link:hover {
+    text-shadow: 1px 0px 3px red;
+}

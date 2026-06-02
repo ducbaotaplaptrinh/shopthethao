@@ -2,6 +2,8 @@
 @import url("product-new.css");
 @import url("product-sale.css");
 @import url("categories.css");
+@import url("review.css");
+@import url("auth.css");
 
 :root {
     --bg-dark: #111111;
@@ -26,6 +28,8 @@ html {
 }
 
 body {
+    position: relative;
+    overflow-x: hidden;
     font-family: "Inter", "Poppins", sans-serif;
     font-weight: 400;
     font-size: 1.6rem;
@@ -52,9 +56,13 @@ img {
     user-select: none;
     -webkit-user-drag: none;
 }
+
 /* common */
 .btn-common {
     background: linear-gradient(135deg, var(--orange), var(--orange-2));
+}
+.navbar-toggler:focus {
+    box-shadow: none !important;
 }
 
 .hero-copy {
@@ -115,12 +123,8 @@ img {
 /* Swiper */
 .swiper {
     width: 100%;
+    overflow: hidden;
 }
-.swiper-slide img {
-    max-width: 100%;
-    height: 100%;
-}
-
 .floating-card {
     position: absolute;
     left: 18px;
@@ -533,5 +537,35 @@ img {
     .info-card__icon {
         width: 40px;
         height: 40px;
+    }
+
+    /* kích thước các icon khi responsive  */
+    .icon-sz-mobile {
+        width: 30px !important;
+        height: 30px !important;
+        margin-left: 10px;
+    }
+    .logo-container__icon {
+        height: 30px;
+    }
+    .main-nav {
+        padding: 15px 0;
+    }
+
+    .site-header {
+        top: 0 !important;
+    }
+    .my-16-mobile {
+        margin: 16px 0 !important;
+    }
+    .py-0-mobile {
+        padding: 0 !important;
+    }
+}
+
+@media (max-width: 992.98px) {
+    .product-new .product-card::after,
+    .product-sale .sale-card::after {
+        display: none;
     }
 }

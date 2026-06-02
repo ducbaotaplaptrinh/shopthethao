@@ -154,6 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
         autoplay: {
             delay: 4000,
             disableOnInteraction: false,
+            pauseOnMouseEnter: true,
         },
         watchOverflow: true,
     });
@@ -279,4 +280,21 @@ document.addEventListener("DOMContentLoaded", function () {
             },
         },
     });
+});
+
+// slider review
+const swiper = new Swiper(".review-swiper", {
+    slidesPerView: 1.5,
+    slideToClickedSlide: true,
+    rewind: true,
+    effect: "cards",
+    autoplay: {
+        delay: 2000,
+        disableOnInteraction: false,
+        pauseOnMouseEnter: true,
+    },
+    pagination: {
+        el: ".swiper-pagination",
+        clickable: true,
+    },
 });
