@@ -1,5 +1,5 @@
 <?php
-
+require BASE_PATH . "/app/controllers/sanphamcontroller.php";
 return [
 	'login' => [
 		'title' => 'Đăng nhập',
@@ -17,16 +17,16 @@ return [
 
 	],
 	'product-index' => [
-		'title' => 'sản phẩm',
+		'title' => 'Danh sách sản phẩm',
 		'view' => 'product/index.php',
-		'controller' => \App\controllers\SanPhamController::class,
+		'controller' => \app\controllers\SanPhamController::class,
 		'action' => 'index',
 	],
 	'product-detail' => [
-		'title' => 'Chi tiết Sản phẩm',
+		'title' => 'Chi tiết sản phẩm',
 		'view' => 'product/product-detail.php',
-		'controller' => \App\controllers\SanPhamController::class,
-		'action' => 'chitietsanpham'
+		'controller' => \app\controllers\SanPhamController::class,
+		'action' => 'chitiet'
 	],
 	'404' => [
 		'title' => 'Không tìm thấy trang',

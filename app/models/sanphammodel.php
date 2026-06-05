@@ -2,9 +2,12 @@
 
 namespace app\models;
 
+require BASE_PATH . "/app/core/Model.php";
+
 use app\core\Model;
 use app\models\entities\SanPham;
 use PDO;
+
 
 class SanPhamModel extends Model
 {
@@ -23,15 +26,52 @@ class SanPhamModel extends Model
         }
         return $danhSachEntities;
     }
-    public function getSanPhamTheoSlug($slug): ?SanPham
+    public function getChiTietSanPham($slugSanPham): ?array
     {
-        $sql = "SELECT * FROM SANPHAM WHERE duong_dan_slug = :slug and trang_thai = 1";
+        $sql = "select d.ten_danh_muc, t.ten_thuong_hieu, s.* from san_pham s 
+                join thuong_hieu t 
+                on s.ma_thuong_hieu = t.id
+                join danh_muc d 
+                on d.id = s.ma_danh_muc
+                where s.duong_dan_slug = :slug 
+                and s.ngay_xoa is null 
+                and t.ngay_xoa is null 
+                and d.ngay_xoa is null 
+                and s.trang_thai = 1 ";
         $stmt = $this->conn->prepare($sql);
-        $stmt->execute(['slug' => $slug]);
-        $dulieu = $stmt->fetch();
-        if (!$dulieu) {
-            return null;
+        $stmt->execute(['slug' => $slugSanPham]);
+        $data = $stmt->fetch();
+        if (!$data) return null;
+
+        return [
+            'item' => new SanPham($data),
+            'tenThuongHieu' => $data['ten_thuong_hieu'],
+            'tenDanhMuc' => $data['ten_danh_muc'],
+        ];;
+    }
+    public function getSanPhamTheoBrand($slugThuongHieu): ?array
+    {
+        $sql = "select d.ten_danh_muc, t.ten_thuong_hieu, s.* from san_pham s 
+                join thuong_hieu t 
+                on s.ma_thuong_hieu = t.id
+                join danh_muc d 
+                on d.id = s.ma_danh_muc
+                where t.duong_dan_slug = :slug 
+                and s.ngay_xoa is null 
+                and t.ngay_xoa is null 
+                and d.ngay_xoa is null 
+                and s.trang_thai = 1 ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['slug' => $slugThuongHieu]);
+        $data = $stmt->fetchAll();
+        $danhSachEntities = [];
+        foreach ($data as $dong) {
+            $danhSachEntities[] = [
+                'item' => new SanPham($dong),
+                'tenThuongHieu' => $dong['ten_thuong_hieu'],
+                'tenDanhMuc' => $dong['ten_danh_muc'],
+            ];
         }
-        return new SanPham($dulieu);
+        return $danhSachEntities;
     }
 }

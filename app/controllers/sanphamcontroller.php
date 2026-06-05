@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\SanPhamModel;
 
+require BASE_PATH . "/app/models/sanphammodel.php";
 class SanPhamController
 {
     private $sanPhamModel;
@@ -12,19 +13,27 @@ class SanPhamController
         $this->sanPhamModel = new SanPhamModel();
     }
     //Hien thi danh sach san pham 
-    private function index(): array
-    {
-        $danhSach = $this->sanPhamModel->getDanhSachSanPham();
-        return ['danhsachsp' => $danhSach];
-    }
-    private function chitiet(): array
+    public function index(): array
     {
         $slug = $_GET['slug'] ?? '';
-        $sanPham = $this->sanPhamModel->getSanPhamTheoSlug($slug);
+        $danhSach = $this->sanPhamModel->getSanPhamTheoBrand($slug);
+        return [
+            'danhsachsp' => $danhSach,
+        ];
+    }
+    public function chitiet(): ?array
+    {
+        $slug = $_GET['slug'] ?? '';
+        $sanPham = $this->sanPhamModel->getChiTietSanPham($slug);
         if (!$sanPham) {
-            header("location: ?page=404");
-            exit;
+            return null;
         }
-        return ['sanpham' => $sanPham];
+        dd($sanPham);
+        return [
+            'title' => $sanPham['item']->getTen_san_pham() . "| Bảo Đạt Sport",
+            'sanpham' => $sanPham['item'],
+            'tenDanhMuc' => $sanPham['ten_danh_muc'],
+            'tenThuongHieu' => $sanPham['ten_thuong_hieu'],
+        ];
     }
 }

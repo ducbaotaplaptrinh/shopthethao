@@ -202,6 +202,10 @@
 
     opacity: 1;
 }
+.sale-product-item {
+    min-width: 230px;
+    max-width: 250px;
+}
 
 @media (max-width: 768px) {
     .sale-thumb {

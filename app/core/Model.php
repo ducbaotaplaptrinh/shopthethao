@@ -19,7 +19,12 @@ class Model
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
         ];
         try {
-            $this->conn = new PDO("mysql:host=$localHost;dbname=$dbName;charset=utf8mp4;$userName;$password;$option");
+            $this->conn = new PDO(
+                "mysql:host=$localHost;dbname=$dbName;charset=utf8mb4",
+                $userName,
+                $password,
+                $option
+            );
         } catch (PDOException  $er) {
             die("Lỗi kết nối dữ liệu: " . $er->getMessage());
         }
