@@ -17,16 +17,32 @@ class App
 		$view = BASE_PATH . '/app/views/' . $route['view'];
 		$data = $route['data'] ?? [];
 		$title = $route['title'] ?? 'Bảo Đạt Sport';
-
+		if (isset($route['controller']) && isset($route['action'])) {
+			$controllerClass = $route['controller'];
+			$action = $route['action'];
+			if (class_exists($controllerClass)) {
+				$controllerInstance = new $controllerClass();
+				if (method_exists($controllerInstance, $action)) {
+					$controllerData = $controllerInstance->$action();
+					if (is_array($controllerData)) {
+						// ket hop 2 mang lai
+						$data = array_merge($data, $controllerData);
+					}
+				}
+			}
+		}
 		$this->render($view, $data, $title);
 	}
 
 	private function render(string $view, array $data = [], string $title = 'Bảo Đạt Sport'): void
 	{
 		extract($data, EXTR_SKIP);
-
 		ob_start();
-		require $view;
+		if ($view) {
+			require $view;
+		} else {
+			require BASE_PATH . '/app/views/errors/404.php';
+		}
 		$content = ob_get_clean();
 
 		require BASE_PATH . '/app/views/layouts/main.php';

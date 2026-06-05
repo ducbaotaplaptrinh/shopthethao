@@ -66,8 +66,7 @@
                     </button>
                 </div>
                 <div
-                    class="dropdown navbar-cart position-relative border-lg border-lg-2 rounded-circle icon-btn "
-                    data-bs-toggle="dropdown">
+                    class="dropdown navbar-cart position-relative border-lg border-lg-2 rounded-circle icon-btn ">
                     <button class="btn nav-link position-relative">
                         <i
                             class="fa-solid fa-cart-arrow-down fa-lg"></i>
@@ -173,7 +172,7 @@
                 <a class="nav-link " href="?page=home">Trang chủ</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link " href="?page=products">Sản phẩm</a>
+                <a class="nav-link " href="#!">Sản phẩm</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="?page=flash-sale">Giảm giá</a>
@@ -199,7 +198,7 @@
                     </li>
                     <li class="nav-item dropdown mega-menu ">
                         <a class="nav-link dropdown-toggle" href="?page=products">Sản phẩm <i class="fa-solid fa-angle-down fa-md"></i></a>
-                        <?php require __DIR__ . '/mega-menu.php'; ?>
+                        <?php require __DIR__ . '/mega-menu-home.php'; ?>
                     </li>
 
                     <li class="nav-item">

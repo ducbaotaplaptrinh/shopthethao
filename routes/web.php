@@ -16,9 +16,17 @@ return [
 		'view' => 'home/index.php',
 
 	],
-	'product' => [
-		'title' => 'Sản phẩm',
+	'product-index' => [
+		'title' => 'sản phẩm',
 		'view' => 'product/index.php',
+		'controller' => \App\controllers\SanPhamController::class,
+		'action' => 'index',
+	],
+	'product-detail' => [
+		'title' => 'Chi tiết Sản phẩm',
+		'view' => 'product/product-detail.php',
+		'controller' => \App\controllers\SanPhamController::class,
+		'action' => 'chitietsanpham'
 	],
 	'404' => [
 		'title' => 'Không tìm thấy trang',
