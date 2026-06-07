@@ -14,32 +14,38 @@ class App
 		$route = $routes[$page] ?? $routes['404'];
 
 		$view = BASE_PATH . '/app/views/' . $route['view'];
-		$data = $route['data'] ?? [];
-		$title = $route['title']  ?? 'Bảo Đạt Sport';
+		$routeData = $route['data'] ?? [];
+		$danhMucModel = new \app\models\SanPhamModel();
+		$chung = [
+			'megaMenu' => $danhMucModel->getDanhMucThuongHieu(), // Tự động nạp menu cho tất cả các trang
+		];
 
+		$controllerData = [];
 		if (isset($route['controller']) && isset($route['action'])) {
 			$controllerClass = $route['controller'];
+			//dd($controllerClass);
 			$action = $route['action'];
 			if (class_exists($controllerClass)) {
-				$controllerInstance = new \app\controllers\SanPhamController();
+				$controllerInstance = new $controllerClass();
 
 				if (method_exists($controllerInstance, $action)) {
-					$controllerData = $controllerInstance->$action();
+					$result = $controllerInstance->$action();
 					if (is_array($controllerData)) {
-						// ket hop 2 mang lai ghi de vao cac tuoc tinh trong $route
-						$data = array_merge($route, $controllerData);
+						$controllerData = $result;
 					}
 				}
 			}
 		}
-
+		$data = array_merge($route, $routeData, $chung, $controllerData);
+		$title = $data['title']  ?? 'Bảo Đạt Sport';
 		$this->render($view, $data, $title);
 	}
 
-	private function render(string $view, array $data = [], string $title = 'Bảo Đạt Sport'): void
+	private function render(string $view, array $viewParams = [], string $title = 'Bảo Đạt Sport'): void
 	{
+		// dd($view);
 
-		extract($data, EXTR_SKIP);
+		extract($viewParams, EXTR_SKIP);
 		ob_start();
 		if ($view) {
 			require $view;

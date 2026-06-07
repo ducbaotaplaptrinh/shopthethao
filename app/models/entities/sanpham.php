@@ -9,7 +9,7 @@ class SanPham
 {
     private ?int $id = null;
     private int $ma_danh_muc = 0;
-    private int $ma_thuong_tieu = 0;
+    private int $ma_thuong_hieu = 0;
     private string $ten_san_pham = "";
     private string $duong_dan_slug = "";
     private ?string $anh_dai_dien = null;
@@ -32,7 +32,7 @@ class SanPham
         if (!empty($dulieu)) {
             $this->id = $dulieu['id'] ?? null;
             $this->ma_danh_muc = $dulieu['ma_danh_muc'];
-            $this->ma_thuong_tieu = $dulieu['ma_thuong_tieu'];
+            $this->ma_thuong_hieu = $dulieu['ma_thuong_hieu'];
             $this->ten_san_pham = $dulieu['ten_san_pham'];
             $this->duong_dan_slug = $dulieu['duong_dan_slug'] ?? null;
             $this->anh_dai_dien = $dulieu['anh_dai_dien'] ?? null;
@@ -74,14 +74,14 @@ class SanPham
 
         return $this;
     }
-    public function getMa_thuong_tieu()
+    public function getMa_thuong_hieu()
     {
-        return $this->ma_thuong_tieu;
+        return $this->ma_thuong_hieu;
     }
 
-    public function setMa_thuong_tieu($ma_thuong_tieu)
+    public function setMa_thuong_hieu($ma_thuong_hieu)
     {
-        $this->ma_thuong_tieu = $ma_thuong_tieu;
+        $this->ma_thuong_hieu = $ma_thuong_hieu;
 
         return $this;
     }

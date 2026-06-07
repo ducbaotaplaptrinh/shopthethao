@@ -98,7 +98,9 @@
     right: -100% !important;
     transition: all 0.3s;
 }
-
+.product-cats-swiper {
+    min-width: 0;
+}
 .product-new:hover .swiper-button-next,
 .product-sale:hover .swiper-button-next {
     right: 0 !important;
@@ -122,7 +124,7 @@
     padding: 1.2rem;
 }
 .product-item {
-    min-width: 230px;
+    width: 200px;
     max-width: 250px;
 }
 .product-item:hover .product-card,
@@ -143,24 +145,6 @@
 
 .product-card .product-thumb img {
     max-width: 100%;
-}
-.product-new .product-card::after {
-    content: "Xem ngay";
-    color: var(--orange-2);
-    text-shadow: 2px 2px 10px var(--orange-2);
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-    opacity: 0;
 }
 .product-new .product-card:hover::after {
     opacity: 1;

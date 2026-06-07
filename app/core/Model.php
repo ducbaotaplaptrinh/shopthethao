@@ -11,7 +11,7 @@ class Model
     public function __construct()
     {
         $localHost = "localhost";
-        $dbName = "db_shopthethao";
+        $dbName = "bd_baodatsport";
         $userName = "root";
         $password = "";
         $option = [

@@ -1,4 +1,4 @@
-<header class="site-header sticky-top ">
+<header class="site-header  ">
     <div class="topbar py-2 d-none d-lg-block">
         <div
             class="container-xl d-flex align-items-lg-center justify-content-between gap-2">
@@ -197,7 +197,7 @@
                         <a class="nav-link " href="?page=home">Trang chủ</a>
                     </li>
                     <li class="nav-item dropdown mega-menu ">
-                        <a class="nav-link dropdown-toggle" href="?page=products">Sản phẩm <i class="fa-solid fa-angle-down fa-md"></i></a>
+                        <a class="nav-link dropdown-toggle" href="#!">Sản phẩm <i class="fa-solid fa-angle-down fa-md"></i></a>
                         <?php require __DIR__ . '/mega-menu-home.php'; ?>
                     </li>
 

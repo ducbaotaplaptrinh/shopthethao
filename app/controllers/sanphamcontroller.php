@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use app\models\SanPhamModel;
 
-require BASE_PATH . "/app/models/sanphammodel.php";
 class SanPhamController
 {
     private $sanPhamModel;
@@ -15,10 +14,24 @@ class SanPhamController
     //Hien thi danh sach san pham 
     public function index(): array
     {
-        $slug = $_GET['slug'] ?? '';
-        $danhSach = $this->sanPhamModel->getSanPhamTheoBrand($slug);
+        $slugDM = $_GET['category'] ?? '';
+        $slugTH = $_GET['brand'] ?? '';
+        $danhSach = $this->sanPhamModel->getSPTheoDanhMucThuongHieu($slugDM, $slugTH);
+
+
+
+        if (!empty($danhSach) && isset($danhSach[0]['tenThuongHieu'])) {
+            $tenTH = $danhSach[0]['tenThuongHieu'];
+            $tenDM = $danhSach[0]['tenDanhMuc'];
+            $title = $tenDM . ' ' . $tenTH . " | Bảo Đạt Sport";
+        } else {
+            $title = "Danh sách sản phẩm";
+        }
+
+
         return [
-            'danhsachsp' => $danhSach,
+            'title' => $title,
+            'danhSachSanPham' => $danhSach
         ];
     }
     public function chitiet(): ?array
@@ -28,12 +41,11 @@ class SanPhamController
         if (!$sanPham) {
             return null;
         }
-        dd($sanPham);
         return [
             'title' => $sanPham['item']->getTen_san_pham() . "| Bảo Đạt Sport",
             'sanpham' => $sanPham['item'],
-            'tenDanhMuc' => $sanPham['ten_danh_muc'],
-            'tenThuongHieu' => $sanPham['ten_thuong_hieu'],
+            'tenDanhMuc' => $sanPham['tenDanhMuc'],
+            'tenThuongHieu' => $sanPham['tenThuongHieu'],
         ];
     }
 }

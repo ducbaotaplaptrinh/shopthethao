@@ -37,6 +37,7 @@ if (!isset($title)) {
 
     <link rel="stylesheet" href="assets/css/global.css">
     <?php if (!empty($pageStyles) && is_array($pageStyles)): ?>
+
         <?php foreach ($pageStyles as $pageStyle): ?>
             <link rel="stylesheet" href="<?php echo htmlspecialchars($pageStyle, ENT_QUOTES, 'UTF-8'); ?>">
         <?php endforeach; ?>
@@ -45,4 +46,4 @@ if (!isset($title)) {
 
 <body>
     <?php
-    require __DIR__ . "/../components/navbar-home.php";
+    require BASE_PATH . "/app/views/components/navbar-home.php";

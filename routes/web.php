@@ -14,13 +14,15 @@ return [
 	'home' => [
 		'title' => 'Trang chủ',
 		'view' => 'home/index.php',
-
+		'controller' => \app\controllers\HomeController::class,
+		'action' => 'index',
 	],
 	'product-index' => [
 		'title' => 'Danh sách sản phẩm',
 		'view' => 'product/index.php',
 		'controller' => \app\controllers\SanPhamController::class,
 		'action' => 'index',
+		'pageStyles' => ['assets/css/category.css']
 	],
 	'product-detail' => [
 		'title' => 'Chi tiết sản phẩm',
