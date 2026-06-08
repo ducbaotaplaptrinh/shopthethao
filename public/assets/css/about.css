@@ -1,0 +1,168 @@
+/* Khai báo biến màu cơ bản */
+:root {
+    --orange: #ff8a00;
+    --orange-2: #e06c00;
+}
+
+.text-orange {
+    color: var(--orange) !important;
+}
+
+/* === BACKGROUND ĐỒNG NHẤT CHO TOÀN TRANG === */
+.about-page {
+    position: relative;
+    overflow: hidden; /* Ngăn các họa tiết hình tròn làm tràn trang */
+    background:
+        radial-gradient(circle at top left, rgba(255, 138, 0, 0.16), transparent 34%),
+        radial-gradient(circle at right center, rgba(255, 95, 31, 0.12), transparent 28%),
+        linear-gradient(180deg, #fffaf4 0%, #fff6ec 100%);
+}
+
+/* Họa tiết tròn mờ trang trí góc trang */
+.about-page::before,
+.about-page::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.about-logo {
+    max-height: 220px; 
+    width: auto;
+    display: block;
+    margin: 5px auto 3rem auto; 
+}
+
+.about-page::before {
+    width: 24rem;
+    height: 24rem;
+    top: -8rem;
+    right: -7rem;
+    background: rgba(255, 138, 0, 0.08);
+}
+
+.about-page::after {
+    width: 15rem;
+    height: 15rem;
+    left: -4rem;
+    bottom: -4rem;
+    background: rgba(255, 95, 31, 0.08);
+}
+
+/* Đảm bảo các thành phần bên trong luôn nổi lên trên background */
+.about-page > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* === PHẦN HERO ĐẦU TRANG === */
+.about-hero {
+    min-height: auto; /* Chiều cao 1 màn hình */
+    padding: auto;
+    background: transparent; /* Xóa nền riêng để lộ background chung */
+}
+
+.about-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    background: rgba(255, 138, 0, 0.1);
+    color: var(--orange-2);
+    font-weight: 600;
+}
+
+.about-title {
+    font-size: clamp(3rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.4;
+    color: #1a1a1a;
+    max-width: 900px !important; 
+}
+
+.about-lead {
+      font-size: 1.8rem;
+    line-height: 1.8;
+    color: #555;
+    max-width: 900px;
+}
+
+/* === PHẦN 3 BANNER === */
+.about-fullscreen-banner {
+    min-height: 100vh; /* Mỗi banner 1 màn hình */
+    padding: 4rem 0;
+}
+
+
+
+/* === PHẦN GIÁ TRỊ CỐT LÕI === */
+.about-section {
+    padding: 6rem 0;
+}
+
+.icon-wrap {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(255, 138, 0, 0.1);
+}
+
+/* === HIỆU ỨNG JS REVEAL (GIỮ NGUYÊN) === */
+.about-page [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.about-page.reveal-ready [data-reveal] {
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.about-page.reveal-ready [data-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* === CSS LÀM NỔI BẬT KHỐI THỐNG KÊ === */
+.about-stat-card {
+    background: rgba(255, 255, 255, 0.4); /* Nền trắng trong suốt nhẹ */
+    border: 1px solid rgba(255, 138, 0, 0.15); /* Viền cam siêu mảnh */
+    border-radius: 16px; /* Bo góc mềm mại */
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Hiệu ứng chuyển động mượt mà */
+    cursor: pointer;
+}
+
+/* Định dạng cho con số (100%, 24/7, 500+) */
+.stat-value {
+    font-size: clamp(2rem, 4vw, 2.8rem); /* Tự co giãn kích thước chữ thông minh */
+    font-weight: 800;
+    color: var(--orange);
+    line-height: 1;
+    transition: transform 0.3s ease;
+}
+
+/* Định dạng cho nhãn chữ ở dưới */
+.stat-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #4a4a4a;
+    text-transform: uppercase; /* Viết hoa chữ để nhìn chuyên nghiệp như các trang lớn */
+    letter-spacing: 0.5px; /* Giãn cách chữ một chút cho thoáng */
+}
+
+/* === HIỆU ỨNG HOVER KHI RÊ CHUỘT VÀO === */
+.about-stat-card:hover {
+    background: rgba(255, 255, 255, 0.85); /* Nền trắng rõ hơn */
+    border-color: rgba(255, 138, 0, 0.6); /* Viền cam đậm lên rõ rệt */
+    transform: translateY(-5px); /* Nhấc nhẹ cái khung lên tạo cảm giác 3D */
+    box-shadow: 0 10px 25px rgba(255, 138, 0, 0.08); /* Đổ bóng cam mờ siêu mịn */
+}
+
+.about-stat-card:hover .stat-value {
+    transform: scale(1.08); /* Con số phình to nhẹ đầy sống động */
+    color: var(--orange-2); /* Đổi sang tông cam đậm hơn một chút */
+}

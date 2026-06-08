@@ -4,6 +4,7 @@
 @import url("categories.css");
 @import url("review.css");
 @import url("auth.css");
+@import url("about.css");
 
 :root {
     --bg-dark: #111111;
