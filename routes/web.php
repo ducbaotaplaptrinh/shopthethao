@@ -25,4 +25,8 @@ return [
         'title' => 'Không tìm thấy trang',
         'view' => 'errors/404.php',
     ],
+	'new'=>[
+		'title' => 'Tin tức cầu lông',
+        'view'  => 'news/index.php',
+	],
 ];
