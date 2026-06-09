@@ -34,10 +34,16 @@ if (!isset($title)) {
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
-    <!-- <link rel="stylesheet" href="assets/css/reset.css"> -->
+
     <link rel="stylesheet" href="assets/css/global.css">
+    <?php if (!empty($pageStyles) && is_array($pageStyles)): ?>
+
+        <?php foreach ($pageStyles as $pageStyle): ?>
+            <link rel="stylesheet" href="<?php echo htmlspecialchars($pageStyle, ENT_QUOTES, 'UTF-8'); ?>">
+        <?php endforeach; ?>
+    <?php endif; ?>
 </head>
 
 <body>
     <?php
-    require __DIR__ . "/../components/navbar.php";
+    require BASE_PATH . "/app/views/components/home/navbar-home.php";

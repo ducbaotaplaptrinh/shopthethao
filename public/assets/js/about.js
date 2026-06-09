@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
         {
             threshold: 0.2,
             rootMargin: "0px 0px -8% 0px",
-        }
+        },
     );
 
     revealItems.forEach(function (item) {

@@ -278,13 +278,12 @@
     }
 }
 @media (max-width: 768.98px) {
-    .dropdown:hover .dropdown-menu {
-        position: fixed;
-
-        top: 70px;
-        left: 15px;
-        right: 15px;
-
-        width: auto;
+    .dropdown.navbar-cart:hover .dropdown-menu.cart {
+        display: none;
+    }
+    .icon-btn:hover {
+        background: none !important;
+        color: #fff !important;
+        box-shadow: none !important;
     }
 }

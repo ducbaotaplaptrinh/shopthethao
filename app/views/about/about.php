@@ -65,7 +65,7 @@ $values = [
                     </span>
                     <h1 class="about-title mb-4">
                         Bảo toàn phong độ, Đạt đỉnh vinh quang.<br>
-                         Người bạn đồng hành đáng tin cậy trên mỗi trận đấu.
+                        Người bạn đồng hành đáng tin cậy trên mỗi trận đấu.
                     </h1>
                     <p class="about-lead mx-auto mb-4">
                         Tại Bảo Đạt Sport, chúng tôi hiểu rằng cầu lông không chỉ là một môn thể thao, mà là đam mê, là sự nỗ lực không ngừng sau mỗi giọt mồ hôi. Khởi nguồn từ những lông thủ nhiệt huyết, chúng tôi ra đời với sứ mệnh mang đến những trang thiết bị chất lượng nhất, giúp bạn tự tin sải bước trên sân và chinh phục mọi giới hạn.
@@ -80,7 +80,7 @@ $values = [
                                 </div>
                             </div>
                         <?php endforeach; ?>
-                    </div>  
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,7 +91,7 @@ $values = [
             <section class="about-fullscreen-banner d-flex align-items-center" data-reveal>
                 <div class="container">
                     <div class="row align-items-center g-5 <?php echo $index % 2 === 1 ? 'flex-row-reverse' : ''; ?>">
-                        
+
                         <div class="col-lg-6">
                             <h2 class="display-5 fw-bold mb-4 text-dark"><?php echo $banner['title']; ?></h2>
                             <p class="fs-3 text-secondary lh-lg mb-4">

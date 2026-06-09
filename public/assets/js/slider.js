@@ -1,8 +1,11 @@
+const $ = document.querySelector.bind(document);
+const $$ = document.querySelectorAll.bind(document);
+
 document.addEventListener("DOMContentLoaded", function () {
     if (typeof Swiper === "undefined") return;
 
     function initSwiper(selector, options = {}) {
-        const element = document.querySelector(selector);
+        const element = $(selector);
 
         if (!element) return null;
 
@@ -14,9 +17,9 @@ document.addEventListener("DOMContentLoaded", function () {
         itemSelector,
         swiperInstance,
     }) {
-        const buttons = document.querySelectorAll(buttonSelector);
+        const buttons = $$(buttonSelector);
 
-        const items = document.querySelectorAll(itemSelector);
+        const items = $$(itemSelector);
 
         if (!buttons.length || !items.length) return;
 
@@ -31,10 +34,8 @@ document.addEventListener("DOMContentLoaded", function () {
         function filter(categoryId) {
             items.forEach((item) => {
                 const itemCategory = item.getAttribute("data-category-id");
-
                 const isAll =
                     String(categoryId) === "0" || String(categoryId) === "all";
-
                 const isVisible =
                     isAll || String(itemCategory) === String(categoryId);
 
@@ -42,9 +43,12 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             if (swiperInstance) {
+                swiperInstance.updateSize();
+                swiperInstance.updateSlides();
+                swiperInstance.updateProgress();
                 swiperInstance.update();
 
-                swiperInstance.slideTo(0);
+                swiperInstance.slideTo(0, 0);
             }
         }
 
@@ -60,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
             button.addEventListener("keydown", function (e) {
                 if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-
                     this.click();
                 }
             });
@@ -165,7 +168,6 @@ document.addEventListener("DOMContentLoaded", function () {
         spaceBetween: 20,
 
         loop: false,
-
         pagination: {
             el: ".product-swiper .swiper-pagination",
             clickable: true,
@@ -203,21 +205,12 @@ document.addEventListener("DOMContentLoaded", function () {
         swiperInstance: productSwiper,
     });
 
-    initSwiper(".sale-cats-swiper", {
-        slidesPerView: "auto",
-
-        spaceBetween: 10,
-
-        freeMode: true,
-    });
-
     const saleSwiper = initSwiper(".sale-product-swiper", {
         slidesPerView: 1.2,
 
         spaceBetween: 20,
 
         loop: false,
-
         pagination: {
             el: ".sale-product-swiper .swiper-pagination",
             clickable: true,
@@ -267,16 +260,20 @@ document.addEventListener("DOMContentLoaded", function () {
         },
 
         breakpoints: {
-            0: {
-                slidesPerView: 1,
-            },
-
-            768: {
+            576: {
                 slidesPerView: 2,
             },
 
-            1200: {
+            768: {
                 slidesPerView: 3,
+            },
+
+            992: {
+                slidesPerView: 4,
+            },
+
+            1200: {
+                slidesPerView: 5,
             },
         },
     });
