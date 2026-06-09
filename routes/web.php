@@ -39,4 +39,8 @@ return [
 		'title' => 'Không tìm thấy trang',
 		'view' => 'errors/404.php',
 	],
+	'contact' => [
+		'title' => 'Liên hệ',
+		'view' => 'contact/contact.php',
+	],
 ];
