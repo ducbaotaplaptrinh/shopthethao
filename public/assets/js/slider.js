@@ -64,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
             button.addEventListener("keydown", function (e) {
                 if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
-
                     this.click();
                 }
             });

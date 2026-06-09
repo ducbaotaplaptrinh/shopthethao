@@ -1,4 +1,4 @@
-<div class="dropdown-menu mega-menu__content">
+<div class="dropdown-menu mega-menu__content w-100">
     <div class="container">
         <div class="row g-4">
             <?php if (isset($megaMenu) && is_array($megaMenu)): ?>

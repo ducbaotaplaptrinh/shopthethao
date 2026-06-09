@@ -75,6 +75,33 @@ class SanPhamModel extends Model
         }
         return $danhSachEntities;
     }
+
+    public function getSPTheoDanhMuc($slugDM)
+    {
+        $sql = "select d.ten_danh_muc, t.ten_thuong_hieu, s.* from san_pham s 
+                join thuong_hieu t 
+                on s.ma_thuong_hieu = t.id
+                join danh_muc d 
+                on d.id = s.ma_danh_muc
+                where  d.duong_dan_slug = :slug_dm 
+                and s.ngay_xoa is null 
+                and t.ngay_xoa is null 
+                and d.ngay_xoa is null 
+                and s.trang_thai = 1 ";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['slug_dm' => $slugDM]);
+        $data = $stmt->fetchAll();
+        $danhSachEntities = [];
+        foreach ($data as $dong) {
+            $danhSachEntities[] = [
+                'item' => new SanPham($dong),
+                'tenThuongHieu' => $dong['ten_thuong_hieu'],
+                'tenDanhMuc' => $dong['ten_danh_muc'],
+            ];
+        }
+        return $danhSachEntities;
+    }
+
     public function getSanPhamTheoBrand($slugThuongHieu): ?array
     {
         $sql = "select d.ten_danh_muc, t.ten_thuong_hieu, s.* from san_pham s 

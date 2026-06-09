@@ -8,6 +8,7 @@
     align-items: center;
 }
 .categories-content__card {
+    height: 300px;
     position: relative;
     overflow: hidden;
     transition: all 0.3s;

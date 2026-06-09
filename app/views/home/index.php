@@ -2,7 +2,7 @@
     overflow: hidden;
 ">
     <div class="row align-items-center g-4 g-lg-5 ">
-        <?php require __DIR__ . '/../components/banner-home.php'; ?>
+        <?php require __DIR__ . '/../components/home/banner-home.php'; ?>
     </div>
 </section>
 <div class="container-xl">
@@ -66,9 +66,9 @@
             </div>
         </div>
     </section>
-    <?php require __DIR__ . "/../components/product-new-home.php" ?>
-    <?php require __DIR__ . '/../components/product-sale-home.php'; ?>
-    <?php require __DIR__ . '/../components/category-home.php'; ?>
-    <?php require __DIR__ . '/../components/review-home.php'; ?>
+    <?php require __DIR__ . "/../components/home/product-new-home.php" ?>
+    <?php require __DIR__ . '/../components/home/product-sale-home.php'; ?>
+    <?php require __DIR__ . '/../components/home/category-home.php'; ?>
+    <?php require __DIR__ . '/../components/home/review-home.php'; ?>
 
 </div>

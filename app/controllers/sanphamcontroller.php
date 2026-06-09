@@ -16,9 +16,9 @@ class SanPhamController
     {
         $slugDM = $_GET['category'] ?? '';
         $slugTH = $_GET['brand'] ?? '';
-        $danhSach = $this->sanPhamModel->getSPTheoDanhMucThuongHieu($slugDM, $slugTH);
-
-
+        if (isset($slugDM) && isset($slugTH)) {
+            $danhSach = $this->sanPhamModel->getSPTheoDanhMucThuongHieu($slugDM, $slugTH);
+        }
 
         if (!empty($danhSach) && isset($danhSach[0]['tenThuongHieu'])) {
             $tenTH = $danhSach[0]['tenThuongHieu'];

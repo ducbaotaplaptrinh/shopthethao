@@ -46,4 +46,4 @@ if (!isset($title)) {
 
 <body>
     <?php
-    require BASE_PATH . "/app/views/components/navbar-home.php";
+    require BASE_PATH . "/app/views/components/home/navbar-home.php";

@@ -6,7 +6,7 @@ error_reporting(E_ALL);
 // Định nghĩa hằng số BASE_PATH trỏ thẳng về thư mục gốc dự án Shop_TheThao
 define('BASE_PATH', dirname(__DIR__));
 
-//3. ĐĂNG KÝ AUTOLOAD TỰ CHẾ THÔNG MINH
+// ĐĂNG KÝ AUTOLOAD 
 spl_autoload_register(function ($className) {
     // Chuyển dấu gạch chéo ngược \ thành gạch chéo xuôi /
     // Ví dụ: "app\models\SanPhamModel" -> "app/models/SanPhamModel.php"
@@ -18,7 +18,9 @@ spl_autoload_register(function ($className) {
     }
 });
 
-// 4. Khởi chạy Core App
+// Khởi chạy Core App
 require_once BASE_PATH . '/app/core/App.php';
+require_once BASE_PATH . '/app/helpers/fomat_helper.php';
+
 $app = new App();
 $app->run();

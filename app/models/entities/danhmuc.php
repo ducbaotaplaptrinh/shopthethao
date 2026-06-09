@@ -8,9 +8,10 @@ use Exception;
 class DanhMuc
 {
     private ?int $id = null;
-    private int $ma_danh_muc_cha = 0;
-    private string $ten_danh_muc = "";
+    private ?int $ma_danh_muc_cha = null;
     private ?string $hinh_anh = null;
+    private string $ten_danh_muc = "";
+    private string $duong_dan_slug = "";
     private ?string $mo_ta = null;
     private int $thu_tu_sap_xep = 0;
     private bool $trang_thai = true;
@@ -24,6 +25,7 @@ class DanhMuc
             $this->id = $data['id'] ?? null;
             $this->ma_danh_muc_cha = isset($data['ma_danh_muc_cha']) ? (int)$data['ma_danh_muc_cha'] : null;
             $this->ten_danh_muc = $data['ten_danh_muc'];
+            $this->duong_dan_slug = $data['duong_dan_slug'];
             $this->hinh_anh = $data['hinh_anh'] ?? null;
             $this->mo_ta = $data['mo_ta'] ?? null;
             $this->thu_tu_sap_xep = (int)($data['thu_tu_sap_xep'] ?? 0);
@@ -160,6 +162,26 @@ class DanhMuc
     public function setNgay_xoa($ngay_xoa)
     {
         $this->ngay_xoa = $ngay_xoa;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of duong_dan_slug
+     */
+    public function getDuong_dan_slug()
+    {
+        return $this->duong_dan_slug;
+    }
+
+    /**
+     * Set the value of duong_dan_slug
+     *
+     * @return  self
+     */
+    public function setDuong_dan_slug($duong_dan_slug)
+    {
+        $this->duong_dan_slug = $duong_dan_slug;
 
         return $this;
     }
