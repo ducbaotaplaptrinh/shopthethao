@@ -5,7 +5,14 @@
                 Đăng ký
             </h2>
 
+            <?php if (!empty($error)): ?>
+                <div class="alert alert-danger rounded-3 text-center mb-3" style="font-size: 1.4rem;">
+                    <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+
             <form action="" method="post" class="register-form" id="form-register">
+                <input type="hidden" name="redirect" value="<?= htmlspecialchars($redirect ?? '') ?>">
 
                 <div class="register-form__group mb-3">
 
@@ -15,7 +22,8 @@
                         name="fullname"
                         id="fullname"
                         placeholder=" "
-                        required>
+                        required
+                        value="<?= htmlspecialchars($fullname ?? '') ?>">
                     <label class="register-form__label form-label" for="fullname">
                         Họ và tên
                     </label>
@@ -30,7 +38,8 @@
                         name="phone"
                         id="phone"
                         placeholder=" "
-                        required>
+                        required
+                        value="<?= htmlspecialchars($phone ?? '') ?>">
                     <label class="register-form__label form-label" for="phone">
                         Số điện thoại
                     </label>
@@ -45,7 +54,8 @@
                         name="email"
                         id="email"
                         placeholder=" "
-                        required>
+                        required
+                        value="<?= htmlspecialchars($email ?? '') ?>">
                     <label class="register-form__label form-label" for="email">
                         Email
                     </label>
@@ -92,7 +102,7 @@
 
             <div class="register-desc text-center mt-3">
                 Bạn đã có tài khoản?
-                <a href="?page=login" class="register-link text-decoration-none">
+                <a href="?page=login<?= !empty($redirect) ? '&redirect=' . urlencode($redirect) : '' ?>" class="register-link text-decoration-none">
                     Đăng nhập ngay
                 </a>
             </div>
@@ -110,7 +120,6 @@
             validator.isRequired("#fullname"),
             validator.isRequired("#email"),
             validator.isEmail("#email"),
-            validator.isRequired("#fullname"),
             validator.isRequired("#phone"),
             validator.isPhone("#phone"),
             validator.minLength("#password", 6),
@@ -122,9 +131,6 @@
                         .value;
                 }
             ),
-        ],
-        onSubmit: function(data) {
-            console.log(data);
-        },
+        ]
     });
 </script>

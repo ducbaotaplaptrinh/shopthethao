@@ -34,14 +34,18 @@ if (!isset($title)) {
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
-
     <link rel="stylesheet" href="assets/css/global.css">
     <?php if (!empty($pageStyles) && is_array($pageStyles)): ?>
-
         <?php foreach ($pageStyles as $pageStyle): ?>
             <link rel="stylesheet" href="<?php echo htmlspecialchars($pageStyle, ENT_QUOTES, 'UTF-8'); ?>">
         <?php endforeach; ?>
     <?php endif; ?>
+    <script>
+        function handleImageError(img) {
+            img.onerror = null;
+            img.src = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'><rect width='100%' height='100%' fill='%23f3f4f6'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%239ca3af'>Không có ảnh</text></svg>";
+        }
+    </script>
 </head>
 
 <body>

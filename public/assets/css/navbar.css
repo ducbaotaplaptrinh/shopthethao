@@ -160,24 +160,101 @@
     max-width: 400px;
     width: 100%;
     height: 40px;
-    overflow: hidden;
+    position: relative;
+    overflow: visible;
     border-radius: 5px;
     margin-right: 10px;
+    display: flex;
 }
 .search-input {
     width: 100%;
     border: none;
-    padding: 0 10px;
+    padding: 0 12px;
     background: white;
     color: #000;
     transition: all 0.3s ease;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.search-suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: none;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    z-index: 2000;
+    max-height: 380px;
+    overflow-y: auto;
+    display: none;
+}
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    text-decoration: none;
+    border-bottom: 1px solid #f1f1f1;
+    transition: background-color 0.2s ease;
+}
+.suggestion-item:last-child {
+    border-bottom: none;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+}
+.suggestion-item:hover {
+    background-color: #f8f9fa;
+}
+.suggestion-thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+.suggestion-info {
+    min-width: 0;
+}
+.suggestion-name {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #212529;
+    margin-bottom: 2px;
+}
+.suggestion-price {
+    font-size: 1.5rem;
+}
+.suggestion-price-current {
+    color: #ff6f00;
+    font-weight: 700;
+}
+.suggestion-price-old {
+    color: #6c757d;
+    text-decoration: line-through;
+    margin-left: 6px;
+}
+
+/* Mini Cart Dropdown Font Size adjustments */
+.navbar-cart .mini-cart-list .fw-bold {
+    font-size: 1.6rem !important;
+}
+.navbar-cart .mini-cart-list .text-muted {
+    font-size: 1.3rem !important;
+}
+.navbar-cart .mini-cart-list .text-danger {
+    font-size: 1.5rem !important;
 }
 .search-input:focus {
     border-color: transparent;
     outline-color: transparent;
 }
 .search-btn {
-    height: 40px;
+    height: 100%;
     width: 40px;
     color: var(--muted);
     display: flex;

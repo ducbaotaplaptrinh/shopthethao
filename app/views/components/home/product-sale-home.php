@@ -35,8 +35,9 @@
                                         class="sale-thumb bg-white">
 
                                         <img
-                                            src=" <?php echo htmlspecialchars($sps->getAnh_dai_dien(), ENT_QUOTES, 'UTF-8') ?>"
-                                            alt=" <?php echo htmlspecialchars($sps->getTen_san_pham(), ENT_QUOTES, 'UTF-8') ?>">
+                                            src="<?php echo htmlspecialchars(getProductImage($sps->getAnh_dai_dien()), ENT_QUOTES, 'UTF-8') ?>"
+                                            alt="<?php echo htmlspecialchars($sps->getTen_san_pham(), ENT_QUOTES, 'UTF-8') ?>"
+                                            onerror="handleImageError(this)">
 
                                     </div>
 
@@ -51,13 +52,13 @@
 
                                             <span class="sale-price-new">
 
-                                                <?php echo htmlspecialchars(formatVND($sps->getGia_ban()), ENT_QUOTES, 'UTF-8') ?>
+                                                <?php echo htmlspecialchars(formatVND($sps->getGia_khuyen_mai()), ENT_QUOTES, 'UTF-8') ?>
 
                                             </span>
 
                                             <span class="sale-price-old">
 
-                                                <?php echo htmlspecialchars(formatVND($sps->getGia_khuyen_mai()), ENT_QUOTES, 'UTF-8') ?>
+                                                <?php echo htmlspecialchars(formatVND($sps->getGia_ban()), ENT_QUOTES, 'UTF-8') ?>
 
                                             </span>
 

@@ -3,6 +3,11 @@
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 
+// Đăng ký session để lưu giỏ hàng
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 // Định nghĩa hằng số BASE_PATH trỏ thẳng về thư mục gốc dự án Shop_TheThao
 define('BASE_PATH', dirname(__DIR__));
 
