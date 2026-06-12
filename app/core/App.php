@@ -30,6 +30,7 @@ class App
 
 				if (method_exists($controllerInstance, $action)) {
 					$result = $controllerInstance->$action();
+
 					if (is_array($controllerData)) {
 						$controllerData = $result;
 					}
@@ -52,6 +53,7 @@ class App
 		} else {
 			require BASE_PATH . '/app/views/errors/404.php';
 		}
+
 		$content = ob_get_clean();
 		require BASE_PATH . '/app/views/layouts/main.php';
 	}

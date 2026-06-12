@@ -23,13 +23,15 @@ class SanPham
     private int $luot_xem = 0;
     private bool $la_noi_bat = false;
     private bool $trang_thai = true;
-    private ?DateTime $ngay_tao;
-    private ?DateTime $ngay_cap_nhat;
-    private ?DateTime $ngay_xoa;
+    private ?DateTime $ngay_tao = null;
+    private ?DateTime $ngay_cap_nhat = null;
+    private ?DateTime $ngay_xoa = null;
 
     public function __construct(array $dulieu = [])
     {
         if (!empty($dulieu)) {
+
+
             $this->id = $dulieu['id'] ?? null;
             $this->ma_danh_muc = $dulieu['ma_danh_muc'];
             $this->ma_thuong_hieu = $dulieu['ma_thuong_hieu'];

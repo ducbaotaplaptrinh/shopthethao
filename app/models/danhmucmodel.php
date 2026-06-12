@@ -23,4 +23,15 @@ class DanhMucModel extends Model
         }
         return $danhsachEntities;
     }
+    public function getDanhMuctheoslug($slug): ?DanhMuc
+    {
+        $sql = "SELECT * from danh_muc WHERE ngay_xoa is null and duong_dan_slug = :slug";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['slug' => $slug]);
+        $data = $stmt->fetch();
+        if (!$data) {
+            return null;
+        }
+        return new DanhMuc($data);
+    }
 }

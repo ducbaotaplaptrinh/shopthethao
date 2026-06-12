@@ -10,7 +10,14 @@
                         Đăng nhập
                     </h2>
 
+                    <?php if (!empty($error)): ?>
+                        <div class="alert alert-danger rounded-3 text-center mb-3" style="font-size: 1.4rem;">
+                            <?= htmlspecialchars($error) ?>
+                        </div>
+                    <?php endif; ?>
+
                     <form action="" method="post" class="login-form" id="form-login">
+                        <input type="hidden" name="redirect" value="<?= htmlspecialchars($redirect ?? '') ?>">
 
                         <div class="mb-3 login-form__group">
 
@@ -18,7 +25,9 @@
                                 id="email"
                                 type="email"
                                 class="form-control login-form__input"
-                                name="email" placeholder=" ">
+                                name="email" 
+                                placeholder=" "
+                                value="<?= htmlspecialchars($email ?? '') ?>">
 
                             <label class="login-form__label">
                                 Email
@@ -52,7 +61,7 @@
 
                     <div class="text-center mt-3">
                         Chưa có tài khoản?
-                        <a href="?page=register" class="login-form__link">
+                        <a href="?page=register<?= !empty($redirect) ? '&redirect=' . urlencode($redirect) : '' ?>" class="login-form__link">
                             Đăng ký
                         </a>
                     </div>
@@ -65,7 +74,6 @@
     </div>
     <script src="assets/js/auth.js"></script>
     <script>
-        console.log(validator);
         validator({
             form: "#form-login",
             formGroupSelector: ".login-form__group",
@@ -74,9 +82,6 @@
                 validator.isRequired("#email"),
                 validator.isEmail("#email"),
                 validator.minLength("#password", 6),
-            ],
-            onSubmit: function(data) {
-                console.log(data);
-            },
+            ]
         });
     </script>

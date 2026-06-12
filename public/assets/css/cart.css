@@ -1,0 +1,196 @@
+:root {
+    --primary-color: #ff7b00;
+    --primary-hover: #e06c00;
+    --bg-light: #f7f8fa;
+    --border-color: #ececec;
+    --text-color: #333;
+    --text-light: #777;
+    --white: #fff;
+    --danger-color: #ff2d2d;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-color);
+}
+
+.breadcrumb-wrapper {
+    font-size: 14px;
+}
+
+.breadcrumb-wrapper a {
+    color: var(--text-light);
+    text-decoration: none;
+}
+
+.breadcrumb-wrapper a:hover {
+    color: var(--primary-color);
+}
+
+/* ====================
+   SECTION TITLE
+==================== */
+.section-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-color);
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.section-title::after {
+    content: "";
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(135deg, #ff7b00, #ff9500);
+}
+
+/* ====================
+   CARD SHADOWS & ROUNDED
+==================== */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card.shadow-sm {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* ====================
+   TABLE STYLE
+==================== */
+.table thead th {
+    font-size: 14px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #555;
+    background-color: #fcfcfc;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table tbody td {
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 10px;
+    font-size: 15px;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Trash Icon Hover */
+.hover-danger {
+    color: #bbb !important;
+    transition: color 0.2s ease;
+}
+
+.hover-danger:hover {
+    color: var(--danger-color) !important;
+}
+
+/* Quantity input control */
+.table input[type="number"] {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    padding: 5px;
+    box-shadow: none;
+}
+
+.table input[type="number"]:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(255, 123, 0, 0.15);
+}
+
+/* ====================
+   BUTTONS
+==================== */
+.btn-primary {
+    background: linear-gradient(135deg, #ff7b00, #ff9500);
+    border: none;
+    font-weight: 600;
+    transition: opacity 0.2s;
+}
+
+.btn-primary:hover {
+    opacity: 0.9;
+    background: linear-gradient(135deg, #ff7b00, #ff9500);
+}
+
+.btn-outline-dark {
+    border: 1px solid #333;
+    color: #333;
+}
+
+.btn-outline-dark:hover {
+    background-color: #333;
+    color: var(--white);
+}
+
+/* ====================
+   CHECKOUT DETAIL LIST
+==================== */
+.checkout-items-list::-webkit-scrollbar,
+.ordered-items-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.checkout-items-list::-webkit-scrollbar-track,
+.ordered-items-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 99px;
+}
+
+.checkout-items-list::-webkit-scrollbar-thumb,
+.ordered-items-list::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 99px;
+}
+
+.checkout-items-list::-webkit-scrollbar-thumb:hover,
+.ordered-items-list::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+/* ====================
+   FORM CONTROLS
+==================== */
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(255, 123, 0, 0.15) !important;
+}
+
+/* Payment card choices */
+.form-check-input:checked {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+/* ====================
+   SUCCESS PAGE
+==================== */
+.text-success i {
+    filter: drop-shadow(0 4px 10px rgba(40, 167, 69, 0.2));
+}
+
+.text-uppercase {
+    letter-spacing: 1px;
+}
+
+/* ====================
+   TRACK PAGE
+==================== */
+.input-group-lg .form-control {
+    font-size: 16px;
+    height: 54px;
+}
+
+.input-group-lg .btn {
+    height: 54px;
+    font-size: 16px;
+}

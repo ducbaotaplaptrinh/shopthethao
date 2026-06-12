@@ -59,12 +59,22 @@
                                 <a href="?page=product-detail&slug=<?= htmlspecialchars($p['item']->getDuong_dan_slug(), ENT_QUOTES, 'UTF-8') ?>" class="swiper-slide product-item" data-category-id="<?php echo htmlspecialchars($p['item']->getMa_danh_muc() ?? 0) ?>">
                                     <div class="card product-card">
                                         <div class="card-body p-0">
+                                            <?php if ($p['item']->getGia_khuyen_mai() > 0): ?>
+                                                <div class="product-badge">-<?= $p['item']->getPhanTramGiam() ?>%</div>
+                                            <?php endif; ?>
                                             <div class="product-thumb bg-white d-flex align-items-center justify-content-center" style="height:220px;">
-                                                <img src="<?php echo htmlspecialchars($p['item']->getAnh_dai_dien()) ?>" alt="<?php echo htmlspecialchars($p['item']->getTen_san_pham()) ?>" style="max-height:200px; width:auto; object-fit:contain;">
+                                                <img src="<?php echo htmlspecialchars(getProductImage($p['item']->getAnh_dai_dien())) ?>" alt="<?php echo htmlspecialchars($p['item']->getTen_san_pham()) ?>" onerror="handleImageError(this)" style="max-height:200px; width:auto; object-fit:contain;">
                                             </div>
                                             <div class="p-3  product-item__info">
                                                 <h6 class="product-name mb-2" style="min-height:48px;"><?php echo htmlspecialchars($p['item']->getTen_san_pham()) ?></h6>
-                                                <div class="product-price text-danger fw-bold"><?php echo htmlspecialchars(formatVND($p['item']->getGia_ban())) ?> </div>
+                                                <div class="product-price text-danger fw-bold">
+                                                    <?php if ($p['item']->getGia_khuyen_mai() > 0): ?>
+                                                        <span><?php echo htmlspecialchars(formatVND($p['item']->getGia_khuyen_mai())) ?></span>
+                                                        <span class="product-price-old"><?php echo htmlspecialchars(formatVND($p['item']->getGia_ban())) ?></span>
+                                                    <?php else: ?>
+                                                        <span><?php echo htmlspecialchars(formatVND($p['item']->getGia_ban())) ?></span>
+                                                    <?php endif; ?>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

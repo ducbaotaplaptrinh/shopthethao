@@ -1,116 +1,122 @@
+<?php
+
+// Kiểm tra xem có tồn tại danh sach sp co gia trị ko 
+if ((!empty($danhSachSanPham) && is_array($danhSachSanPham))) {
+    foreach ($danhSachSanPham as $item) {
+    }
+}
+?>
 <div class="container-xl py-4">
+    <form id="filterForm" method="GET" action="">
+        <input type="hidden" name="page" value="product-index">
+        <?php if (!empty($slugDM)): ?>
+            <input type="hidden" name="category" value="<?= htmlspecialchars($slugDM) ?>">
+        <?php endif; ?>
 
-    <!-- Breadcrumb -->
-    <div class="breadcrumb-wrapper mb-4">
-        Trang chủ > Cầu lông > Vợt cầu lông
-    </div>
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-wrapper mb-4">
+            <a href="?page=home">Trang chủ ></a>
+            <a href="#!"> <?php echo !empty($tenDanhMucMD) ? htmlspecialchars($tenDanhMucMD->getTen_danh_muc()) : "" ?> </a>
+            <?php if (!empty($tenThuongHieuMD)): ?>
 
-    <div class="row g-4">
+                <a href="#!">
+                    <?= " > " . htmlspecialchars(
+                        $tenDanhMucMD->getTen_danh_muc()
+                            . " " .
+                            $tenThuongHieuMD->getTen_thuong_hieu()
+                    ) ?>
+                </a>
 
-        <!-- Sidebar -->
-        <aside class="col-lg-3">
+            <?php endif; ?>
+        </div>
 
-            <div id="filterSidebar"
+        <div class="row g-4">
+            <!-- Sidebar -->
+            <aside class="col-lg-3">
 
-                class="bg-white rounded shadow-sm p-3">
-                <?php require BASE_PATH . "/app/views/components/product/sidebar.php" ?>
-                <h5 class="mb-3">
-                    Bộ lọc sản phẩm
-                </h5>
+                <div id="filterSidebar"
 
-                <!-- Danh mục -->
-                <div class="mb-4">
-                    <h6>Danh mục</h6>
+                    class="bg-white rounded shadow-sm p-3">
+                    <?php require BASE_PATH . "/app/views/components/product/sidebar.php" ?>
                 </div>
 
-                <!-- Thương hiệu -->
-                <div class="mb-4">
-                    <h6>Thương hiệu</h6>
-                </div>
+            </aside>
 
-                <!-- Giá -->
-                <div class="mb-4">
-                    <h6>Giá bán</h6>
-                </div>
+            <!-- Content -->
+            <main class="col-lg-9">
 
-            </div>
+                <!-- Toolbar -->
+                <div class="toolbar bg-white rounded shadow-sm p-3 mb-4">
 
-        </aside>
+                    <div class="row align-items-center">
 
-        <!-- Content -->
-        <main class="col-lg-9">
+                        <div class="col-md-6">
+                            Hiển thị <?= !empty($danhSachSanPham) ? count($danhSachSanPham) : 0 ?> / <?= $totalProducts ?? 0 ?> sản phẩm
+                        </div>
 
-            <!-- Toolbar -->
-            <div class="toolbar bg-white rounded shadow-sm p-3 mb-4">
+                        <div class="col-md-6 text-md-end">
 
-                <div class="row align-items-center">
+                            <select name="sort" class="form-select d-inline-block w-auto" onchange="document.getElementById('filterForm').submit()">
+                                <option value="newest" <?= ($sort ?? '') === 'newest' ? 'selected' : '' ?>>Mới nhất</option>
+                                <option value="price-asc" <?= ($sort ?? '') === 'price-asc' ? 'selected' : '' ?>>Giá tăng dần</option>
+                                <option value="price-desc" <?= ($sort ?? '') === 'price-desc' ? 'selected' : '' ?>>Giá giảm dần</option>
+                            </select>
 
-                    <div class="col-md-6">
-                        Hiển thị 120 sản phẩm
-                    </div>
-
-                    <div class="col-md-6 text-md-end">
-
-                        <select class="form-select d-inline-block w-auto">
-
-                            <option>Mới nhất</option>
-                            <option>Giá tăng dần</option>
-                            <option>Giá giảm dần</option>
-
-                        </select>
+                        </div>
 
                     </div>
 
                 </div>
 
-            </div>
+                <!-- Product Grid -->
+                <div id="productGrid">
 
-            <!-- Product Grid -->
-            <div id="productGrid">
 
-                <?php require BASE_PATH . "/app/views/components/product/listproduct.php" ?>
-                <div class="row g-3">
+                    <div class="row g-3">
+                        <?php require BASE_PATH . "/app/views/components/product/listproduct.php" ?>
 
-                    <div class="col-6 col-md-4 col-xl-3">
-                        Product Card
-                    </div>
 
-                    <div class="col-6 col-md-4 col-xl-3">
-                        Product Card
-                    </div>
 
-                    <div class="col-6 col-md-4 col-xl-3">
-                        Product Card
                     </div>
 
                 </div>
 
-            </div>
+                <!-- Pagination -->
+                <div id="pagination" class="mt-5 d-flex justify-content-center">
+                    <?php if (isset($totalPages) && $totalPages > 1): ?>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination mb-0">
+                                <li class="page-item <?= ($currentPage <= 1) ? 'disabled' : '' ?>">
+                                    <a class="page-link" href="<?= ($currentPage <= 1) ? '#' : getPaginationUrl($currentPage - 1) ?>" aria-label="Trước">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
 
-            <!-- Pagination -->
-            <div id="pagination"
-                class="mt-5 d-flex justify-content-center">
+                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                    <li class="page-item <?= ($i === $currentPage) ? 'active' : '' ?>">
+                                        <a class="page-link" href="<?= getPaginationUrl($i) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
 
-                Pagination
+                                <li class="page-item <?= ($currentPage >= $totalPages) ? 'disabled' : '' ?>">
+                                    <a class="page-link" href="<?= ($currentPage >= $totalPages) ? '#' : getPaginationUrl($currentPage + 1) ?>" aria-label="Sau">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    <?php endif; ?>
+                </div>
 
-            </div>
+                <!-- Description -->
+                <section class="category-description bg-white rounded shadow-sm p-4 mt-5">
 
-            <!-- Description -->
-            <section class="category-description bg-white rounded shadow-sm p-4 mt-5">
+                    <?php require BASE_PATH . "/app/views/components/product/gioithieu.php" ?>
 
-                <?php require BASE_PATH . "/app/views/components/product/gioithieu.php" ?>
-                <h2>
-                    Vợt cầu lông Yonex
-                </h2>
+                </section>
 
-                <p>
-                    Nội dung giới thiệu danh mục hoặc thương hiệu...
-                </p>
+            </main>
 
-            </section>
-
-        </main>
-
-    </div>
-
+        </div>
+    </form>
 </div>

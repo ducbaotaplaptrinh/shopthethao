@@ -33,7 +33,7 @@ body {
     overflow-x: hidden;
     font-family: "Inter", "Poppins", sans-serif;
     font-weight: 400;
-    font-size: 1.6rem;
+    font-size: 1.6rem !important;
     color: var(--text-dark);
     background: var(--surface);
 }
@@ -56,6 +56,9 @@ a {
 img {
     user-select: none;
     -webkit-user-drag: none;
+}
+.btn {
+    font-size: 1.6rem !important;
 }
 
 /* common */

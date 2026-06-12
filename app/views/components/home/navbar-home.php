@@ -1,3 +1,10 @@
+<?php
+$totalCartItems = 0;
+$cartItems = $_SESSION['cart'] ?? [];
+foreach ($cartItems as $item) {
+    $totalCartItems += $item['qty'];
+}
+?>
 <header class="site-header  ">
     <div class="topbar py-2 d-none d-lg-block">
         <div
@@ -45,18 +52,19 @@
 
                 </a>
             </div>
-            <div class="ms-auto d-none d-lg-flex align-items-center mySearch  justify-content-end">
+            <form action="" method="GET" class="ms-auto d-none d-lg-flex align-items-center mySearch justify-content-end">
+                <input type="hidden" name="page" value="product-index">
                 <input
                     class="h-100 search-input d-none d-lg-block"
                     type="text"
-                    name="search"
-                    id=""
-                    placeholder="Tìm kiếm" />
-                <button class="navlink search-btn ">
-                    <i
-                        class="fa-solid fa-magnifying-glass fa-lg"></i>
+                    name="keyword"
+                    placeholder="Tìm kiếm..."
+                    value="<?php echo htmlspecialchars($_GET['keyword'] ?? ''); ?>" />
+                <button type="submit" class="navlink search-btn">
+                    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
                 </button>
-            </div>
+                <div class="search-suggestions-dropdown" id="searchSuggestions"></div>
+            </form>
 
             <div class="d-flex gap-1 gap-lg-3 align-items-center">
                 <div class="icon-btn d-lg-none rounded-circle">
@@ -67,31 +75,51 @@
                 </div>
                 <div
                     class="dropdown navbar-cart position-relative border-lg border-lg-2 rounded-circle icon-btn ">
-                    <button class="btn nav-link position-relative">
+                    <a href="?page=cart" class="btn nav-link position-relative">
                         <i
                             class="fa-solid fa-cart-arrow-down fa-lg"></i>
 
                         <span
                             class="badge rounded-circle position-absolute"
                             id="cartCount">
-                            0
+                            <?= $totalCartItems ?>
                         </span>
-                    </button>
+                    </a>
 
                     <div
-                        class="dropdown-menu cart p-3 rounded-4 shadow-lg">
-                        <div class="list-card mb-3 text-center">
-                            <i
-                                class="fa-solid fa-bag-shopping fa-3x"></i>
-                            <div class="card mt-2">
-                                Chưa có sản phẩm
+                        class="dropdown-menu cart p-3 rounded-4 shadow-lg" style="min-width: 320px;">
+                        <?php if (empty($cartItems)): ?>
+                            <div class="list-card mb-3 text-center py-3">
+                                <i class="fa-solid fa-bag-shopping fa-3x text-muted mb-2"></i>
+                                <div class="text-muted">
+                                    Chưa có sản phẩm
+                                </div>
                             </div>
-                        </div>
-
-                        <button
-                            class="btn btn-dark w-100 btn-common border-0 fw-semibold">
-                            Đặt hàng
-                        </button>
+                        <?php else: ?>
+                            <div class="mini-cart-list mb-3" style="max-height: 250px; overflow-y: auto;">
+                                <?php
+                                $count = 0;
+                                foreach ($cartItems as $item):
+                                    if ($count++ >= 3) break;
+                                ?>
+                                    <div class="d-flex align-items-center gap-2 mb-2 pb-2 border-bottom">
+                                        <img src="<?= htmlspecialchars(getProductImage($item['image'] ?? '')) ?>" alt="" style="width: 50px; height: 50px; object-fit: contain;">
+                                        <div class="flex-grow-1" style="min-width: 0;">
+                                            <div class="text-truncate small fw-bold text-dark" style="display:block; max-width: 200px;"><?= htmlspecialchars($item['name']) ?></div>
+                                            <div class="text-muted small" style="font-size: 11px;"><?= htmlspecialchars($item['attributes'] ?? '') ?></div>
+                                            <div class="small text-danger"><?= htmlspecialchars($item['qty']) ?> x <?= htmlspecialchars(formatVND($item['price'])) ?></div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                                <?php if (count($cartItems) > 3): ?>
+                                    <div class="text-center text-muted small py-1">và <?= count($cartItems) - 3 ?> sản phẩm khác...</div>
+                                <?php endif; ?>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="?page=cart" class="btn btn-outline-dark  flex-grow-1 ">Giỏ hàng</a>
+                                <a href="?page=checkout" class="btn btn-dark  flex-grow-1 ">Thanh toán</a>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
                 <div class="dropdown position-relative">
@@ -125,7 +153,7 @@
 
                     <div
                         class="dropdown-menu p-3 rounded-4 shadow-lg position-absolute">
-                        <a class="dropdown-item" href="#">Tra cứu đơn hàng</a>
+                        <a class="dropdown-item" href="?page=order-track">Tra cứu đơn hàng</a>
 
                         <a class="dropdown-item" href="#">
                             Tra cứu bảo hành
@@ -135,16 +163,27 @@
 
                 <div class="dropdown position-relative">
                     <button
-                        class="nav-link icon-btn  border-lg border-lg-2 rounded-circle"
-                        href="#">
+                        class="nav-link icon-btn border-lg border-lg-2 rounded-circle d-flex align-items-center justify-content-center"
+                        href="#" style="gap: 5px;">
                         <i class="fa-solid fa-user fa-lg"></i>
+                        <?php if (isset($_SESSION['user'])): ?>
+                            <span class="d-none d-xl-inline text-white small ms-1" style="font-size: 1.2rem; font-weight: 500; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($_SESSION['user']['ho_ten']) ?></span>
+                        <?php endif; ?>
                     </button>
 
                     <div
-                        class="dropdown-menu p-3 rounded-4 shadow-lg position-absolute">
-                        <a class="dropdown-item" href="?page=login"><i
-                                class="fa-solid fa-arrow-right-from-bracket pe-1"></i>Đăng nhập</a>
-                        <a class="dropdown-item" href="?page=register"><i class="fa-solid fa-user-plus pe-1"></i>Đăng ký</a>
+                        class="dropdown-menu p-3 rounded-4 shadow-lg position-absolute dropdown-menu-end" style="min-width: 180px;">
+                        <?php if (isset($_SESSION['user'])): ?>
+                            <div class="dropdown-header px-2 py-1 text-dark fw-bold border-bottom mb-2" style="font-size: 1.4rem;">
+                                <?= htmlspecialchars($_SESSION['user']['ho_ten']) ?>
+                            </div>
+                            <a class="dropdown-item" href="?page=order-track"><i class="fa-solid fa-list-check pe-2"></i>Đơn hàng của tôi</a>
+                            <a class="dropdown-item text-danger" href="?page=logout"><i class="fa-solid fa-arrow-right-from-bracket pe-2"></i>Đăng xuất</a>
+                        <?php else: ?>
+                            <a class="dropdown-item" href="?page=login"><i
+                                    class="fa-solid fa-arrow-right-from-bracket pe-1"></i>Đăng nhập</a>
+                            <a class="dropdown-item" href="?page=register"><i class="fa-solid fa-user-plus pe-1"></i>Đăng ký</a>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -219,3 +258,16 @@
         </div>
     </div>
 </header>
+
+<!-- Toast Container for Notifications -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 99999;">
+    <div id="cartToast" class="toast align-items-center text-white bg-dark border-0 shadow-lg" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body d-flex align-items-center gap-2">
+                <i class="fa-solid fa-circle-check text-success fs-5"></i>
+                <span id="cartToastMessage" class="fw-semibold">Thêm vào giỏ hàng thành công!</span>
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
