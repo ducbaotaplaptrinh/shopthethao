@@ -154,10 +154,6 @@ foreach ($cartItems as $item) {
                     <div
                         class="dropdown-menu p-3 rounded-4 shadow-lg position-absolute">
                         <a class="dropdown-item" href="?page=order-track">Tra cứu đơn hàng</a>
-
-                        <a class="dropdown-item" href="#">
-                            Tra cứu bảo hành
-                        </a>
                     </div>
                 </div>
 
@@ -166,9 +162,7 @@ foreach ($cartItems as $item) {
                         class="nav-link icon-btn border-lg border-lg-2 rounded-circle d-flex align-items-center justify-content-center"
                         href="#" style="gap: 5px;">
                         <i class="fa-solid fa-user fa-lg"></i>
-                        <?php if (isset($_SESSION['user'])): ?>
-                            <span class="d-none d-xl-inline text-white small ms-1" style="font-size: 1.2rem; font-weight: 500; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?= htmlspecialchars($_SESSION['user']['ho_ten']) ?></span>
-                        <?php endif; ?>
+
                     </button>
 
                     <div
@@ -177,7 +171,13 @@ foreach ($cartItems as $item) {
                             <div class="dropdown-header px-2 py-1 text-dark fw-bold border-bottom mb-2" style="font-size: 1.4rem;">
                                 <?= htmlspecialchars($_SESSION['user']['ho_ten']) ?>
                             </div>
-                            <a class="dropdown-item" href="?page=order-track"><i class="fa-solid fa-list-check pe-2"></i>Đơn hàng của tôi</a>
+                            <a class="dropdown-item" href="?page=my-orders">
+                                <i class="bi bi-bag-heart me-2"></i>Đơn hàng của tôi
+                            </a>
+                            <a class="dropdown-item" href="?page=order-track">
+                                <i class="bi bi-search me-2"></i>Tra cứu đơn hàng
+                            </a>
+                            <hr class="dropdown-divider my-1">
                             <a class="dropdown-item text-danger" href="?page=logout"><i class="fa-solid fa-arrow-right-from-bracket pe-2"></i>Đăng xuất</a>
                         <?php else: ?>
                             <a class="dropdown-item" href="?page=login"><i

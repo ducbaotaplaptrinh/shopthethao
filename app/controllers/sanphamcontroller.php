@@ -40,8 +40,8 @@ class SanPhamController
         $offset = ($currentPage - 1) * $limit;
 
         // Fetch products and count
-        $danhSachSanPham = $this->sanPhamModel->getFilteredProducts($slugDM, $slugTH, $selectedAttrs, $sort, $limit, $offset, $keyword);
-        $totalProducts = $this->sanPhamModel->getFilteredProductsCount($slugDM, $slugTH, $selectedAttrs, $keyword);
+        $danhSachSanPham = $this->sanPhamModel->getFilteredProducts($slugDM, $slugTH, $selectedAttrs, $sort, $limit, $offset, $keyword, false);
+        $totalProducts = $this->sanPhamModel->getFilteredProductsCount($slugDM, $slugTH, $selectedAttrs, $keyword, false);
         $totalPages = ceil($totalProducts / $limit);
         if ($totalPages < 1) {
             $totalPages = 1;
@@ -58,7 +58,21 @@ class SanPhamController
 
         $tenThuongHieu = !empty($slugTH) ? $this->thuongHieuModel->getThuongHieutheoslug($slugTH) : null;
         $tenDanhMuc = !empty($slugDM) ? $this->danhMucModel->getDanhMuctheoslug($slugDM) : null;
-        $dsDanhMuc = $this->danhMucModel->getDanhSachDanhMuc();
+        $dsDanhMuc = $this->danhMucModel->getDanhSachDanhMuc() ?: [];
+
+        // Filter smart categories for Sidebar
+        $sidebarCategories = [];
+        if ($tenDanhMuc) {
+            $parentId = $tenDanhMuc->getMa_danh_muc_cha() ?? $tenDanhMuc->getId();
+            $sidebarCategories = array_filter($dsDanhMuc, function($dm) use ($parentId) {
+                return $dm->getMa_danh_muc_cha() === $parentId;
+            });
+        } else {
+            $sidebarCategories = array_filter($dsDanhMuc, function($dm) {
+                return $dm->getMa_danh_muc_cha() === null;
+            });
+        }
+        $sidebarCategories = array_values($sidebarCategories);
 
         // SEO/Title logic
         if ($tenDanhMuc && $tenThuongHieu) {
@@ -77,6 +91,91 @@ class SanPhamController
             'danhSachGiaTri' => $danhSachGiaTri,
             'dsThuongHieu' => $dsThuongHieu,
             'dsDanhMuc' => $dsDanhMuc,
+            'sidebarCategories' => $sidebarCategories,
+            'tenThuongHieuMD' => $tenThuongHieu,
+            'tenDanhMucMD' => $tenDanhMuc,
+            'slugDM' => $slugDM,
+            'slugTH' => $slugTH,
+            'selectedAttrs' => $selectedAttrs,
+            'sort' => $sort,
+            'keyword' => $keyword,
+            'currentPage' => $currentPage,
+            'totalPages' => $totalPages,
+            'totalProducts' => $totalProducts,
+        ];
+    }
+
+    //Hien thi danh sach san pham giam gia (Flash Sale)
+    public function flashSale(): ?array
+    {
+        $slugDM = $_GET['category'] ?? '';
+        $slugTH = $_GET['brand'] ?? '';
+        $selectedAttrs = $_GET['attrs'] ?? [];
+        if (!is_array($selectedAttrs)) {
+            $selectedAttrs = [$selectedAttrs];
+        }
+        $sort = $_GET['sort'] ?? 'newest';
+        $keyword = $_GET['keyword'] ?? '';
+        $currentPage = isset($_GET['p']) ? (int)$_GET['p'] : 1;
+        if ($currentPage < 1) {
+            $currentPage = 1;
+        }
+
+        $limit = 16; // 4 rows * 4 columns
+        $offset = ($currentPage - 1) * $limit;
+
+        // Fetch products and count (onlySale = true)
+        $danhSachSanPham = $this->sanPhamModel->getFilteredProducts($slugDM, $slugTH, $selectedAttrs, $sort, $limit, $offset, $keyword, true);
+        $totalProducts = $this->sanPhamModel->getFilteredProductsCount($slugDM, $slugTH, $selectedAttrs, $keyword, true);
+        $totalPages = ceil($totalProducts / $limit);
+        if ($totalPages < 1) {
+            $totalPages = 1;
+        }
+
+        // Fetch filter data for sidebar
+        if (!empty($slugDM)) {
+            $danhSachGiaTri = $this->giaTriThuocTinhModel->getThuocTinhTheoDm($slugDM);
+            $dsThuongHieu = $this->thuongHieuModel->getTHTheoDM($slugDM);
+        } else {
+            $danhSachGiaTri = [];
+            $dsThuongHieu = $this->thuongHieuModel->getDanhSachThuongHieu();
+        }
+
+        $tenThuongHieu = !empty($slugTH) ? $this->thuongHieuModel->getThuongHieutheoslug($slugTH) : null;
+        $tenDanhMuc = !empty($slugDM) ? $this->danhMucModel->getDanhMuctheoslug($slugDM) : null;
+        $dsDanhMuc = $this->danhMucModel->getDanhSachDanhMuc() ?: [];
+
+        // Filter smart categories for Sidebar
+        $sidebarCategories = [];
+        if ($tenDanhMuc) {
+            $parentId = $tenDanhMuc->getMa_danh_muc_cha() ?? $tenDanhMuc->getId();
+            $sidebarCategories = array_filter($dsDanhMuc, function($dm) use ($parentId) {
+                return $dm->getMa_danh_muc_cha() === $parentId;
+            });
+        } else {
+            $sidebarCategories = array_filter($dsDanhMuc, function($dm) {
+                return $dm->getMa_danh_muc_cha() === null;
+            });
+        }
+        $sidebarCategories = array_values($sidebarCategories);
+
+        // SEO/Title logic
+        $title = "Sản phẩm khuyến mãi | Bảo Đạt Sport";
+        if ($tenDanhMuc && $tenThuongHieu) {
+            $title = "Khuyến mãi " . $tenDanhMuc->getTen_danh_muc() . " " . $tenThuongHieu->getTen_thuong_hieu() . " | Bảo Đạt Sport";
+        } elseif ($tenDanhMuc) {
+            $title = "Khuyến mãi " . $tenDanhMuc->getTen_danh_muc() . " | Bảo Đạt Sport";
+        } elseif ($tenThuongHieu) {
+            $title = "Khuyến mãi " . $tenThuongHieu->getTen_thuong_hieu() . " | Bảo Đạt Sport";
+        }
+
+        return [
+            'title' => $title,
+            'danhSachSanPham' => $danhSachSanPham,
+            'danhSachGiaTri' => $danhSachGiaTri,
+            'dsThuongHieu' => $dsThuongHieu,
+            'dsDanhMuc' => $dsDanhMuc,
+            'sidebarCategories' => $sidebarCategories,
             'tenThuongHieuMD' => $tenThuongHieu,
             'tenDanhMucMD' => $tenDanhMuc,
             'slugDM' => $slugDM,

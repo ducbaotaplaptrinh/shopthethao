@@ -34,7 +34,7 @@
     color: var(--bg-light);
     padding: 10px 0;
     font-weight: 600;
-    transition: all 0.3s;
+    transition: all 0.5s;
 }
 .menu_chinh .nav-link:hover,
 .menu_chinh .nav-item.active > .nav-link {
@@ -116,6 +116,7 @@
 }
 .menu_chinh .dropdown {
     position: static !important;
+    transition: all 0.5s;
 }
 .mega-menu__title {
     font-size: 1.8rem;

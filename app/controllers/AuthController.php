@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\NguoiDungModel;
 use app\models\entities\NguoiDung;
 
+
 class AuthController
 {
     private $nguoiDungModel;
@@ -16,7 +17,7 @@ class AuthController
 
     public function login(): ?array
     {
-        // If user is already logged in, redirect to home
+
         if (isset($_SESSION['user'])) {
             header("Location: ?page=home");
             exit;
@@ -36,7 +37,7 @@ class AuthController
             } else {
                 $user = $this->nguoiDungModel->getUserByEmail($email);
                 if ($user && password_verify($password, $user->getMat_khau())) {
-                    // Logged in successfully
+
                     $_SESSION['user'] = [
                         'id' => $user->getId(),
                         'ho_ten' => $user->getHo_ten(),
@@ -89,33 +90,34 @@ class AuthController
             if (empty($fullname) || empty($email) || empty($phone) || empty($password)) {
                 $error = 'Vui lòng điền đầy đủ tất cả thông tin!';
             } else {
-                // Check if email already exists
+
+                // kiểm tra xem mail tồn tại ch
                 if ($this->nguoiDungModel->getUserByEmail($email)) {
                     $error = 'Địa chỉ email này đã được sử dụng!';
-                } 
-                // Check if phone number already exists
+                }
+                // kiểm tra xem điện thoại tồn tại ch
                 elseif ($this->nguoiDungModel->getUserByPhone($phone)) {
                     $error = 'Số điện thoại này đã được sử dụng!';
                 } else {
-                    // Create new user entity
+                    // Xây dựng thực thể NguoiDung trước khi lưu vào CSDL
                     $userEntity = new NguoiDung();
                     $userEntity->setHo_ten($fullname);
                     $userEntity->setEmail($email);
                     $userEntity->setSo_dien_thoai($phone);
-                    // Hash password before saving to Entity
+                    // Mã hóa mật khẩu bằng Bcrypt trước khi gán vào thực thể
                     $userEntity->setMat_khau(password_hash($password, PASSWORD_DEFAULT));
                     $userEntity->setVai_tro('khach_hang');
                     $userEntity->setTrang_thai(true);
-                    
+
                     $userId = $this->nguoiDungModel->createUser($userEntity);
                     if ($userId > 0) {
-                        // Automatically log in the user after register
+                        // Tự động đăng nhập ngay sau khi đăng ký thành công
                         $_SESSION['user'] = [
-                            'id' => $userId,
-                            'ho_ten' => $fullname,
-                            'email' => $email,
+                            'id'           => $userId,
+                            'ho_ten'       => $fullname,
+                            'email'        => $email,
                             'so_dien_thoai' => $phone,
-                            'vai_tro' => 'khach_hang'
+                            'vai_tro'      => 'khach_hang'
                         ];
 
                         if ($redirect === 'checkout') {

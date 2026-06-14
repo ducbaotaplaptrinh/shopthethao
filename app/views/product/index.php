@@ -7,28 +7,53 @@ if ((!empty($danhSachSanPham) && is_array($danhSachSanPham))) {
 }
 ?>
 <div class="container-xl py-4">
+    <?php
+    // Determine current page slug for form actions
+    $currentPageSlug = $_GET['page'] ?? 'product-index';
+    ?>
     <form id="filterForm" method="GET" action="">
-        <input type="hidden" name="page" value="product-index">
+        <input type="hidden" name="page" value="<?= htmlspecialchars($currentPageSlug) ?>">
         <?php if (!empty($slugDM)): ?>
             <input type="hidden" name="category" value="<?= htmlspecialchars($slugDM) ?>">
         <?php endif; ?>
 
+
         <!-- Breadcrumb -->
         <div class="breadcrumb-wrapper mb-4">
-            <a href="?page=home">Trang chủ ></a>
-            <a href="#!"> <?php echo !empty($tenDanhMucMD) ? htmlspecialchars($tenDanhMucMD->getTen_danh_muc()) : "" ?> </a>
-            <?php if (!empty($tenThuongHieuMD)): ?>
-
-                <a href="#!">
-                    <?= " > " . htmlspecialchars(
-                        $tenDanhMucMD->getTen_danh_muc()
-                            . " " .
-                            $tenThuongHieuMD->getTen_thuong_hieu()
-                    ) ?>
-                </a>
-
+            <a href="?page=home">Trang chủ</a>
+            <?php if ($currentPageSlug === 'flash-sale'): ?>
+                <span> > </span>
+                <a href="?page=flash-sale" class="<?= empty($slugDM) && empty($slugTH) ? 'fw-bold text-danger' : '' ?>">🔥 Giảm giá</a>
+                <?php if (!empty($tenDanhMucMD)): ?>
+                    <span> > </span>
+                    <a href="#!"><?= htmlspecialchars($tenDanhMucMD->getTen_danh_muc()) ?></a>
+                <?php endif; ?>
+                <?php if (!empty($tenThuongHieuMD)): ?>
+                    <span> > </span>
+                    <a href="#!"><?= htmlspecialchars($tenThuongHieuMD->getTen_thuong_hieu()) ?></a>
+                <?php endif; ?>
+            <?php else: ?>
+                <?php if (!empty($tenDanhMucMD)): ?>
+                    <span> > </span>
+                    <a href="?page=product-index&category=<?= htmlspecialchars($slugDM) ?>"><?= htmlspecialchars($tenDanhMucMD->getTen_danh_muc()) ?></a>
+                <?php endif; ?>
+                <?php if (!empty($tenThuongHieuMD)): ?>
+                    <span> > </span>
+                    <a href="#!"><?= htmlspecialchars($tenThuongHieuMD->getTen_thuong_hieu()) ?></a>
+                <?php endif; ?>
             <?php endif; ?>
         </div>
+
+        <?php if ($currentPageSlug === 'flash-sale'): ?>
+            <div class="flash-sale-banner mb-4 rounded-4 p-4 d-flex align-items-center gap-3"
+                style="background: linear-gradient(135deg, #ff3c00, #ff9000); color:#fff; box-shadow: 0 6px 24px rgba(255,60,0,0.3);">
+                <span style="font-size:2.5rem;">🔥</span>
+                <div>
+                    <h2 class="mb-0 fw-bold" style="font-size:1.5rem; letter-spacing:1px;">FLASH SALE — SẢN PHẨM KHUYẾN MÃI</h2>
+                    <p class="mb-0 small opacity-75">Hàng ngàn sản phẩm thể thao đang được giảm giá cực sốc, số lượng có hạn!</p>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <div class="row g-4">
             <!-- Sidebar -->

@@ -197,4 +197,50 @@ class OrderModel extends Model
         }
         return $orderEntities;
     }
+
+    /**
+     * Lấy toàn bộ đơn hàng của một user theo ID, tuỳ chọn lọc theo trạng thái
+     */
+    public function getOrdersByUser(int $userId, string $trangThai = ''): array
+    {
+        $sql = "SELECT * FROM don_hang WHERE ma_nguoi_dung = :uid";
+        $params = ['uid' => $userId];
+
+        if (!empty($trangThai)) {
+            $sql .= " AND trang_thai_don_hang = :status";
+            $params['status'] = $trangThai;
+        }
+
+        $sql .= " ORDER BY ngay_tao DESC";
+
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        $rows = $stmt->fetchAll() ?: [];
+
+        $entities = [];
+        foreach ($rows as $row) {
+            $entities[] = new DonHang($row);
+        }
+        return $entities;
+    }
+
+    /**
+     * Đếm số đơn hàng theo từng trạng thái của một user
+     */
+    public function countOrdersByStatus(int $userId): array
+    {
+        $sql = "SELECT trang_thai_don_hang, COUNT(*) as total 
+                FROM don_hang 
+                WHERE ma_nguoi_dung = :uid 
+                GROUP BY trang_thai_don_hang";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['uid' => $userId]);
+        $rows = $stmt->fetchAll() ?: [];
+
+        $counts = [];
+        foreach ($rows as $row) {
+            $counts[$row['trang_thai_don_hang']] = (int)$row['total'];
+        }
+        return $counts;
+    }
 }

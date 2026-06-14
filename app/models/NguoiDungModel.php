@@ -34,11 +34,11 @@ class NguoiDungModel extends Model
 
         $stmt->execute([
             'fullname' => $user->getHo_ten(),
-            'email' => $user->getEmail(),
-            'password' => $user->getMat_khau(), 
-            'phone' => $user->getSo_dien_thoai(),
-            'role' => $user->getVai_tro(),
-            'status' => $user->getTrang_thai() ? 1 : 0
+            'email'    => $user->getEmail(),
+            'password' => $user->getMat_khau(),
+            'phone'    => $user->getSo_dien_thoai(),
+            'role'     => $user->getVai_tro(),
+            'status'   => $user->getTrang_thai() ? 1 : 0
         ]);
 
         return (int)$this->conn->lastInsertId();

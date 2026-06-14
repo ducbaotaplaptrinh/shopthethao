@@ -9,7 +9,7 @@
             </h2>
 
             <a
-                href="?page=product-index"
+                href="?page=flash-sale"
                 class="sale-view-all">
                 Xem tất cả
             </a>

@@ -143,4 +143,33 @@ class OrderController
             'orders' => $orders
         ];
     }
+
+    public function myOrders(): array
+    {
+        // Bắt buộc phải đăng nhập
+        if (!isset($_SESSION['user'])) {
+            header("Location: ?page=login&redirect=my-orders");
+            exit;
+        }
+
+        $userId    = (int)$_SESSION['user']['id'];
+        $activeTab = $_GET['status'] ?? 'all';
+
+        // Chỉ cho phép các giá trị hợp lệ
+        $validStatuses = ['all', 'cho_xac_nhan', 'cho_van_chuyen', 'dang_giao', 'hoan_thanh', 'da_huy'];
+        if (!in_array($activeTab, $validStatuses)) {
+            $activeTab = 'all';
+        }
+
+        $filterStatus = $activeTab === 'all' ? '' : $activeTab;
+        $orders       = $this->orderModel->getOrdersByUser($userId, $filterStatus);
+        $statusCounts = $this->orderModel->countOrdersByStatus($userId);
+
+        return [
+            'title'        => 'Đơn hàng của tôi | Bảo Đạt Sport',
+            'orders'       => $orders,
+            'statusCounts' => $statusCounts,
+            'activeTab'    => $activeTab,
+        ];
+    }
 }

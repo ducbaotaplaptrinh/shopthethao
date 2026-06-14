@@ -32,6 +32,13 @@ return [
 		'action' => 'index',
 		'pageStyles' => ['assets/css/product.css']
 	],
+	'flash-sale' => [
+		'title' => 'Sản phẩm khuyến mãi | Bảo Đạt Sport',
+		'view' => 'product/index.php',
+		'controller' => \app\controllers\SanPhamController::class,
+		'action' => 'flashSale',
+		'pageStyles' => ['assets/css/product.css']
+	],
 	'product-detail' => [
 		'title' => 'Chi tiết sản phẩm',
 		'view' => 'product/product-detail.php',
@@ -102,6 +109,13 @@ return [
 		'action' => 'track',
 		'pageStyles' => ['assets/css/cart.css']
 	],
+	'my-orders' => [
+		'title' => 'Đơn hàng của tôi | Bảo Đạt Sport',
+		'view' => 'order/my-orders.php',
+		'controller' => \app\controllers\OrderController::class,
+		'action' => 'myOrders',
+		'pageStyles' => ['assets/css/my-orders.css']
+	],
 	'404' => [
 		'title' => 'Không tìm thấy trang',
 		'view' => 'errors/404.php',
@@ -109,5 +123,6 @@ return [
 	'contact' => [
 		'title' => 'Liên hệ',
 		'view' => 'contact/contact.php',
+		'pageStyles' => ['assets/css/contact.css']
 	],
 ];

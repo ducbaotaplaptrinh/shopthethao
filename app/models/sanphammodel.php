@@ -203,7 +203,7 @@ class SanPhamModel extends Model
         return $danhSachEntities;
     }
 
-    public function getFilteredProducts($slugDM = '', $slugTH = '', $selectedAttrs = [], $sort = 'newest', $limit = 16, $offset = 0, $keyword = ''): ?array
+    public function getFilteredProducts($slugDM = '', $slugTH = '', $selectedAttrs = [], $sort = 'newest', $limit = 16, $offset = 0, $keyword = '', bool $onlySale = false): ?array
     {
         $bindParams = [];
         $sql = "SELECT d.ten_danh_muc, t.ten_thuong_hieu, s.* 
@@ -228,6 +228,10 @@ class SanPhamModel extends Model
         if (!empty($keyword)) {
             $sql .= " AND s.ten_san_pham LIKE :keyword";
             $bindParams['keyword'] = '%' . $keyword . '%';
+        }
+
+        if ($onlySale) {
+            $sql .= " AND s.gia_khuyen_mai > 0";
         }
 
         if (!empty($selectedAttrs) && is_array($selectedAttrs)) {
@@ -301,7 +305,7 @@ class SanPhamModel extends Model
         return $danhSachEntities;
     }
 
-    public function getFilteredProductsCount($slugDM = '', $slugTH = '', $selectedAttrs = [], $keyword = ''): int
+    public function getFilteredProductsCount($slugDM = '', $slugTH = '', $selectedAttrs = [], $keyword = '', bool $onlySale = false): int
     {
         $bindParams = [];
         $sql = "SELECT COUNT(DISTINCT s.id) AS total 
@@ -326,6 +330,10 @@ class SanPhamModel extends Model
         if (!empty($keyword)) {
             $sql .= " AND s.ten_san_pham LIKE :keyword";
             $bindParams['keyword'] = '%' . $keyword . '%';
+        }
+
+        if ($onlySale) {
+            $sql .= " AND s.gia_khuyen_mai > 0";
         }
 
         if (!empty($selectedAttrs) && is_array($selectedAttrs)) {
