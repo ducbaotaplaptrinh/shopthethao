@@ -1,55 +1,69 @@
 <?php
-// Nhúng thư viện bóc tách HTML từ thư mục helpers
-require_once __DIR__ . '/../helpers/simple_html_dom.php';
 
-class NewsController {
+namespace app\controllers;
 
-    public function getNewsData() {
-        // 1. Link chuyên đề cầu lông cần lấy dữ liệu
-        $url = 'https://vnexpress.net/chu-de/cau-long-429';
+use app\models\NewsModel;
+
+class NewsController
+{
+    private $newsModel;
+
+    public function __construct()
+    {
+        // Khởi tạo đối tượng model tin tức để tương tác với CSDL
+        $this->newsModel = new NewsModel();
+    }
+
+    /**
+     * Hiển thị danh sách tin tức
+     * Đường dẫn: ?page=new
+     */
+    public function index(): array
+    {
+        // Lấy từ khóa tìm kiếm từ thanh URL (ví dụ: ?page=new&search=vot+yonex)
+        $search = isset($_GET['search']) ? trim($_GET['search']) : null;
         
-        // Khởi tạo mảng rỗng để chứa danh sách tin tức
-        $newsData = [];
+        // Truy vấn dữ liệu từ Model
+        $newsList = $this->newsModel->getAllNews($search);
+        
+        return [
+            'title' => 'Tin tức Thể thao & Cầu lông | Bảo Đạt Sport',
+            'newsData' => $newsList,
+            'searchQuery' => $search
+        ];
+    }
 
-        // 2. Tải mã HTML từ trang web
-        $html = file_get_html($url);
-
-        if ($html) {
-            // 3. Tìm tất cả các thẻ chứa bài báo
-            $articles = $html->find('article.item-news');
-
-            foreach ($articles as $article) {
-                // Trích xuất các thành phần bên trong bài báo
-                $titleNode = $article->find('h3.title-news a', 0);
-                $descNode  = $article->find('p.description a', 0);
-                $imgNode   = $article->find('div.thumb-art picture img', 0);
-
-                if ($titleNode) {
-                    // Xử lý ảnh (ưu tiên lấy từ thuộc tính data-src nếu web dùng lazyload)
-                    $image = 'https://via.placeholder.com/400x250?text=No+Image'; // Ảnh mặc định
-                    if ($imgNode) {
-                        $image = $imgNode->hasAttribute('data-src') ? $imgNode->getAttribute('data-src') : $imgNode->src;
-                    }
-
-                    // Đưa dữ liệu đã bóc tách vào mảng
-                    $newsData[] = [
-                        'title'       => trim($titleNode->plaintext),
-                        'link'        => $titleNode->href,
-                        'description' => $descNode ? trim($descNode->plaintext) : 'Đang cập nhật nội dung...',
-                        'image'       => $image,
-                        'source'      => 'VNExpress'
-                    ];
-                }
-            }
-            
-            // Giải phóng bộ nhớ cho thư viện (Rất quan trọng để tránh nặng server)
-            $html->clear();
-            unset($html);
+    /**
+     * Xem chi tiết bài viết tin tức
+     * Đường dẫn: ?page=new-detail&slug=tieu-de-bai-viet
+     */
+    public function detail(): array
+    {
+        // Lấy slug từ tham số đường dẫn
+        $slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
+        
+        // Lấy thông tin bài viết từ CSDL
+        $article = $this->newsModel->getNewsBySlug($slug);
+        
+        // Nếu không tìm thấy bài viết, trả về thông tin báo lỗi
+        if (!$article) {
+            return [
+                'title' => 'Bài viết không tồn tại',
+                'article' => null,
+                'relatedNews' => []
+            ];
         }
 
-        // 4. Gọi file View để hiển thị giao diện và truyền biến $newsData sang
-        // Lưu ý: Nếu file Core/Controller của bạn có hàm render riêng (ví dụ: $this->render('news/index', $data)), hãy thay thế dòng dưới đây.
-        return $newsData;
+        // Tăng lượt xem của bài viết
+        $this->newsModel->incrementViews($article['id']);
+        
+        // Lấy danh sách 3 bài viết liên quan mới nhất (loại trừ bài hiện tại)
+        $relatedNews = $this->newsModel->getRelatedNews($article['id'], 3);
+
+        return [
+            'title' => $article['tieu_de'] . ' | Bảo Đạt Sport',
+            'article' => $article,
+            'relatedNews' => $relatedNews
+        ];
     }
 }
-?>

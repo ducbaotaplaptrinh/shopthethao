@@ -43,4 +43,18 @@ return [
 		'title' => 'Liên hệ',
 		'view' => 'contact/contact.php',
 	],
+	'new' => [
+		'title' => 'Tin tức thể thao',
+		'view' => 'news/index.php',
+		'controller' => \app\controllers\NewsController::class,
+		'action' => 'index',
+		'pageStyles' => ['assets/css/news.css']
+	],
+	'new-detail' => [
+		'title' => 'Chi tiết tin tức',
+		'view' => 'news/detail.php',
+		'controller' => \app\controllers\NewsController::class,
+		'action' => 'detail',
+		'pageStyles' => ['assets/css/news.css']
+	],
 ];
