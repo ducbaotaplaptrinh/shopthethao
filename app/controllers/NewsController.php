@@ -22,10 +22,10 @@ class NewsController
     {
         // Lấy từ khóa tìm kiếm từ thanh URL (ví dụ: ?page=new&search=vot+yonex)
         $search = isset($_GET['search']) ? trim($_GET['search']) : null;
-        
+
         // Truy vấn dữ liệu từ Model
         $newsList = $this->newsModel->getAllNews($search);
-        
+
         return [
             'title' => 'Tin tức Thể thao & Cầu lông | Bảo Đạt Sport',
             'newsData' => $newsList,
@@ -41,10 +41,10 @@ class NewsController
     {
         // Lấy slug từ tham số đường dẫn
         $slug = isset($_GET['slug']) ? trim($_GET['slug']) : '';
-        
+
         // Lấy thông tin bài viết từ CSDL
         $article = $this->newsModel->getNewsBySlug($slug);
-        
+
         // Nếu không tìm thấy bài viết, trả về thông tin báo lỗi
         if (!$article) {
             return [
@@ -56,7 +56,7 @@ class NewsController
 
         // Tăng lượt xem của bài viết
         $this->newsModel->incrementViews($article['id']);
-        
+
         // Lấy danh sách 3 bài viết liên quan mới nhất (loại trừ bài hiện tại)
         $relatedNews = $this->newsModel->getRelatedNews($article['id'], 3);
 
