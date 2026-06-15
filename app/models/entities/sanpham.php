@@ -31,7 +31,6 @@ class SanPham
     {
         if (!empty($dulieu)) {
 
-
             $this->id = $dulieu['id'] ?? null;
             $this->ma_danh_muc = $dulieu['ma_danh_muc'];
             $this->ma_thuong_hieu = $dulieu['ma_thuong_hieu'];

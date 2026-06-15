@@ -1,16 +1,18 @@
 <?php
 require_once __DIR__ . '/../../controllers/NewsController.php';
 $newsController = new NewsController();
-$newsData = $newsController->getNewsData(); 
+$newsData = $newsController->getNewsData();
 ?>
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tin Tức Cầu Lông</title>
     <link rel="stylesheet" href="/assets/css/news.css">
 </head>
+
 <body>
 
     <header class="header">
@@ -44,4 +46,5 @@ $newsData = $newsController->getNewsData();
 
     <script src="/assets/js/news.js"></script>
 </body>
+
 </html>

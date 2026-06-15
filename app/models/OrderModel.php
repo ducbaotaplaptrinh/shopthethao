@@ -144,6 +144,47 @@ class OrderModel extends Model
                 ]);
             }
 
+            // Update user total spent and rank
+            if ($userId > 0) {
+                $sqlUpdateUser = "UPDATE nguoi_dung SET tong_chi_tieu = tong_chi_tieu + :total WHERE id = :uid";
+                $stmtUpdateUser = $this->conn->prepare($sqlUpdateUser);
+                $stmtUpdateUser->execute([
+                    'total' => $order->getTong_thanh_toan(),
+                    'uid' => $userId
+                ]);
+
+                // Cập nhật ma_hang dựa theo muc_chi_tieu_toi_thieu
+                $sqlUpdateRank = "UPDATE nguoi_dung 
+                                  SET ma_hang = (
+                                      SELECT id 
+                                      FROM hang_thanh_vien 
+                                      WHERE muc_chi_tieu_toi_thieu <= nguoi_dung.tong_chi_tieu 
+                                      ORDER BY muc_chi_tieu_toi_thieu DESC 
+                                      LIMIT 1
+                                  ) 
+                                  WHERE id = :uid";
+                $stmtUpdateRank = $this->conn->prepare($sqlUpdateRank);
+                $stmtUpdateRank->execute(['uid' => $userId]);
+                
+                // Update session if the current user is placing the order
+                if (isset($_SESSION['user']) && $_SESSION['user']['id'] == $userId) {
+                    // Fetch the updated rank info to update session
+                    $sqlGetRank = "SELECT ht.ten_hang, ht.mau_sac, ht.bieu_tuong 
+                                   FROM nguoi_dung nd
+                                   LEFT JOIN hang_thanh_vien ht ON nd.ma_hang = ht.id 
+                                   WHERE nd.id = :uid";
+                    $stmtGetRank = $this->conn->prepare($sqlGetRank);
+                    $stmtGetRank->execute(['uid' => $userId]);
+                    if ($rowRank = $stmtGetRank->fetch()) {
+                        $_SESSION['user']['hang_khach_hang'] = [
+                            'ten_hang' => $rowRank['ten_hang'],
+                            'mau_sac' => $rowRank['mau_sac'],
+                            'bieu_tuong' => $rowRank['bieu_tuong']
+                        ];
+                    }
+                }
+            }
+
             $this->conn->commit();
             return $orderCode;
 

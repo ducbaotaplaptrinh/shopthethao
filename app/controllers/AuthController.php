@@ -3,30 +3,36 @@
 namespace app\controllers;
 
 use app\models\NguoiDungModel;
+use app\models\HangThanhVienModel;
 use app\models\entities\NguoiDung;
 
 
 class AuthController
 {
     private $nguoiDungModel;
+    private $hangThanhVienModel;
 
     public function __construct()
     {
         $this->nguoiDungModel = new NguoiDungModel();
+        $this->hangThanhVienModel = new HangThanhVienModel();
     }
 
     public function login(): ?array
     {
 
-        if (isset($_SESSION['user'])) {
+        if (isset($_SESSION['user']) && $_SESSION['user']['vai_tro'] === "khach_hang") {
             header("Location: ?page=home");
+            exit;
+        }
+        if (isset($_SESSION['user']) && $_SESSION['user']['vai_tro'] === "quan_tri") {
+            header("Location: ?page=admin-dashboard");
             exit;
         }
 
         $error = '';
         $email = '';
         $redirect = $_GET['redirect'] ?? $_POST['redirect'] ?? '';
-
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $email = isset($_POST['email']) ? trim($_POST['email']) : '';
             $password = isset($_POST['password']) ? $_POST['password'] : '';
@@ -37,13 +43,20 @@ class AuthController
             } else {
                 $user = $this->nguoiDungModel->getUserByEmail($email);
                 if ($user && password_verify($password, $user->getMat_khau())) {
+                    //lay ra hang thanh vien 
+                    $rankInfo = $this->hangThanhVienModel->getHangThanhVien($user->getId());
 
                     $_SESSION['user'] = [
                         'id' => $user->getId(),
                         'ho_ten' => $user->getHo_ten(),
                         'email' => $user->getEmail(),
                         'so_dien_thoai' => $user->getSo_dien_thoai(),
-                        'vai_tro' => $user->getVai_tro()
+                        'vai_tro' => $user->getVai_tro(),
+                        'hang_khach_hang' => [
+                            'ten_hang' => $rankInfo['ten_hang'] ?? 'Đồng',
+                            'mau_sac' => $rankInfo['mau_sac'] ?? '#cd7f32',
+                            'bieu_tuong' => $rankInfo['bieu_tuong'] ?? 'bi-star-half'
+                        ]
                     ];
 
                     // Redirect appropriately
@@ -111,13 +124,29 @@ class AuthController
 
                     $userId = $this->nguoiDungModel->createUser($userEntity);
                     if ($userId > 0) {
+                        // Tự động phân hạng Đồng (hoặc hạng thấp nhất) cho người mới
+                        $sqlDefaultRank = "SELECT id, ten_hang, mau_sac, bieu_tuong FROM hang_thanh_vien ORDER BY muc_chi_tieu_toi_thieu ASC LIMIT 1";
+                        $stmtDefaultRank = (new \PDO("mysql:host=localhost;dbname=bd_baodatsport", "root", ""))->query($sqlDefaultRank);
+                        $defaultRank = $stmtDefaultRank->fetch(\PDO::FETCH_ASSOC);
+
+                        if ($defaultRank) {
+                            $sqlUpdateUserRank = "UPDATE nguoi_dung SET ma_hang = :ma_hang WHERE id = :uid";
+                            $stmtUpdateUserRank = (new \PDO("mysql:host=localhost;dbname=bd_baodatsport", "root", ""))->prepare($sqlUpdateUserRank);
+                            $stmtUpdateUserRank->execute(['ma_hang' => $defaultRank['id'], 'uid' => $userId]);
+                        }
+
                         // Tự động đăng nhập ngay sau khi đăng ký thành công
                         $_SESSION['user'] = [
                             'id'           => $userId,
                             'ho_ten'       => $fullname,
                             'email'        => $email,
                             'so_dien_thoai' => $phone,
-                            'vai_tro'      => 'khach_hang'
+                            'vai_tro'      => 'khach_hang',
+                            'hang_khach_hang' => [
+                                'ten_hang' => $defaultRank['ten_hang'] ?? 'Đồng',
+                                'mau_sac' => $defaultRank['mau_sac'] ?? '#cd7f32',
+                                'bieu_tuong' => $defaultRank['bieu_tuong'] ?? 'bi-star-half'
+                            ]
                         ];
 
                         if ($redirect === 'checkout') {

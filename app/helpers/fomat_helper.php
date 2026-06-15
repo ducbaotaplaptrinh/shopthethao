@@ -13,7 +13,8 @@ function getProductImage($imagePath)
         return $placeholder;
     }
 
-    $cleanPath = trim($imagePath);
+    $cleanPath = trim($imagePath); //xóa khoảng trắng
+    //strpos kiểm trả chuỗi có  bắt đầu bằng assets không 
     if (strpos($cleanPath, 'assets/') !== 0) {
         $cleanPath = 'assets/images/' . $cleanPath;
     }

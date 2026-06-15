@@ -31,7 +31,7 @@ class App
 				if (method_exists($controllerInstance, $action)) {
 					$result = $controllerInstance->$action();
 
-					if (is_array($controllerData)) {
+					if (is_array($result)) {
 						$controllerData = $result;
 					}
 				}
@@ -55,7 +55,10 @@ class App
 		}
 
 		$content = ob_get_clean();
-		require BASE_PATH . '/app/views/layouts/main.php';
+
+		//strpos kiem tra xem admin- co phai xuat hien o dong dau tien khong 
+		$layout = (strpos($_GET['page'] ?? 'home', 'admin-') === 0) ? 'admin_layout.php' : 'main.php';
+		require BASE_PATH . '/app/views/layouts/' . $layout;
 	}
 }
 // ham de debug
