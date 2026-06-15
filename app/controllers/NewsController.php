@@ -2,12 +2,14 @@
 // Nhúng thư viện bóc tách HTML từ thư mục helpers
 require_once __DIR__ . '/../helpers/simple_html_dom.php';
 
-class NewsController {
+class NewsController
+{
 
-    public function getNewsData() {
+    public function getNewsData()
+    {
         // 1. Link chuyên đề cầu lông cần lấy dữ liệu
         $url = 'https://vnexpress.net/chu-de/cau-long-429';
-        
+
         // Khởi tạo mảng rỗng để chứa danh sách tin tức
         $newsData = [];
 
@@ -41,7 +43,7 @@ class NewsController {
                     ];
                 }
             }
-            
+
             // Giải phóng bộ nhớ cho thư viện (Rất quan trọng để tránh nặng server)
             $html->clear();
             unset($html);
@@ -52,4 +54,3 @@ class NewsController {
         return $newsData;
     }
 }
-?>
