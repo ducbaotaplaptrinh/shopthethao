@@ -50,23 +50,6 @@ class GiaTriThuocTinhModel extends Model
                     gt.gia_tri
                 FROM thuoc_tinh tt
                 JOIN gia_tri_thuoc_tinh gt
-                    ON gt.ma_thuoc_tinh = tt.id
-                JOIN san_pham_thuoc_tinh st
-                    ON st.ma_gia_tri_thuoc_tinh = gt.id
-                JOIN san_pham s
-                    ON s.id = st.ma_san_pham
-                JOIN danh_muc dm
-                    ON dm.id = s.ma_danh_muc
-                WHERE dm.duong_dan_slug = :slug
-
-                UNION
-
-                SELECT DISTINCT
-                    tt.ten_thuoc_tinh,
-                    gt.id,
-                    gt.gia_tri
-                FROM thuoc_tinh tt
-                JOIN gia_tri_thuoc_tinh gt
                     ON tt.id = gt.ma_thuoc_tinh
                 JOIN gia_tri_thuoc_tinh_bien_the gtttbt
                     ON gtttbt.ma_gia_tri_thuoc_tinh = gt.id

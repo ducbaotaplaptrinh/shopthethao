@@ -206,34 +206,39 @@ class SanPhamModel extends Model
     public function getFilteredProducts($slugDM = '', $slugTH = '', $selectedAttrs = [], $sort = 'newest', $limit = 16, $offset = 0, $keyword = '', bool $onlySale = false): ?array
     {
         $bindParams = [];
-        $sql = "SELECT d.ten_danh_muc, t.ten_thuong_hieu, s.* 
-                FROM san_pham s
-                JOIN thuong_hieu t ON s.ma_thuong_hieu = t.id
-                JOIN danh_muc d ON d.id = s.ma_danh_muc
-                WHERE s.ngay_xoa IS NULL 
-                  AND t.ngay_xoa IS NULL 
-                  AND d.ngay_xoa IS NULL 
-                  AND s.trang_thai = 1";
+        $sql = "SELECT d.ten_danh_muc, t.ten_thuong_hieu, s.* FROM san_pham s
+            JOIN thuong_hieu t ON s.ma_thuong_hieu = t.id
+            JOIN danh_muc d ON d.id = s.ma_danh_muc
+            WHERE s.ngay_xoa IS NULL 
+              AND t.ngay_xoa IS NULL 
+              AND d.ngay_xoa IS NULL 
+              AND s.trang_thai = 1";
 
+        // 1. Lọc theo Danh mục
         if (!empty($slugDM)) {
             $sql .= " AND d.duong_dan_slug = :slugdm";
             $bindParams['slugdm'] = $slugDM;
         }
 
+        // 2. Lọc theo Thương hiệu
         if (!empty($slugTH)) {
             $sql .= " AND t.duong_dan_slug = :slugth";
             $bindParams['slugth'] = $slugTH;
         }
 
+        // 3. Tìm kiếm theo Từ khóa
         if (!empty($keyword)) {
             $sql .= " AND s.ten_san_pham LIKE :keyword";
             $bindParams['keyword'] = '%' . $keyword . '%';
         }
 
+        // 4. Lọc sản phẩm đang giảm giá
         if ($onlySale) {
             $sql .= " AND s.gia_khuyen_mai > 0";
+            // LƯU Ý: Nếu anh đã chuyển gia_khuyen_mai sang bảng biến thể, hãy đổi lại logic check ở đây bằng EXISTS nhé!
         }
 
+        // 5. Lọc theo Thuộc tính (Đã tối ưu, bỏ hoàn toàn bảng cũ)
         if (!empty($selectedAttrs) && is_array($selectedAttrs)) {
             $attrIds = array_map('intval', $selectedAttrs);
             $placeholders = [];
@@ -243,22 +248,17 @@ class SanPhamModel extends Model
                 $bindParams[$key] = $id;
             }
             $placeholderStr = implode(',', $placeholders);
-            
-            $sql .= " AND (
-                EXISTS (
-                    SELECT 1 FROM san_pham_thuoc_tinh sptt 
-                    WHERE sptt.ma_san_pham = s.id 
-                      AND sptt.ma_gia_tri_thuoc_tinh IN ($placeholderStr)
-                )
-                OR EXISTS (
-                    SELECT 1 FROM bien_the_san_pham bt 
-                    JOIN gia_tri_thuoc_tinh_bien_the gtttbt ON gtttbt.ma_bien_the = bt.id 
-                    WHERE bt.ma_san_pham = s.id 
-                      AND bt.ngay_xoa IS NULL 
-                      AND gtttbt.ma_gia_tri_thuoc_tinh IN ($placeholderStr)
-                )
-            )";
+
+            // Chỉ quét qua duy nhất bảng biến thể và bảng trung gian của biến thể
+            $sql .= " AND EXISTS (
+            SELECT 1 FROM bien_the_san_pham bt 
+            JOIN gia_tri_thuoc_tinh_bien_the gtttbt ON gtttbt.ma_bien_the = bt.id 
+            WHERE bt.ma_san_pham = s.id 
+              AND bt.ngay_xoa IS NULL 
+              AND gtttbt.ma_gia_tri_thuoc_tinh IN ($placeholderStr)
+        )";
         }
+
 
         // Sorting
         switch ($sort) {
@@ -309,33 +309,38 @@ class SanPhamModel extends Model
     {
         $bindParams = [];
         $sql = "SELECT COUNT(DISTINCT s.id) AS total 
-                FROM san_pham s
-                JOIN thuong_hieu t ON s.ma_thuong_hieu = t.id
-                JOIN danh_muc d ON d.id = s.ma_danh_muc
-                WHERE s.ngay_xoa IS NULL 
-                  AND t.ngay_xoa IS NULL 
-                  AND d.ngay_xoa IS NULL 
-                  AND s.trang_thai = 1";
+            FROM san_pham s
+            JOIN thuong_hieu t ON s.ma_thuong_hieu = t.id
+            JOIN danh_muc d ON d.id = s.ma_danh_muc
+            WHERE s.ngay_xoa IS NULL 
+              AND t.ngay_xoa IS NULL 
+              AND d.ngay_xoa IS NULL 
+              AND s.trang_thai = 1";
 
+        // 1. Lọc theo Danh mục
         if (!empty($slugDM)) {
             $sql .= " AND d.duong_dan_slug = :slugdm";
             $bindParams['slugdm'] = $slugDM;
         }
 
+        // 2. Lọc theo Thương hiệu
         if (!empty($slugTH)) {
             $sql .= " AND t.duong_dan_slug = :slugth";
             $bindParams['slugth'] = $slugTH;
         }
 
+        // 3. Tìm kiếm theo Từ khóa
         if (!empty($keyword)) {
             $sql .= " AND s.ten_san_pham LIKE :keyword";
             $bindParams['keyword'] = '%' . $keyword . '%';
         }
 
+        // 4. Lọc sản phẩm đang giảm giá
         if ($onlySale) {
             $sql .= " AND s.gia_khuyen_mai > 0";
         }
 
+        // 5. Lọc theo Thuộc tính (Đã loại bỏ hoàn toàn bảng trung gian cũ)
         if (!empty($selectedAttrs) && is_array($selectedAttrs)) {
             $attrIds = array_map('intval', $selectedAttrs);
             $placeholders = [];
@@ -345,30 +350,31 @@ class SanPhamModel extends Model
                 $bindParams[$key] = $id;
             }
             $placeholderStr = implode(',', $placeholders);
-            
-            $sql .= " AND (
-                EXISTS (
-                    SELECT 1 FROM san_pham_thuoc_tinh sptt 
-                    WHERE sptt.ma_san_pham = s.id 
-                      AND sptt.ma_gia_tri_thuoc_tinh IN ($placeholderStr)
-                )
-                OR EXISTS (
-                    SELECT 1 FROM bien_the_san_pham bt 
-                    JOIN gia_tri_thuoc_tinh_bien_the gtttbt ON gtttbt.ma_bien_the = bt.id 
-                    WHERE bt.ma_san_pham = s.id 
-                      AND bt.ngay_xoa IS NULL 
-                      AND gtttbt.ma_gia_tri_thuoc_tinh IN ($placeholderStr)
-                )
-            )";
+
+            // Chỉ check duy nhất điều kiện EXISTS qua nhánh biến thể
+            $sql .= " AND EXISTS (
+            SELECT 1 FROM bien_the_san_pham bt 
+            JOIN gia_tri_thuoc_tinh_bien_the gtttbt ON gtttbt.ma_bien_the = bt.id 
+            WHERE bt.ma_san_pham = s.id 
+              AND bt.ngay_xoa IS NULL 
+              AND gtttbt.ma_gia_tri_thuoc_tinh IN ($placeholderStr)
+        )";
         }
 
-        $stmt = $this->conn->prepare($sql);
-        foreach ($bindParams as $key => $val) {
-            $stmt->bindValue(':' . $key, $val);
+        try {
+            $stmt = $this->conn->prepare($sql);
+            foreach ($bindParams as $key => $val) {
+                $stmt->bindValue(':' . $key, $val);
+            }
+
+            $stmt->execute();
+            $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            return $row ? (int)$row['total'] : 0;
+        } catch (\PDOException $e) {
+            // Trả về 0 nếu có lỗi database xảy ra để giao diện không bị sập crash
+            return 0;
         }
-        $stmt->execute();
-        $row = $stmt->fetch();
-        return $row ? (int)$row['total'] : 0;
     }
 
     public function getAnhSanPham($idSanPham): array
@@ -458,7 +464,7 @@ class SanPhamModel extends Model
                 $stmtAttr = $this->conn->prepare($sqlAttr);
                 $stmtAttr->execute(['id' => $variationId]);
                 $attrsData = $stmtAttr->fetchAll() ?: [];
-                
+
                 $attrsList = [];
                 foreach ($attrsData as $attr) {
                     $attrsList[] = $attr['ten_thuoc_tinh'] . ': ' . $attr['gia_tri'];
@@ -487,7 +493,7 @@ class SanPhamModel extends Model
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['keyword' => '%' . $keyword . '%']);
         $dulieu = $stmt->fetchAll() ?: [];
-        
+
         $danhSachEntities = [];
         foreach ($dulieu as $dong) {
             $danhSachEntities[] = new SanPham($dong);

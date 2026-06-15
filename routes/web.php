@@ -131,97 +131,113 @@ return [
 		'title' => 'Quản lý Sản phẩm | Quản trị',
 		'view' => 'admin/product/index.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
-		'action' => 'index'
+		'action' => 'index',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-product-create' => [
 		'title' => 'Thêm Sản phẩm | Quản trị',
 		'view' => 'admin/product/form.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
-		'action' => 'create'
+		'action' => 'create',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-product-store' => [
 		'title' => 'Lưu Sản phẩm | Quản trị',
 		'view' => 'admin/product/index.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
-		'action' => 'store'
+		'action' => 'store',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-categories' => [
 		'title' => 'Danh mục | Quản trị',
 		'view' => 'admin/category/index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
-		'action' => 'categories'
+		'action' => 'categories',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-category-store' => [
 		'title' => 'Lưu Danh mục',
 		'view' => 'admin/category/index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
-		'action' => 'storeCategory'
+		'action' => 'storeCategory',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-brands' => [
 		'title' => 'Thương hiệu | Quản trị',
 		'view' => 'admin/brand/index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
-		'action' => 'brands'
+		'action' => 'brands',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-brand-store' => [
 		'title' => 'Lưu Thương hiệu',
 		'view' => 'admin/brand/index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
-		'action' => 'storeBrand'
+		'action' => 'storeBrand',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-attributes' => [
 		'title' => 'Thuộc tính | Quản trị',
 		'view' => 'admin/attribute/index.php',
 		'controller' => \app\controllers\admin\AdminAttributeController::class,
-		'action' => 'index'
+		'action' => 'index',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-attribute-store-group' => [
 		'title' => 'Lưu Nhóm Thuộc tính',
 		'view' => 'admin/attribute/index.php',
 		'controller' => \app\controllers\admin\AdminAttributeController::class,
-		'action' => 'storeGroup'
+		'action' => 'storeGroup',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-attribute-store-value' => [
 		'title' => 'Lưu Giá trị Thuộc tính',
 		'view' => 'admin/attribute/index.php',
 		'controller' => \app\controllers\admin\AdminAttributeController::class,
-		'action' => 'storeValue'
+		'action' => 'storeValue',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-attribute-toggle' => [
 		'title' => 'Đổi trạng thái biến thể',
 		'view' => 'errors/404.php', // API endpoint
 		'controller' => \app\controllers\admin\AdminAttributeController::class,
-		'action' => 'toggleVariant'
+		'action' => 'toggleVariant',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-orders' => [
 		'title' => 'Quản lý Đơn hàng | Quản trị',
 		'view' => 'admin/order/index.php',
 		'controller' => \app\controllers\admin\AdminOrderController::class,
-		'action' => 'index'
+		'action' => 'index',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-order-detail' => [
 		'title' => 'Chi tiết Đơn hàng | Quản trị',
 		'view' => 'admin/order/detail.php',
 		'controller' => \app\controllers\admin\AdminOrderController::class,
-		'action' => 'detail'
+		'action' => 'detail',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-order-update-status' => [
 		'title' => 'Cập nhật trạng thái',
 		'view' => 'admin/order/detail.php',
 		'controller' => \app\controllers\admin\AdminOrderController::class,
-		'action' => 'updateStatus'
+		'action' => 'updateStatus',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-customers' => [
 		'title' => 'Quản lý Khách hàng | Quản trị',
 		'view' => 'admin/customer/index.php',
 		'controller' => \app\controllers\admin\AdminCustomerController::class,
-		'action' => 'index'
+		'action' => 'index',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-customer-toggle' => [
 		'title' => 'Đổi trạng thái tài khoản',
 		'view' => 'admin/customer/index.php',
 		'controller' => \app\controllers\admin\AdminCustomerController::class,
-		'action' => 'toggleStatus'
+		'action' => 'toggleStatus',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 	'contact' => [
 		'title' => 'Liên hệ',

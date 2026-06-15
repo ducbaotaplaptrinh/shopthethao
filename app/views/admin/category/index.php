@@ -37,23 +37,23 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach($categories as $c): ?>
-                        <tr>
-                            <td class="text-muted fw-bold">#<?= $c['id'] ?></td>
-                            <td class="fw-bold text-dark"><?= htmlspecialchars($c['ten_danh_muc']) ?></td>
-                            <td class="text-muted">/<?= htmlspecialchars($c['duong_dan']) ?></td>
-                            <td>
-                                <?php if ($c['trang_thai'] == 1): ?>
-                                    <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">Hiện</span>
-                                <?php else: ?>
-                                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">Ẩn</span>
-                                <?php endif; ?>
-                            </td>
-                            <td class="text-end">
-                                <button class="btn btn-sm btn-light text-primary me-1"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn btn-sm btn-light text-danger"><i class="bi bi-trash"></i></button>
-                            </td>
-                        </tr>
+                        <?php foreach ($categories as $c): ?>
+                            <tr>
+                                <td class="text-muted fw-bold">#<?= $c['id'] ?></td>
+                                <td class="fw-bold text-dark"><?= htmlspecialchars($c['ten_danh_muc']) ?></td>
+                                <td class="text-muted">/<?= htmlspecialchars($c['duong_dan_slug']) ?></td>
+                                <td>
+                                    <?php if ($c['trang_thai'] == 1): ?>
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">Hiện</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25">Ẩn</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-end">
+                                    <button class="btn btn-sm btn-light text-primary me-1"><i class="bi bi-pencil-square"></i></button>
+                                    <button class="btn btn-sm btn-light text-danger"><i class="bi bi-trash"></i></button>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -63,26 +63,26 @@
 </div>
 
 <script>
-function generateSlug() {
-    let title = document.getElementById('catName').value;
-    // Chuyển tiếng Việt không dấu, loại bỏ ký tự đặc biệt
-    let slug = title.toLowerCase();
-    slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
-    slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
-    slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
-    slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
-    slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
-    slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
-    slug = slug.replace(/đ/gi, 'd');
-    slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
-    slug = slug.replace(/ /gi, "-");
-    slug = slug.replace(/\-\-\-\-\-/gi, '-');
-    slug = slug.replace(/\-\-\-\-/gi, '-');
-    slug = slug.replace(/\-\-\-/gi, '-');
-    slug = slug.replace(/\-\-/gi, '-');
-    slug = '@' + slug + '@';
-    slug = slug.replace(/\@\-|\-\@|\@/gi, '');
-    
-    document.getElementById('catSlug').value = slug;
-}
+    function generateSlug() {
+        let title = document.getElementById('catName').value;
+        // Chuyển tiếng Việt không dấu, loại bỏ ký tự đặc biệt
+        let slug = title.toLowerCase();
+        slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+        slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+        slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+        slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+        slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+        slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+        slug = slug.replace(/đ/gi, 'd');
+        slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
+        slug = slug.replace(/ /gi, "-");
+        slug = slug.replace(/\-\-\-\-\-/gi, '-');
+        slug = slug.replace(/\-\-\-\-/gi, '-');
+        slug = slug.replace(/\-\-\-/gi, '-');
+        slug = slug.replace(/\-\-/gi, '-');
+        slug = '@' + slug + '@';
+        slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+
+        document.getElementById('catSlug').value = slug;
+    }
 </script>
