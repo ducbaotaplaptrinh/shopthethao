@@ -171,6 +171,9 @@ foreach ($cartItems as $item) {
                             <div class="dropdown-header px-2 py-1 text-dark fw-bold border-bottom mb-2" style="font-size: 1.4rem;">
                                 <?= htmlspecialchars($_SESSION['user']['ho_ten']) ?>
                             </div>
+                            <a class="dropdown-item" href="?page=profile">
+                                <i class="bi bi-person-circle me-2"></i>Thông tin cá nhân
+                            </a>
                             <a class="dropdown-item" href="?page=my-orders">
                                 <i class="bi bi-bag-heart me-2"></i>Đơn hàng của tôi
                             </a>

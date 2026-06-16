@@ -116,6 +116,13 @@ return [
 		'action' => 'myOrders',
 		'pageStyles' => ['assets/css/my-orders.css']
 	],
+	'profile' => [
+		'title' => 'Thông tin cá nhân | Bảo Đạt Sport',
+		'view' => 'auth/profile.php',
+		'controller' => \app\controllers\AuthController::class,
+		'action' => 'profile',
+		'pageStyles' => ['assets/css/profile.css']
+	],
 	'404' => [
 		'title' => 'Không tìm thấy trang',
 		'view' => 'errors/404.php',
