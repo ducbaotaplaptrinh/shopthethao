@@ -1,5 +1,5 @@
-﻿<?php
-require BASE_PATH . "/app/controllers/sanphamcontroller.php";
+<?php
+require BASE_PATH . "/app/controllers/SanPhamController.php";
 return [
 	'login' => [
 		'title' => 'Đăng nhập',
