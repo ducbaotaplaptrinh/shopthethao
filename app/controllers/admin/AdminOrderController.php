@@ -14,11 +14,11 @@ class AdminOrderController
      * Value = mảng các trạng thái được phép chuyển sang
      */
     private const TRANG_THAI_CHO_PHEP = [
-        'cho_xac_nhan' => ['dang_xu_ly', 'da_huy'],
-        'dang_xu_ly'   => ['dang_giao',  'da_huy'],
-        'dang_giao'    => ['hoan_thanh', 'da_huy'],
-        'hoan_thanh'   => [],   // Đơn hoàn thành: không thể thay đổi
-        'da_huy'       => [],   // Đơn đã hủy: không thể thay đổi
+        'cho_xac_nhan' => ['dang_xu_ly', 'dang_giao', 'hoan_thanh', 'da_huy'],
+        'dang_xu_ly'   => ['cho_xac_nhan', 'dang_giao', 'hoan_thanh', 'da_huy'],
+        'dang_giao'    => ['cho_xac_nhan', 'dang_xu_ly', 'hoan_thanh', 'da_huy'],
+        'hoan_thanh'   => ['cho_xac_nhan', 'dang_xu_ly', 'dang_giao', 'da_huy'],
+        'da_huy'       => ['cho_xac_nhan', 'dang_xu_ly', 'dang_giao', 'hoan_thanh'],
     ];
 
     public function __construct()

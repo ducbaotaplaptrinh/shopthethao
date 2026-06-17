@@ -96,6 +96,20 @@ class OrderController
         try {
             $orderCode = $this->orderModel->placeOrder($order, $cartItems);
             
+            // Gửi email hóa đơn cho khách hàng nếu có địa chỉ email
+            $targetEmail = !empty($email) ? $email : ($_SESSION['user']['email'] ?? '');
+            if (!empty($targetEmail)) {
+                $orderDetails = $this->orderModel->getOrderDetails($orderCode);
+                if ($orderDetails) {
+                    \app\services\MailService::sendOrderInvoice(
+                        $targetEmail,
+                        $order->getHo_ten_nguoi_nhan(),
+                        $orderDetails['order'],
+                        $orderDetails['items']
+                    );
+                }
+            }
+
             // Clear cart
             unset($_SESSION['cart']);
             

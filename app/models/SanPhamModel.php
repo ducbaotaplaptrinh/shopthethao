@@ -143,7 +143,7 @@ class SanPhamModel extends Model
     // }
     public function getDanhMucThuongHieu()
     {
-        $sql = "select distinct ten_danh_muc, ten_thuong_hieu, d.duong_dan_slug as slug_dm , th.duong_dan_slug as slug_th
+        $sql = "select distinct ten_danh_muc, ten_thuong_hieu, d.duong_dan_slug as slug_dm , th.duong_dan_slug as slug_th, d.ma_danh_muc_cha
                 from danh_muc d
                 join san_pham s on s.ma_danh_muc = d.id
                 join thuong_hieu th on th.id = s.ma_thuong_hieu
@@ -151,7 +151,7 @@ class SanPhamModel extends Model
                 and th.trang_thai = 1 
                 and d.ngay_xoa is null 
                 and th.ngay_xoa is null 
-                order by ma_danh_muc_cha,ten_danh_muc ASC";
+                order by d.ma_danh_muc_cha, ten_danh_muc ASC";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $data = $stmt->fetchAll();

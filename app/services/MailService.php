@@ -89,4 +89,155 @@ class MailService
             return false;
         }
     }
+
+    public static function sendOrderInvoice(string $toEmail, string $recipientName, \app\models\entities\DonHang $order, array $items): bool
+    {
+        // 1. Ghi log ra file để test tiện lợi trên localhost đề phòng SMTP cấu hình sai hoặc chưa thay đổi thông tin
+        $logDir = BASE_PATH . '/logs';
+        if (!is_dir($logDir)) {
+            mkdir($logDir, 0777, true);
+        }
+        $logFile = $logDir . '/email_logs.log';
+        $logContent = "[" . date('Y-m-d H:i:s') . "] [PHPMailer Service] Gửi Hóa đơn tới: $toEmail | Mã DH: " . $order->getMa_don_hang() . "\r\n";
+        file_put_contents($logFile, $logContent, FILE_APPEND);
+
+        // 2. Gửi mail qua PHPMailer SMTP
+        $mail = new PHPMailer(true);
+
+        try {
+            // Cấu hình Server gửi mail
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';                     // Máy chủ SMTP của Gmail
+            $mail->SMTPAuth   = true;                                 // Bật xác thực SMTP
+            $mail->Username   = 'nbao33446@gmail.com';               // Email gửi tin
+            $mail->Password   = 'mqma nont tgvq fvmp';                  // Mật khẩu ứng dụng Gmail (16 chữ số)
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;       // Mã hóa STARTTLS
+            $mail->Port       = 587;                                  // Cổng TCP kết nối
+            $mail->CharSet    = 'UTF-8';
+
+            // Người nhận & Người gửi
+            $mail->setFrom('nbao33446@gmail.com', 'Bảo Đạt Sport');
+            $mail->addAddress($toEmail, $recipientName);
+
+            // Nội dung thư
+            $mail->isHTML(true);
+            $mail->Subject = 'Hóa đơn mua hàng #' . $order->getMa_don_hang() . ' - Bảo Đạt Sport';
+            
+            // Tạo danh sách sản phẩm dạng HTML
+            $itemsHtml = '';
+            foreach ($items as $item) {
+                $info = $item->getThong_tin_bien_the() ? ' (' . $item->getThong_tin_bien_the() . ')' : '';
+                $itemsHtml .= "
+                <tr>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: left;'>" . htmlspecialchars($item->getTen_san_pham()) . htmlspecialchars($info) . "</td>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: center;'>" . $item->getSo_luong() . "</td>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: right;'>" . number_format($item->getGia_mua(), 0, ',', '.') . " ₫</td>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: right;'>" . number_format($item->getThanh_tien(), 0, ',', '.') . " ₫</td>
+                </tr>";
+            }
+
+            $paymentMethodText = $order->getPhuong_thuc_thanh_toan() === 'cod' ? 'Thanh toán khi nhận hàng (COD)' : 'Chuyển khoản qua ngân hàng';
+
+            $mail->Body = "
+            <html>
+            <head>
+                <title>Hóa đơn mua hàng Bảo Đạt Sport</title>
+                <style>
+                    body { font-family: 'Inter', Arial, sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 650px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 12px; }
+                    .header { background: linear-gradient(135deg, #ff7b00 0%, #ff9500 100%); color: white; padding: 25px; text-align: center; border-radius: 12px 12px 0 0; }
+                    .content { padding: 30px; background-color: #fcfcfc; border-radius: 0 0 12px 12px; }
+                    .invoice-info { margin-bottom: 25px; font-size: 14px; border-bottom: 2px solid #f0f0f0; padding-bottom: 15px; }
+                    .section-title { font-size: 16px; font-weight: bold; color: #ff7b00; margin-bottom: 10px; border-left: 4px solid #ff7b00; padding-left: 8px; }
+                    .info-block { background: #f5f5f5; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
+                    .table-products { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 14px; }
+                    .table-products th { background-color: #f0f0f0; padding: 10px; font-weight: bold; border-bottom: 2px solid #ddd; }
+                    .summary-block { width: 100%; margin-top: 20px; font-size: 14px; text-align: right; }
+                    .summary-block td { padding: 5px 0; }
+                    .total-row { font-size: 18px; font-weight: bold; color: #d9534f; }
+                    .footer { font-size: 12px; color: #888; text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h2 style='margin:0; font-size: 24px; font-weight: 700;'>CẢM ƠN BẠN ĐÃ ĐẶT HÀNG!</h2>
+                        <p style='margin: 5px 0 0 0; font-size: 14px; opacity: 0.9;'>Đơn hàng #" . $order->getMa_don_hang() . " đã được tiếp nhận</p>
+                    </div>
+                    <div class='content'>
+                        <div class='invoice-info'>
+                            <table style='width: 100%; font-size: 14px;'>
+                                <tr>
+                                    <td>
+                                        <strong>Mã đơn hàng:</strong> " . $order->getMa_don_hang() . "<br>
+                                        <strong>Ngày đặt:</strong> " . ($order->getNgay_tao() ? $order->getNgay_tao()->format('d/m/Y H:i') : date('d/m/Y H:i')) . "
+                                    </td>
+                                    <td style='text-align: right; vertical-align: top;'>
+                                        <strong>Phương thức:</strong> " . $paymentMethodText . "
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class='section-title'>Thông tin giao hàng</div>
+                        <div class='info-block'>
+                            <strong>Họ và tên người nhận:</strong> " . htmlspecialchars($order->getHo_ten_nguoi_nhan()) . "<br>
+                            <strong>Số điện thoại:</strong> " . htmlspecialchars($order->getSo_dien_thoai()) . "<br>
+                            <strong>Địa chỉ giao hàng:</strong> " . htmlspecialchars($order->getDia_chi_giao_hang()) . "<br>" .
+                            ($order->getGhi_chu() ? "<strong>Ghi chú:</strong> " . htmlspecialchars($order->getGhi_chu()) . "<br>" : "") . "
+                        </div>
+
+                        <div class='section-title'>Chi tiết sản phẩm</div>
+                        <table class='table-products'>
+                            <thead>
+                                <tr>
+                                    <th style='text-align: left;'>Sản phẩm</th>
+                                    <th style='width: 10%; text-align: center;'>SL</th>
+                                    <th style='width: 25%; text-align: right;'>Đơn giá</th>
+                                    <th style='width: 25%; text-align: right;'>Thành tiền</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                $itemsHtml
+                            </tbody>
+                        </table>
+
+                        <table class='summary-block'>
+                            <tr>
+                                <td style='width: 70%;'><strong>Tạm tính:</strong></td>
+                                <td style='width: 30%; font-weight: 600;'>" . number_format($order->getTong_tien_hang(), 0, ',', '.') . " ₫</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Phí giao hàng:</strong></td>
+                                <td style='color: green; font-weight: 600;'>Miễn phí</td>
+                            </tr>" .
+                            ($order->getTien_giam_gia() > 0 ? "
+                            <tr>
+                                <td><strong>Giảm giá:</strong></td>
+                                <td style='color: red; font-weight: 600;'>-" . number_format($order->getTien_giam_gia(), 0, ',', '.') . " ₫</td>
+                            </tr>" : "") . "
+                            <tr class='total-row'>
+                                <td>Tổng thanh toán:</td>
+                                <td>" . number_format($order->getTong_thanh_toan(), 0, ',', '.') . " ₫</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class='footer'>
+                        Mọi thắc mắc về đơn hàng, vui lòng liên hệ hotline: <strong>0901 234 567</strong> hoặc phản hồi trực tiếp email này.<br>
+                        &copy; " . date('Y') . " Bảo Đạt Sport. All rights reserved.
+                    </div>
+                </div>
+            </body>
+            </html>
+            ";
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            // Ghi nhận lỗi SMTP cụ thể ra file logs
+            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] SMTP Error (Invoice): " . $mail->ErrorInfo . "\r\n", FILE_APPEND);
+            return false;
+        }
+    }
 }
+

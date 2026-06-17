@@ -10,21 +10,20 @@ class Model
     protected $conn;
     public function __construct()
     {
-        // $localHost = "sql103.infinityfree.com";
-        // $dbName = "if0_42192939_bao_dat_sport";
-        // $userName = "if0_42192939";
-        // $password = "AY3cLd8uNlfK7";
-        $localHost = "localhost";
+        $host = "gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com";
+        $port = "4000";
         $dbName = "bd_baodatsport";
-        $userName = "root";
-        $password = "";
+        $userName = "3NCDKG8eN9oMkmX.root";
+        $password = "caKjtcMgEHyM2Vgx";
         $option = [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::MYSQL_ATTR_SSL_CA => BASE_PATH . '/config/isgrootx1.pem',
+            PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => false
         ];
         try {
             $this->conn = new PDO(
-                "mysql:host=$localHost;dbname=$dbName;charset=utf8mb4",
+                "mysql:host=$host;port=$port;dbname=$dbName;charset=utf8mb4",
                 $userName,
                 $password,
                 $option
