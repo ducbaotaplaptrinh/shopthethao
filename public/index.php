@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 // Kích hoạt thông báo lỗi tối đa để dễ bắt bệnh
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
