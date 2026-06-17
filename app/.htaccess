@@ -1,2 +1,0 @@
-ReRewriteEngine On
-DirectoryIndex public/index.php

@@ -46,7 +46,7 @@ foreach ($cartItems as $item) {
             <div class="logo-container ">
                 <a class="logo-container__link d-flex" href="#home">
                     <img
-                        src="assets/images/favicons/logo.png"
+                        src="public/assets/images/favicons/logo.png"
                         alt="Logo"
                         class="logo-container__icon" />
 
@@ -215,7 +215,7 @@ foreach ($cartItems as $item) {
             <div class="logo-container ">
                 <a class="logo-container__link" href="#home">
                     <img
-                        src="assets/images/favicons/logo.png"
+                        src="public/assets/images/favicons/logo.png"
                         alt="Logo"
                         class="logo-container__icon" />
                 </a>
@@ -258,7 +258,7 @@ foreach ($cartItems as $item) {
                     </li>
                     <li class="nav-item dropdown mega-menu ">
                         <a class="nav-link dropdown-toggle" href="#!">Sản phẩm <i class="fa-solid fa-angle-down fa-md"></i></a>
-                        <?php require __DIR__ . '/mega-menu-home.php'; ?>
+                        <?php require __DIR__ . '/MegaMenuHome.php'; ?>
                     </li>
 
                     <li class="nav-item">

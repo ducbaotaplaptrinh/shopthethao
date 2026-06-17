@@ -1,10 +1,11 @@
 <?php
 // Helper to build page URLs with filters
 if (!function_exists('buildPageUrl')) {
-    function buildPageUrl($pageNo, $filters) {
+    function buildPageUrl($pageNo, $filters)
+    {
         $params = array_merge($filters, ['page_no' => $pageNo, 'page' => 'admin-products']);
         // Filter out empty params
-        $params = array_filter($params, function($value) {
+        $params = array_filter($params, function ($value) {
             return $value !== '';
         });
         return '?' . http_build_query($params);
@@ -56,7 +57,7 @@ if (!function_exists('buildPageUrl')) {
                     <input type="text" name="keyword" class="form-control bg-light border-start-0" placeholder="Tên, ID, SKU..." value="<?= htmlspecialchars($filters['keyword'] ?? '') ?>">
                 </div>
             </div>
-            
+
             <div class="col-md-3 col-sm-6">
                 <label class="form-label fw-bold text-secondary small">Danh mục</label>
                 <select name="ma_danh_muc" class="form-select bg-light">
@@ -68,7 +69,7 @@ if (!function_exists('buildPageUrl')) {
                     <?php endforeach; ?>
                 </select>
             </div>
-            
+
             <div class="col-md-3 col-sm-6">
                 <label class="form-label fw-bold text-secondary small">Thương hiệu</label>
                 <select name="ma_thuong_hieu" class="form-select bg-light">
@@ -80,7 +81,7 @@ if (!function_exists('buildPageUrl')) {
                     <?php endforeach; ?>
                 </select>
             </div>
-            
+
             <div class="col-md-3 col-sm-6">
                 <label class="form-label fw-bold text-secondary small">Tình trạng kho</label>
                 <select name="kho" class="form-select bg-light">
@@ -90,7 +91,7 @@ if (!function_exists('buildPageUrl')) {
                     <option value="het_hang" <?= (isset($filters['kho']) && $filters['kho'] === 'het_hang') ? 'selected' : '' ?>>Hết hàng (= 0)</option>
                 </select>
             </div>
-            
+
             <div class="col-md-3 col-sm-6">
                 <label class="form-label fw-bold text-secondary small">Trạng thái hiển thị</label>
                 <select name="trang_thai" class="form-select bg-light">
@@ -99,7 +100,7 @@ if (!function_exists('buildPageUrl')) {
                     <option value="0" <?= (isset($filters['trang_thai']) && $filters['trang_thai'] === '0') ? 'selected' : '' ?>>Đang ẩn (Tạm khóa)</option>
                 </select>
             </div>
-            
+
             <div class="col-md-3 col-sm-6">
                 <label class="form-label fw-bold text-secondary small">Thùng rác</label>
                 <select name="da_xoa" class="form-select bg-light">
@@ -107,7 +108,7 @@ if (!function_exists('buildPageUrl')) {
                     <option value="1" <?= (isset($filters['da_xoa']) && $filters['da_xoa'] === '1') ? 'selected' : '' ?>>Đã xóa tạm (Thùng rác)</option>
                 </select>
             </div>
-            
+
             <div class="col-md-3 col-sm-6">
                 <label class="form-label fw-bold text-secondary small">Khuyến mãi</label>
                 <select name="khuyen_mai" class="form-select bg-light">
@@ -115,7 +116,7 @@ if (!function_exists('buildPageUrl')) {
                     <option value="1" <?= (isset($filters['khuyen_mai']) && $filters['khuyen_mai'] === '1') ? 'selected' : '' ?>>Đang khuyến mãi</option>
                 </select>
             </div>
-            
+
             <div class="col-md-3 col-sm-12 d-flex align-items-end gap-2">
                 <button type="submit" class="btn btn-primary flex-fill">
                     <i class="bi bi-funnel-fill me-1"></i> Lọc dữ liệu
@@ -235,32 +236,32 @@ if (!function_exists('buildPageUrl')) {
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
-                    
+
                     <!-- Page Numbers -->
                     <?php
                     $startPage = max(1, $currentPage - 2);
                     $endPage = min($totalPages, $currentPage + 2);
-                    
+
                     if ($startPage > 1): ?>
                         <li class="page-item"><a class="page-link" href="<?= buildPageUrl(1, $filters) ?>">1</a></li>
                         <?php if ($startPage > 2): ?>
                             <li class="page-item disabled"><span class="page-link">...</span></li>
                         <?php endif; ?>
                     <?php endif; ?>
-                    
+
                     <?php for ($i = $startPage; $i <= $endPage; $i++): ?>
                         <li class="page-item <?= $currentPage == $i ? 'active' : '' ?>">
                             <a class="page-link" href="<?= buildPageUrl($i, $filters) ?>"><?= $i ?></a>
                         </li>
                     <?php endfor; ?>
-                    
+
                     <?php if ($endPage < $totalPages): ?>
                         <?php if ($endPage < $totalPages - 1): ?>
                             <li class="page-item disabled"><span class="page-link">...</span></li>
                         <?php endif; ?>
                         <li class="page-item"><a class="page-link" href="<?= buildPageUrl($totalPages, $filters) ?>"><?= $totalPages ?></a></li>
                     <?php endif; ?>
-                    
+
                     <!-- Next Button -->
                     <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
                         <a class="page-link" href="<?= $currentPage >= $totalPages ? '#' : buildPageUrl($currentPage + 1, $filters) ?>" aria-label="Next">

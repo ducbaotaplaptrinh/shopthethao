@@ -2,7 +2,7 @@
     overflow: hidden;
 ">
     <div class="row align-items-center g-4 g-lg-5 ">
-        <?php require __DIR__ . '/../components/home/banner-home.php'; ?>
+        <?php require __DIR__ . '/../components/home/BannerHome.php'; ?>
     </div>
 </section>
 <div class="container-xl">
@@ -13,7 +13,7 @@
                     <div class="info-card__icon">
                         <img
                             class="icon"
-                            src="assets/images/favicons/img-vanchuyen.svg"
+                            src="public/assets/images/favicons/img-vanchuyen.svg"
                             alt="" />
                     </div>
                     <div>
@@ -27,7 +27,7 @@
                     <div class="info-card__icon">
                         <img
                             class="icon"
-                            src="assets/images/favicons/img-chatluong.svg"
+                            src="public/assets/images/favicons/img-chatluong.svg"
                             alt="" />
                     </div>
                     <div>
@@ -41,7 +41,7 @@
                     <div class="info-card__icon">
                         <img
                             class="icon"
-                            src="assets/images/favicons/img-thanhtoan.svg"
+                            src="public/assets/images/favicons/img-thanhtoan.svg"
                             alt="" />
                     </div>
                     <div>
@@ -55,7 +55,7 @@
                     <div class="info-card__icon">
                         <img
                             class="icon"
-                            src="assets/images/favicons/img-doitra.svg"
+                            src="public/assets/images/favicons/img-doitra.svg"
                             alt="" />
                     </div>
                     <div>
@@ -66,9 +66,9 @@
             </div>
         </div>
     </section>
-    <?php require __DIR__ . "/../components/home/product-new-home.php" ?>
-    <?php require __DIR__ . '/../components/home/product-sale-home.php'; ?>
-    <?php require __DIR__ . '/../components/home/category-home.php'; ?>
-    <?php require __DIR__ . '/../components/home/review-home.php'; ?>
+    <?php require __DIR__ . "/../components/home/ProductNewHome.php" ?>
+    <?php require __DIR__ . '/../components/home/ProductSaleHome.php'; ?>
+    <?php require __DIR__ . '/../components/home/CategoryHome.php'; ?>
+    <?php require __DIR__ . '/../components/home/ReviewHome.php'; ?>
 
 </div>

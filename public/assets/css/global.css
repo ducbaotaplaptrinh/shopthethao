@@ -76,7 +76,10 @@ img {
     position: relative;
     z-index: 1;
 }
-
+.product-new,
+.product-sale {
+    height: fit-content;
+}
 .product-price-old {
     font-size: 1.4rem;
     color: #999;

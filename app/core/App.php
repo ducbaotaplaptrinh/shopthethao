@@ -57,7 +57,7 @@ class App
 		$content = ob_get_clean();
 
 		//strpos kiem tra xem admin- co phai xuat hien o dong dau tien khong 
-		$layout = (strpos($_GET['page'] ?? 'home', 'admin-') === 0) ? 'admin_layout.php' : 'main.php';
+		$layout = (strpos($_GET['page'] ?? 'home', 'admin-') === 0) ? 'AdminLayout.php' : 'Main.php';
 		require BASE_PATH . '/app/views/layouts/' . $layout;
 	}
 }

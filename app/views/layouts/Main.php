@@ -4,7 +4,7 @@ if (!isset($content)) {
 }
 ?>
 
-<?php require __DIR__ . '/header.php'; ?>
+<?php require __DIR__ . '/Header.php'; ?>
 
 <main class="page-shell">
     <section class="page-content">
@@ -12,4 +12,4 @@ if (!isset($content)) {
     </section>
 </main>
 
-<?php require __DIR__ . '/footer.php'; ?>
+<?php require __DIR__ . '/Footer.php'; ?>

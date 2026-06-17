@@ -1,59 +1,59 @@
-<?php
+﻿<?php
 require BASE_PATH . "/app/controllers/sanphamcontroller.php";
 return [
 	'login' => [
 		'title' => 'Đăng nhập',
-		'view' => 'auth/login.php',
+		'view' => 'auth/Login.php',
 		'controller' => \app\controllers\AuthController::class,
 		'action' => 'login',
 	],
 	'register' => [
 		'title' => 'Đăng ký',
-		'view' => 'auth/register.php',
+		'view' => 'auth/Register.php',
 		'controller' => \app\controllers\AuthController::class,
 		'action' => 'register',
 	],
 	'verify-otp' => [
 		'title' => 'Xác thực OTP | Bảo Đạt Sport',
-		'view' => 'auth/verify-otp.php',
+		'view' => 'auth/VerifyOtp.php',
 		'controller' => \app\controllers\AuthController::class,
 		'action' => 'verifyOtp',
 	],
 	'change-password' => [
 		'title' => 'Đổi mật khẩu | Bảo Đạt Sport',
-		'view' => 'auth/change-password.php',
+		'view' => 'auth/ChangePassword.php',
 		'controller' => \app\controllers\AuthController::class,
 		'action' => 'changePassword',
 	],
 	'logout' => [
 		'title' => 'Đăng xuất',
-		'view' => 'auth/login.php',
+		'view' => 'auth/Login.php',
 		'controller' => \app\controllers\AuthController::class,
 		'action' => 'logout',
 	],
 	'home' => [
 		'title' => 'Trang chủ',
-		'view' => 'home/index.php',
+		'view' => 'home/Index.php',
 		'controller' => \app\controllers\HomeController::class,
 		'action' => 'index',
 	],
 	'product-index' => [
 		'title' => 'Danh sách sản phẩm',
-		'view' => 'product/index.php',
+		'view' => 'product/Index.php',
 		'controller' => \app\controllers\SanPhamController::class,
 		'action' => 'index',
 		'pageStyles' => ['assets/css/product.css']
 	],
 	'flash-sale' => [
 		'title' => 'Sản phẩm khuyến mãi | Bảo Đạt Sport',
-		'view' => 'product/index.php',
+		'view' => 'product/Index.php',
 		'controller' => \app\controllers\SanPhamController::class,
 		'action' => 'flashSale',
 		'pageStyles' => ['assets/css/product.css']
 	],
 	'product-detail' => [
 		'title' => 'Chi tiết sản phẩm',
-		'view' => 'product/product-detail.php',
+		'view' => 'product/ProductDetail.php',
 		'controller' => \app\controllers\SanPhamController::class,
 		'action' => 'chitiet',
 		'pageStyles' => ['assets/css/product-detail.css']
@@ -67,63 +67,63 @@ return [
 
 	'about' => [
 		'title' => 'Giới thiệu',
-		'view' => 'about/about.php',
+		'view' => 'about/About.php',
 	],
 	'cart' => [
 		'title' => 'Giỏ hàng | Bảo Đạt Sport',
-		'view' => 'cart/index.php',
+		'view' => 'cart/Index.php',
 		'controller' => \app\controllers\CartController::class,
 		'action' => 'index',
 		'pageStyles' => ['assets/css/cart.css']
 	],
 	'cart-add' => [
 		'title' => 'Thêm vào giỏ hàng',
-		'view' => 'cart/index.php',
+		'view' => 'cart/Index.php',
 		'controller' => \app\controllers\CartController::class,
 		'action' => 'add'
 	],
 	'cart-update' => [
 		'title' => 'Cập nhật giỏ hàng',
-		'view' => 'cart/index.php',
+		'view' => 'cart/Index.php',
 		'controller' => \app\controllers\CartController::class,
 		'action' => 'update'
 	],
 	'cart-delete' => [
 		'title' => 'Xoá giỏ hàng',
-		'view' => 'cart/index.php',
+		'view' => 'cart/Index.php',
 		'controller' => \app\controllers\CartController::class,
 		'action' => 'delete'
 	],
 	'checkout' => [
 		'title' => 'Thanh toán đơn hàng | Bảo Đạt Sport',
-		'view' => 'order/checkout.php',
+		'view' => 'order/Checkout.php',
 		'controller' => \app\controllers\OrderController::class,
 		'action' => 'checkout',
 		'pageStyles' => ['assets/css/cart.css']
 	],
 	'order-place' => [
 		'title' => 'Đặt hàng',
-		'view' => 'order/checkout.php',
+		'view' => 'order/Checkout.php',
 		'controller' => \app\controllers\OrderController::class,
 		'action' => 'place'
 	],
 	'order-success' => [
 		'title' => 'Đặt hàng thành công | Bảo Đạt Sport',
-		'view' => 'order/success.php',
+		'view' => 'order/Success.php',
 		'controller' => \app\controllers\OrderController::class,
 		'action' => 'success',
 		'pageStyles' => ['assets/css/cart.css']
 	],
 	'order-track' => [
 		'title' => 'Tra cứu đơn hàng | Bảo Đạt Sport',
-		'view' => 'order/track.php',
+		'view' => 'order/Track.php',
 		'controller' => \app\controllers\OrderController::class,
 		'action' => 'track',
 		'pageStyles' => ['assets/css/cart.css']
 	],
 	'my-orders' => [
 		'title' => 'Đơn hàng của tôi | Bảo Đạt Sport',
-		'view' => 'order/my-orders.php',
+		'view' => 'order/MyOrders.php',
 		'controller' => \app\controllers\OrderController::class,
 		'action' => 'myOrders',
 		'pageStyles' => ['assets/css/my-orders.css']
@@ -134,98 +134,98 @@ return [
 	],
 	'admin-dashboard' => [
 		'title' => 'Dashboard | Quản trị',
-		'view' => 'admin/dashboard.php',
+		'view' => 'admin/Dashboard.php',
 		'controller' => \app\controllers\admin\AdminDashboardController::class,
 		'action' => 'index',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-products' => [
 		'title' => 'Quản lý Sản phẩm | Quản trị',
-		'view' => 'admin/product/index.php',
+		'view' => 'admin/product/Index.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
 		'action' => 'index',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-product-create' => [
 		'title' => 'Thêm Sản phẩm | Quản trị',
-		'view' => 'admin/product/form.php',
+		'view' => 'admin/product/Form.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
 		'action' => 'create',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-product-store' => [
 		'title' => 'Lưu Sản phẩm | Quản trị',
-		'view' => 'admin/product/index.php',
+		'view' => 'admin/product/Index.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
 		'action' => 'store',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-categories' => [
 		'title' => 'Danh mục | Quản trị',
-		'view' => 'admin/category/index.php',
+		'view' => 'admin/category/Index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
 		'action' => 'categories',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-category-store' => [
 		'title' => 'Lưu Danh mục',
-		'view' => 'admin/category/index.php',
+		'view' => 'admin/category/Index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
 		'action' => 'storeCategory',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-category-edit' => [
 		'title' => 'Sửa Danh mục | Quản trị',
-		'view' => 'admin/category/edit.php',
+		'view' => 'admin/category/Edit.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
 		'action' => 'editCategory',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-category-update' => [
 		'title' => 'Cập nhật Danh mục',
-		'view' => 'admin/category/index.php',
+		'view' => 'admin/category/Index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
 		'action' => 'updateCategory',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-category-delete' => [
 		'title' => 'Xóa Danh mục',
-		'view' => 'admin/category/index.php',
+		'view' => 'admin/category/Index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
 		'action' => 'deleteCategory',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-brands' => [
 		'title' => 'Thương hiệu | Quản trị',
-		'view' => 'admin/brand/index.php',
+		'view' => 'admin/brand/Index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
 		'action' => 'brands',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-brand-store' => [
 		'title' => 'Lưu Thương hiệu',
-		'view' => 'admin/brand/index.php',
+		'view' => 'admin/brand/Index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
 		'action' => 'storeBrand',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-attributes' => [
 		'title' => 'Thuộc tính | Quản trị',
-		'view' => 'admin/attribute/index.php',
+		'view' => 'admin/attribute/Index.php',
 		'controller' => \app\controllers\admin\AdminAttributeController::class,
 		'action' => 'index',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-attribute-store-group' => [
 		'title' => 'Lưu Nhóm Thuộc tính',
-		'view' => 'admin/attribute/index.php',
+		'view' => 'admin/attribute/Index.php',
 		'controller' => \app\controllers\admin\AdminAttributeController::class,
 		'action' => 'storeGroup',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-attribute-store-value' => [
 		'title' => 'Lưu Giá trị Thuộc tính',
-		'view' => 'admin/attribute/index.php',
+		'view' => 'admin/attribute/Index.php',
 		'controller' => \app\controllers\admin\AdminAttributeController::class,
 		'action' => 'storeValue',
 		'pageStyles' => ['assets/css/admin.css']
@@ -239,89 +239,89 @@ return [
 	],
 	'admin-orders' => [
 		'title' => 'Quản lý Đơn hàng | Quản trị',
-		'view' => 'admin/order/index.php',
+		'view' => 'admin/order/Index.php',
 		'controller' => \app\controllers\admin\AdminOrderController::class,
 		'action' => 'index',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-order-detail' => [
 		'title' => 'Chi tiết Đơn hàng | Quản trị',
-		'view' => 'admin/order/detail.php',
+		'view' => 'admin/order/Detail.php',
 		'controller' => \app\controllers\admin\AdminOrderController::class,
 		'action' => 'detail',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-order-update-status' => [
 		'title' => 'Cập nhật trạng thái',
-		'view' => 'admin/order/detail.php',
+		'view' => 'admin/order/Detail.php',
 		'controller' => \app\controllers\admin\AdminOrderController::class,
 		'action' => 'capNhatTrangThaiDonHang',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-order-delete' => [
 		'title' => 'Xóa Đơn hàng',
-		'view' => 'admin/order/index.php',
+		'view' => 'admin/order/Index.php',
 		'controller' => \app\controllers\admin\AdminOrderController::class,
 		'action' => 'xoaDonHang',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-customers' => [
 		'title' => 'Quản lý Khách hàng | Quản trị',
-		'view' => 'admin/customer/index.php',
+		'view' => 'admin/customer/Index.php',
 		'controller' => \app\controllers\admin\AdminCustomerController::class,
 		'action' => 'index',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-customer-toggle' => [
 		'title' => 'Đổi trạng thái tài khoản',
-		'view' => 'admin/customer/index.php',
+		'view' => 'admin/customer/Index.php',
 		'controller' => \app\controllers\admin\AdminCustomerController::class,
 		'action' => 'toggleStatus',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-product-edit' => [
 		'title' => 'Sửa Sản phẩm | Quản trị',
-		'view' => 'admin/product/edit.php',
+		'view' => 'admin/product/Edit.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
 		'action' => 'edit',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-product-update' => [
 		'title' => 'Cập nhật Sản phẩm | Quản trị',
-		'view' => 'admin/product/index.php',
+		'view' => 'admin/product/Index.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
 		'action' => 'update',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-product-delete' => [
 		'title' => 'Xóa Sản phẩm | Quản trị',
-		'view' => 'admin/product/index.php',
+		'view' => 'admin/product/Index.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
 		'action' => 'xoaSanPham',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-product-restore' => [
 		'title' => 'Khôi phục Sản phẩm | Quản trị',
-		'view' => 'admin/product/index.php',
+		'view' => 'admin/product/Index.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
 		'action' => 'khoiPhucSanPham',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'contact' => [
 		'title' => 'Liên hệ',
-		'view' => 'contact/contact.php',
+		'view' => 'contact/Contact.php',
 		'pageStyles' => ['assets/css/contact.css']
 	],
 	'new' => [
 		'title' => 'Tin tức thể thao',
-		'view' => 'news/index.php',
+		'view' => 'news/Index.php',
 		'controller' => \app\controllers\NewsController::class,
 		'action' => 'index',
 		'pageStyles' => ['assets/css/news.css']
 	],
 	'new-detail' => [
 		'title' => 'Chi tiết tin tức',
-		'view' => 'news/detail.php',
+		'view' => 'news/Detail.php',
 		'controller' => \app\controllers\NewsController::class,
 		'action' => 'detail',
 		'pageStyles' => ['assets/css/news.css']
