@@ -204,12 +204,13 @@ class AuthController
                     if ($userId > 0) {
                         // Tự động phân hạng Đồng (hoặc hạng thấp nhất) cho người mới
                         $sqlDefaultRank = "SELECT id, ten_hang, mau_sac, bieu_tuong FROM hang_thanh_vien ORDER BY muc_chi_tieu_toi_thieu ASC LIMIT 1";
-                        $stmtDefaultRank = (new \PDO("mysql:host=localhost;dbname=bd_baodatsport", "root", ""))->query($sqlDefaultRank);
+                        $stmtDefaultRank = $this->nguoiDungModel->conn->query($sqlDefaultRank);
+
                         $defaultRank = $stmtDefaultRank->fetch(\PDO::FETCH_ASSOC);
 
                         if ($defaultRank) {
                             $sqlUpdateUserRank = "UPDATE nguoi_dung SET ma_hang = :ma_hang WHERE id = :uid";
-                            $stmtUpdateUserRank = (new \PDO("mysql:host=localhost;dbname=bd_baodatsport", "root", ""))->prepare($sqlUpdateUserRank);
+                            $stmtUpdateUserRank = $this->nguoiDungModel->conn->prepare($sqlUpdateUserRank);
                             $stmtUpdateUserRank->execute(['ma_hang' => $defaultRank['id'], 'uid' => $userId]);
                         }
 
@@ -372,10 +373,10 @@ class AuthController
                     $fileName = $_FILES['anh_dai_dien']['name'];
                     $fileSize = $_FILES['anh_dai_dien']['size'];
                     $fileType = $_FILES['anh_dai_dien']['type'];
-                    
+
                     $fileNameCmps = explode(".", $fileName);
                     $fileExtension = strtolower(end($fileNameCmps));
-                    
+
                     $allowedfileExtensions = ['jpg', 'gif', 'png', 'jpeg', 'webp'];
                     if (in_array($fileExtension, $allowedfileExtensions)) {
                         // Max file size 3MB
@@ -386,7 +387,7 @@ class AuthController
                             }
                             $newFileName = 'avatar_' . $userId . '_' . time() . '.' . $fileExtension;
                             $dest_path = $uploadFileDir . $newFileName;
-                            
+
                             if (move_uploaded_file($fileTmpPath, $dest_path)) {
                                 // Delete old avatar file if exists and is not default
                                 $oldAvatar = $user->getAnh_dai_dien();

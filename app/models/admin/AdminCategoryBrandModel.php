@@ -63,22 +63,22 @@ class AdminCategoryBrandModel extends Model
         return (int) $stmt->fetchColumn();
     }
 
-    /** Thêm mới danh mục - Sửa lỗi: dùng đúng tên cột duong_dan_slug */
-    public function insertCategory($ten, $slug, $trangthai)
+    /** Thêm mới danh mục - Có hình ảnh */
+    public function insertCategory($ten, $slug, $trangthai, $hinh_anh = null)
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO danh_muc (ten_danh_muc, duong_dan_slug, trang_thai) VALUES (?, ?, ?)"
+            "INSERT INTO danh_muc (ten_danh_muc, duong_dan_slug, trang_thai, hinh_anh) VALUES (?, ?, ?, ?)"
         );
-        return $stmt->execute([$ten, $slug, $trangthai]);
+        return $stmt->execute([$ten, $slug, $trangthai, $hinh_anh]);
     }
 
-    /** Cập nhật danh mục */
-    public function updateCategory($id, $ten, $slug, $trangthai)
+    /** Cập nhật danh mục - Có hình ảnh */
+    public function updateCategory($id, $ten, $slug, $trangthai, $hinh_anh = null)
     {
         $stmt = $this->conn->prepare(
-            "UPDATE danh_muc SET ten_danh_muc = ?, duong_dan_slug = ?, trang_thai = ? WHERE id = ? AND ngay_xoa IS NULL"
+            "UPDATE danh_muc SET ten_danh_muc = ?, duong_dan_slug = ?, trang_thai = ?, hinh_anh = ? WHERE id = ? AND ngay_xoa IS NULL"
         );
-        return $stmt->execute([$ten, $slug, $trangthai, $id]);
+        return $stmt->execute([$ten, $slug, $trangthai, $hinh_anh, $id]);
     }
 
     /** Xóa mềm danh mục - chỉ cho phép khi không còn sản phẩm */

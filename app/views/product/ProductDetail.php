@@ -249,7 +249,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
                 <?php
                 // Temporarily inject $relatedProducts into listproduct.php context
                 $danhSachSanPham = $relatedProducts;
-                require BASE_PATH . "/app/views/components/product/listproduct.php";
+                require BASE_PATH . "/app/views/components/product/ListProduct.php";
                 ?>
             </div>
         </section>

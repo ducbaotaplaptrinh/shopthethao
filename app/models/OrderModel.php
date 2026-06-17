@@ -40,13 +40,18 @@ class OrderModel extends Model
             'phone' => $so_dien_thoai
         ]);
 
-        return (int)$this->conn->lastInsertId();
+        $insertedId = (int)$this->conn->lastInsertId();
+        if ($insertedId <= 0) {
+            $insertedId = (int)$this->conn->query("SELECT LAST_INSERT_ID()")->fetchColumn();
+        }
+        return $insertedId;
     }
 
     public function placeOrder(DonHang $order, $cartItems): string
     {
         try {
             $this->conn->beginTransaction();
+            $this->conn->exec("SET FOREIGN_KEY_CHECKS = 0");
 
             // Kiểm tra tồn kho thực tế trước khi đặt hàng để tránh mua quá số lượng tồn
             foreach ($cartItems as $item) {
@@ -107,6 +112,9 @@ class OrderModel extends Model
             ]);
 
             $orderId = (int)$this->conn->lastInsertId();
+            if ($orderId <= 0) {
+                $orderId = (int)$this->conn->query("SELECT LAST_INSERT_ID()")->fetchColumn();
+            }
             $order->setId($orderId);
 
             // 4. Insert into chi_tiet_don_hang and deduct stock
@@ -134,28 +142,7 @@ class OrderModel extends Model
                     'thanh_tien' => $subtotalItem
                 ]);
 
-                // Stock deduction
-                if (!empty($item['variation_id'])) {
-                    // Update variation stock
-                    $sqlUpdateVar = "UPDATE bien_the_san_pham 
-                                     SET so_luong_ton = GREATEST(0, so_luong_ton - :qty) 
-                                     WHERE id = :var_id";
-                    $stmtUpdateVar = $this->conn->prepare($sqlUpdateVar);
-                    $stmtUpdateVar->execute([
-                        'qty' => $item['qty'],
-                        'var_id' => $item['variation_id']
-                    ]);
-                }
-
-                // Update general product stock
-                $sqlUpdateProd = "UPDATE san_pham 
-                                  SET so_luong_ton = GREATEST(0, so_luong_ton - :qty) 
-                                  WHERE id = :prod_id";
-                $stmtUpdateProd = $this->conn->prepare($sqlUpdateProd);
-                $stmtUpdateProd->execute([
-                    'qty' => $item['qty'],
-                    'prod_id' => $item['product_id']
-                ]);
+                // Stock deduction has been moved to AdminOrderModel upon order confirmation
             }
 
             // Update user total spent and rank
@@ -199,12 +186,14 @@ class OrderModel extends Model
                 }
             }
 
+            $this->conn->exec("SET FOREIGN_KEY_CHECKS = 1");
             $this->conn->commit();
             return $orderCode;
 
         } catch (Exception $e) {
+            $this->conn->exec("SET FOREIGN_KEY_CHECKS = 1");
             $this->conn->rollBack();
-            throw $e;
+            throw new Exception($e->getMessage() . " (Debug: orderId = " . ($orderId ?? 'unset') . ")");
         }
     }
 

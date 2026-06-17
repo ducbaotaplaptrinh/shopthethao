@@ -30,7 +30,7 @@ $errorMsg = $_GET['error'] ?? '';
     <div class="col-12 col-lg-6">
         <div class="admin-card">
             <h4 class="admin-card-title mb-4">Thông tin Danh mục</h4>
-            <form action="?page=admin-category-update" method="POST">
+            <form action="?page=admin-category-update" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="id" value="<?= $category['id'] ?>">
                 
                 <div class="mb-3">
@@ -44,6 +44,17 @@ $errorMsg = $_GET['error'] ?? '';
                     <input type="text" name="duong_dan_slug" id="editCatSlug" class="form-control" required readonly
                            style="background-color: #f8f9fa;"
                            value="<?= htmlspecialchars($category['duong_dan_slug']) ?>">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hình ảnh danh mục</label>
+                    <input type="file" name="hinh_anh" id="editCatImage" class="form-control mb-2" accept="image/*">
+                    <?php 
+                    $currentImg = getProductImage($category['hinh_anh'] ?? '');
+                    ?>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="text-muted small">Ảnh hiện tại:</span>
+                        <img src="<?= htmlspecialchars($currentImg) ?>" alt="" style="height: 60px; object-fit: contain; border-radius: 6px; border: 1px solid #eee; padding: 2px;">
+                    </div>
                 </div>
                 <div class="form-check form-switch mb-4">
                     <input class="form-check-input" type="checkbox" name="trang_thai" id="editCatStatus" 

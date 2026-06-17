@@ -28,14 +28,33 @@ class OrderController
             exit;
         }
 
+        // Lưu trữ các key sản phẩm được chọn thanh toán
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_items'])) {
+            $_SESSION['checkout_selected_keys'] = $_POST['selected_items'];
+        }
+
+        $selectedKeys = $_SESSION['checkout_selected_keys'] ?? array_keys($cartItems);
+        $selectedCartItems = [];
+        foreach ($selectedKeys as $key) {
+            if (isset($cartItems[$key])) {
+                $selectedCartItems[$key] = $cartItems[$key];
+            }
+        }
+
+        if (empty($selectedCartItems)) {
+            $_SESSION['cart_warning'] = 'Vui lòng chọn ít nhất một sản phẩm để thanh toán.';
+            header("Location: ?page=cart");
+            exit;
+        }
+
         $totalPayment = 0;
-        foreach ($cartItems as $item) {
+        foreach ($selectedCartItems as $item) {
             $totalPayment += $item['price'] * $item['qty'];
         }
 
         return [
             'title' => 'Thanh toán đơn hàng | Bảo Đạt Sport',
-            'cartItems' => $cartItems,
+            'cartItems' => $selectedCartItems,
             'totalPayment' => $totalPayment
         ];
     }
@@ -49,7 +68,15 @@ class OrderController
         }
 
         $cartItems = $_SESSION['cart'] ?? [];
-        if (empty($cartItems)) {
+        $selectedKeys = $_SESSION['checkout_selected_keys'] ?? array_keys($cartItems);
+        $selectedCartItems = [];
+        foreach ($selectedKeys as $key) {
+            if (isset($cartItems[$key])) {
+                $selectedCartItems[$key] = $cartItems[$key];
+            }
+        }
+
+        if (empty($selectedCartItems)) {
             header("Location: ?page=cart");
             exit;
         }
@@ -69,7 +96,7 @@ class OrderController
         }
 
         $subtotal = 0;
-        foreach ($cartItems as $item) {
+        foreach ($selectedCartItems as $item) {
             $subtotal += $item['price'] * $item['qty'];
         }
         
@@ -94,10 +121,18 @@ class OrderController
         $order->setTrang_thai_don_hang('cho_xac_nhan');
 
         try {
-            $orderCode = $this->orderModel->placeOrder($order, $cartItems);
+            $orderCode = $this->orderModel->placeOrder($order, $selectedCartItems);
             
-            // Clear cart
-            unset($_SESSION['cart']);
+            // Gửi email hóa đơn đặt hàng thành công
+            if (!empty($order->getEmail())) {
+                \app\services\MailService::sendOrderInvoice($order->getEmail(), $order->getHo_ten_nguoi_nhan(), $order, $selectedCartItems);
+            }
+
+            // Xóa các sản phẩm đã mua khỏi giỏ hàng
+            foreach ($selectedKeys as $key) {
+                unset($_SESSION['cart'][$key]);
+            }
+            unset($_SESSION['checkout_selected_keys']);
             
             header("Location: ?page=order-success&code=" . $orderCode);
             exit;

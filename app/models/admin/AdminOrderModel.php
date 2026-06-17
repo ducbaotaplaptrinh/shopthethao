@@ -79,34 +79,43 @@ class AdminOrderModel extends Model
         }
     }
 
-    /**
-     * Trừ kho: giảm so_luong_ton của các biến thể theo chi tiết đơn hàng.
-     * Nếu biến thể nào không đủ hàng, ném Exception để rollback.
-     */
     private function truKho($orderId)
     {
         $items = $this->getOrderItems($orderId);
 
         foreach ($items as $item) {
-            $maVach   = $item['ma_bien_the'];
-            $soLuong  = (int)$item['so_luong'];
+            $maBienThe = $item['ma_bien_the'];
+            $maSanPham = $item['ma_san_pham'];
+            $soLuong   = (int)$item['so_luong'];
 
-            // Kiểm tra tồn kho trước khi trừ
-            $stmtCheck = $this->conn->prepare(
-                "SELECT so_luong_ton FROM bien_the_san_pham WHERE id = ? FOR UPDATE"
-            );
-            $stmtCheck->execute([$maVach]);
-            $row = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+            // 1. Trừ kho biến thể (nếu có)
+            if (!empty($maBienThe)) {
+                $stmtCheck = $this->conn->prepare("SELECT so_luong_ton FROM bien_the_san_pham WHERE id = ? FOR UPDATE");
+                $stmtCheck->execute([$maBienThe]);
+                $row = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
-            if (!$row || $row['so_luong_ton'] < $soLuong) {
-                throw new \Exception("Biến thể ID {$maVach} không đủ tồn kho (cần {$soLuong}, còn {$row['so_luong_ton']}).");
+                if (!$row || $row['so_luong_ton'] < $soLuong) {
+                    throw new \Exception("Sản phẩm biến thể không đủ tồn kho (cần {$soLuong}, còn " . ($row['so_luong_ton'] ?? 0) . ").");
+                }
+
+                $stmtTru = $this->conn->prepare("UPDATE bien_the_san_pham SET so_luong_ton = so_luong_ton - ? WHERE id = ?");
+                $stmtTru->execute([$soLuong, $maBienThe]);
             }
 
-            // Trừ kho
-            $stmtTru = $this->conn->prepare(
-                "UPDATE bien_the_san_pham SET so_luong_ton = so_luong_ton - ? WHERE id = ?"
-            );
-            $stmtTru->execute([$soLuong, $maVach]);
+            // 2. Trừ kho sản phẩm chính
+            $stmtCheckSp = $this->conn->prepare("SELECT so_luong_ton FROM san_pham WHERE id = ? FOR UPDATE");
+            $stmtCheckSp->execute([$maSanPham]);
+            $rowSp = $stmtCheckSp->fetch(PDO::FETCH_ASSOC);
+            
+            // Nếu là sản phẩm đơn giản (không có biến thể) thì kiểm tra tồn kho chính
+            if (empty($maBienThe)) {
+                if (!$rowSp || $rowSp['so_luong_ton'] < $soLuong) {
+                    throw new \Exception("Sản phẩm không đủ tồn kho (cần {$soLuong}, còn " . ($rowSp['so_luong_ton'] ?? 0) . ").");
+                }
+            }
+
+            $stmtTruSp = $this->conn->prepare("UPDATE san_pham SET so_luong_ton = GREATEST(0, so_luong_ton - ?) WHERE id = ?");
+            $stmtTruSp->execute([$soLuong, $maSanPham]);
         }
     }
 
@@ -118,13 +127,19 @@ class AdminOrderModel extends Model
         $items = $this->getOrderItems($orderId);
 
         foreach ($items as $item) {
-            $maVach  = $item['ma_bien_the'];
-            $soLuong = (int)$item['so_luong'];
+            $maBienThe = $item['ma_bien_the'];
+            $maSanPham = $item['ma_san_pham'];
+            $soLuong   = (int)$item['so_luong'];
 
-            $stmt = $this->conn->prepare(
-                "UPDATE bien_the_san_pham SET so_luong_ton = so_luong_ton + ? WHERE id = ?"
-            );
-            $stmt->execute([$soLuong, $maVach]);
+            // 1. Hoàn kho biến thể (nếu có)
+            if (!empty($maBienThe)) {
+                $stmt = $this->conn->prepare("UPDATE bien_the_san_pham SET so_luong_ton = so_luong_ton + ? WHERE id = ?");
+                $stmt->execute([$soLuong, $maBienThe]);
+            }
+
+            // 2. Hoàn kho sản phẩm chính
+            $stmtSp = $this->conn->prepare("UPDATE san_pham SET so_luong_ton = so_luong_ton + ? WHERE id = ?");
+            $stmtSp->execute([$soLuong, $maSanPham]);
         }
     }
 
