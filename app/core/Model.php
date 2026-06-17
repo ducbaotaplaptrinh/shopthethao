@@ -7,7 +7,7 @@ use PDOException;
 
 class Model
 {
-    protected $conn;
+    public $conn;
     public function __construct()
     {
         $host = "gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com";
