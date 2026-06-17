@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Nếu yêu cầu đã bắt đầu bằng public/, không thay đổi gì cả
+    RewriteRule ^public/ - [L]
+
+    # Nếu tệp tin hoặc thư mục thực sự tồn tại trong thư mục public/, chuyển hướng nội bộ vào đó
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -f [OR]
+    RewriteCond %{DOCUMENT_ROOT}/public/$1 -d
+    RewriteRule ^(.*)$ public/$1 [L]
+
+    # Tất cả các yêu cầu còn lại sẽ được chuyển vào public/index.php
+    RewriteRule ^(.*)$ public/index.php [QSA,L]
+</IfModule>

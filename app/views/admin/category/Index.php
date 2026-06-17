@@ -52,7 +52,7 @@ $count      = $_GET['count']   ?? 0;
     <div class="col-12 col-lg-4">
         <div class="admin-card">
             <h4 class="admin-card-title mb-4">Thêm Danh mục mới</h4>
-            <form action="?page=admin-category-store" method="POST">
+            <form action="?page=admin-category-store" method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label class="form-label">Tên danh mục <span class="text-danger">*</span></label>
                     <input type="text" name="ten_danh_muc" id="catName" class="form-control" required onkeyup="generateSlug()">
@@ -60,6 +60,11 @@ $count      = $_GET['count']   ?? 0;
                 <div class="mb-3">
                     <label class="form-label">Đường dẫn (Slug) <span class="text-danger">*</span></label>
                     <input type="text" name="duong_dan_slug" id="catSlug" class="form-control" required readonly style="background-color: #f8f9fa;">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Hình ảnh danh mục</label>
+                    <input type="file" name="hinh_anh" id="catImage" class="form-control" accept="image/*">
+                    <div class="form-text">Định dạng: JPG, PNG, WEBP.</div>
                 </div>
                 <div class="form-check form-switch mb-4">
                     <input class="form-check-input" type="checkbox" name="trang_thai" id="catStatus" checked>
@@ -79,6 +84,7 @@ $count      = $_GET['count']   ?? 0;
                     <thead class="table-light">
                         <tr>
                             <th>ID</th>
+                            <th>Ảnh</th>
                             <th>Tên Danh Mục</th>
                             <th>Đường dẫn</th>
                             <th>Số SP</th>
@@ -88,8 +94,14 @@ $count      = $_GET['count']   ?? 0;
                     </thead>
                     <tbody>
                         <?php foreach ($categories as $c): ?>
+                            <?php 
+                            $catImg = getProductImage($c['hinh_anh'] ?? '');
+                            ?>
                             <tr>
                                 <td class="text-muted fw-bold">#<?= $c['id'] ?></td>
+                                <td>
+                                    <img src="<?= htmlspecialchars($catImg) ?>" alt="" style="width: 45px; height: 45px; object-fit: contain; border-radius: 6px; border: 1px solid #eee; padding: 2px;">
+                                </td>
                                 <td class="fw-bold text-dark"><?= htmlspecialchars($c['ten_danh_muc']) ?></td>
                                 <td class="text-muted">/<?= htmlspecialchars($c['duong_dan_slug']) ?></td>
                                 <td>

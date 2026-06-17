@@ -42,7 +42,10 @@
                             <table class="table align-middle mb-0">
                                 <thead class="table-light">
                                     <tr>
-                                        <th scope="col" style="min-width: 280px;">Sản phẩm</th>
+                                        <th scope="col" style="width: 50px;" class="text-center">
+                                            <input type="checkbox" id="selectAllItems" class="form-check-input" checked onchange="toggleSelectAll(this)">
+                                        </th>
+                                        <th scope="col" style="min-width: 250px;">Sản phẩm</th>
                                         <th scope="col" class="text-center">Đơn giá</th>
                                         <th scope="col" class="text-center" style="width: 120px;">Số lượng</th>
                                         <th scope="col" class="text-end" style="min-width: 120px;">Thành tiền</th>
@@ -56,11 +59,14 @@
                                         $imgUrl = getProductImage($item['image']);
                                         ?>
                                         <tr>
+                                            <td class="text-center">
+                                                <input type="checkbox" name="selected_items[]" value="<?= htmlspecialchars($key) ?>" checked class="form-check-input cart-item-checkbox" data-price="<?= $item['price'] ?>" data-qty="<?= $item['qty'] ?>" onchange="updateCartSelection()">
+                                            </td>
                                             <td>
                                                 <div class="d-flex align-items-center gap-3">
                                                     <img src="<?= htmlspecialchars($imgUrl) ?>" alt="" style="width: 65px; height: 65px; object-fit: contain; border-radius: 8px; border: 1px solid #eee; padding: 2px;">
                                                     <div style="min-width: 0;">
-                                                        <a href="?page=product-detail&slug=<?= htmlspecialchars($item['name']) /* Wait, slug should be calculated or we can link by name, or slug was stored. But we can just search by name or category */ ?>" class="text-decoration-none text-dark fw-semibold text-truncate d-block" style="max-width: 220px;">
+                                                        <a href="?page=product-detail&slug=<?= htmlspecialchars($item['name']) ?>" class="text-decoration-none text-dark fw-semibold text-truncate d-block" style="max-width: 220px;">
                                                             <?= htmlspecialchars($item['name']) ?>
                                                         </a>
                                                         <?php if (!empty($item['attributes'])): ?>
@@ -106,7 +112,7 @@
 
                     <div class="d-flex justify-content-between mb-3">
                         <span class="text-muted">Tạm tính:</span>
-                        <span class="fw-semibold"><?= htmlspecialchars(formatVND($totalPayment)) ?></span>
+                        <span class="fw-semibold" id="cartSubtotal"><?= htmlspecialchars(formatVND($totalPayment)) ?></span>
                     </div>
 
                     <div class="d-flex justify-content-between mb-3">
@@ -118,12 +124,12 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <span class="fs-5 fw-bold">Tổng thanh toán:</span>
-                        <span class="fs-4 fw-bold text-danger"><?= htmlspecialchars(formatVND($totalPayment)) ?></span>
+                        <span class="fs-4 fw-bold text-danger" id="cartTotal"><?= htmlspecialchars(formatVND($totalPayment)) ?></span>
                     </div>
 
-                    <a href="?page=checkout" class="btn btn-primary btn-lg w-100 fw-bold border-0 py-3 rounded-3" style="background: linear-gradient(135deg, #ff7b00, #ff9500);">
+                    <button type="submit" form="cartForm" formaction="?page=checkout" formmethod="POST" class="btn btn-primary btn-lg w-100 fw-bold border-0 py-3 rounded-3" style="background: linear-gradient(135deg, #ff7b00, #ff9500);">
                         Tiến hành đặt hàng
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
@@ -151,4 +157,41 @@ document.querySelectorAll('.qty-input-box').forEach(function(input) {
         }
     });
 });
+
+// Chọn tất cả hoặc bỏ chọn tất cả sản phẩm
+function toggleSelectAll(master) {
+    const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+    checkboxes.forEach(cb => {
+        cb.checked = master.checked;
+    });
+    updateCartSelection();
+}
+
+// Cập nhật tổng số tiền hiển thị dựa trên các sản phẩm được chọn
+function updateCartSelection() {
+    const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+    let total = 0;
+    let checkedCount = 0;
+
+    checkboxes.forEach(cb => {
+        if (cb.checked) {
+            const price = parseFloat(cb.getAttribute('data-price'));
+            const qty = parseInt(cb.getAttribute('data-qty'));
+            total += price * qty;
+            checkedCount++;
+        }
+    });
+
+    // Cập nhật trạng thái checkbox "Chọn tất cả"
+    const selectAllCb = document.getElementById('selectAllItems');
+    if (selectAllCb) {
+        selectAllCb.checked = (checkedCount === checkboxes.length);
+    }
+
+    // Định dạng VND hiển thị
+    const formattedTotal = new Intl.NumberFormat('vi-VN', { style: 'decimal' }).format(total) + ' ₫';
+    
+    document.getElementById('cartSubtotal').textContent = formattedTotal;
+    document.getElementById('cartTotal').textContent = formattedTotal;
+}
 </script>

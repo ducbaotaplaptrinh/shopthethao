@@ -169,18 +169,18 @@ foreach ($cartItems as $item) {
                         class="dropdown-menu p-3 rounded-4 shadow-lg position-absolute dropdown-menu-end" style="min-width: 180px;">
                         <?php if (isset($_SESSION['user'])): ?>
                             <div class="dropdown-header px-2 py-1 text-dark border-bottom mb-2">
-                                <?php 
-                                    $userRankInfo = $_SESSION['user']['hang_khach_hang'] ?? [
-                                        'ten_hang' => 'Đồng',
-                                        'mau_sac' => '#cd7f32',
-                                        'bieu_tuong' => 'bi-star-half'
-                                    ];
-                                    $rankName = $userRankInfo['ten_hang'];
-                                    $rankColor = $userRankInfo['mau_sac'];
-                                    $rankIcon = $userRankInfo['bieu_tuong'];
-                                    
-                                    // Make background color lighter version of the color (for simplicity we just use transparent or rgba if it was hex, here we use inline styles with opacity)
-                                    $rankBgColor = $rankName === 'Kim Cương' ? 'linear-gradient(135deg, #b9f2ff 0%, #30c5e6 100%)' : $rankColor . '33'; // append 33 for 20% opacity in hex
+                                <?php
+                                $userRankInfo = $_SESSION['user']['hang_khach_hang'] ?? [
+                                    'ten_hang' => 'Đồng',
+                                    'mau_sac' => '#cd7f32',
+                                    'bieu_tuong' => 'bi-star-half'
+                                ];
+                                $rankName = $userRankInfo['ten_hang'];
+                                $rankColor = $userRankInfo['mau_sac'];
+                                $rankIcon = $userRankInfo['bieu_tuong'];
+
+                                // Make background color lighter version of the color (for simplicity we just use transparent or rgba if it was hex, here we use inline styles with opacity)
+                                $rankBgColor = $rankName === 'Kim Cương' ? 'linear-gradient(135deg, #b9f2ff 0%, #30c5e6 100%)' : $rankColor . '33'; // append 33 for 20% opacity in hex
                                 ?>
                                 <div class="fw-bold" style="font-size: 1.4rem;">
                                     <?= htmlspecialchars($_SESSION['user']['ho_ten']) ?>

@@ -44,6 +44,20 @@ class NguoiDungModel extends Model
         return (int)$this->conn->lastInsertId();
     }
 
+    public function assignDefaultRank(int $userId): ?array
+    {
+        $sqlDefaultRank = "SELECT id, ten_hang, mau_sac, bieu_tuong FROM hang_thanh_vien ORDER BY muc_chi_tieu_toi_thieu ASC LIMIT 1";
+        $stmtDefaultRank = $this->conn->query($sqlDefaultRank);
+        $defaultRank = $stmtDefaultRank->fetch(PDO::FETCH_ASSOC);
+
+        if ($defaultRank) {
+            $sqlUpdateUserRank = "UPDATE nguoi_dung SET ma_hang = :ma_hang WHERE id = :uid";
+            $stmtUpdateUserRank = $this->conn->prepare($sqlUpdateUserRank);
+            $stmtUpdateUserRank->execute(['ma_hang' => $defaultRank['id'], 'uid' => $userId]);
+        }
+        return $defaultRank ?: null;
+    }
+
     public function getUserById(int $id): ?NguoiDung
     {
         $sql = "SELECT * FROM nguoi_dung WHERE id = :id AND ngay_xoa IS NULL LIMIT 1";
@@ -172,7 +186,7 @@ class NguoiDungModel extends Model
                     dia_chi_chi_tiet = :detail, phuong_xa = :ward, 
                     quan_huyen = :district, tinh_thanh_pho = :province, la_mac_dinh = :is_default
                 WHERE id = :id AND ma_nguoi_dung = :uid";
-        
+
         $stmt = $this->conn->prepare($sql);
         return $stmt->execute([
             'id' => $addressId,
@@ -229,4 +243,3 @@ class NguoiDungModel extends Model
         return $stmt->execute(['id' => $addressId, 'uid' => $userId]);
     }
 }
-

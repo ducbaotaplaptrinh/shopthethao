@@ -62,7 +62,7 @@ if ((!empty($danhSachSanPham) && is_array($danhSachSanPham))) {
                 <div id="filterSidebar"
 
                     class="bg-white rounded shadow-sm p-3">
-                    <?php require BASE_PATH . "/app/views/components/product/sidebar.php" ?>
+                    <?php require BASE_PATH . "/app/views/components/product/Sidebar.php" ?>
                 </div>
 
             </aside>
@@ -98,7 +98,7 @@ if ((!empty($danhSachSanPham) && is_array($danhSachSanPham))) {
 
 
                     <div class="row g-3">
-                        <?php require BASE_PATH . "/app/views/components/product/listproduct.php" ?>
+                        <?php require BASE_PATH . "/app/views/components/product/ListProduct.php" ?>
 
 
 
@@ -136,7 +136,7 @@ if ((!empty($danhSachSanPham) && is_array($danhSachSanPham))) {
                 <!-- Description -->
                 <section class="category-description bg-white rounded shadow-sm p-4 mt-5">
 
-                    <?php require BASE_PATH . "/app/views/components/product/gioithieu.php" ?>
+                    <?php require BASE_PATH . "/app/views/components/product/GioiThieu.php" ?>
 
                 </section>
 
