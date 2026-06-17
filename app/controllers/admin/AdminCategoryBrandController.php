@@ -87,7 +87,26 @@ class AdminCategoryBrandController
             exit;
         }
 
-        $this->model->insertCategory($ten, $slug, $trangthai);
+        // Xử lý upload hình ảnh danh mục
+        $hinh_anh = null;
+        if (isset($_FILES['hinh_anh']) && $_FILES['hinh_anh']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['hinh_anh']['tmp_name'];
+            $fileName = $_FILES['hinh_anh']['name'];
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            
+            $newFileName = 'cat_' . time() . '_' . rand(100, 999) . '.' . $fileExtension;
+            $uploadFileDir = BASE_PATH . '/public/assets/images/';
+            
+            if (!is_dir($uploadFileDir)) {
+                mkdir($uploadFileDir, 0777, true);
+            }
+            
+            if (move_uploaded_file($fileTmpPath, $uploadFileDir . $newFileName)) {
+                $hinh_anh = $newFileName;
+            }
+        }
+
+        $this->model->insertCategory($ten, $slug, $trangthai, $hinh_anh);
         header("Location: ?page=admin-categories&success=created");
         exit;
     }
@@ -143,7 +162,32 @@ class AdminCategoryBrandController
             exit;
         }
 
-        $this->model->updateCategory($id, $ten, $slug, $trangthai);
+        // Lấy hình ảnh cũ đề phòng không cập nhật ảnh mới
+        $category = $this->model->getCategoryById($id);
+        $hinh_anh = $category['hinh_anh'] ?? null;
+
+        if (isset($_FILES['hinh_anh']) && $_FILES['hinh_anh']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['hinh_anh']['tmp_name'];
+            $fileName = $_FILES['hinh_anh']['name'];
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+            
+            $newFileName = 'cat_' . time() . '_' . rand(100, 999) . '.' . $fileExtension;
+            $uploadFileDir = BASE_PATH . '/public/assets/images/';
+            
+            if (!is_dir($uploadFileDir)) {
+                mkdir($uploadFileDir, 0777, true);
+            }
+            
+            if (move_uploaded_file($fileTmpPath, $uploadFileDir . $newFileName)) {
+                // Xóa hình cũ
+                if (!empty($hinh_anh) && file_exists($uploadFileDir . $hinh_anh)) {
+                    @unlink($uploadFileDir . $hinh_anh);
+                }
+                $hinh_anh = $newFileName;
+            }
+        }
+
+        $this->model->updateCategory($id, $ten, $slug, $trangthai, $hinh_anh);
         header("Location: ?page=admin-categories&success=updated");
         exit;
     }

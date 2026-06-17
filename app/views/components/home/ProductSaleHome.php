@@ -23,7 +23,7 @@
 
                     <div class="swiper-wrapper">
                         <?php foreach ($sanPhamSale as $index => $sps): ?>
-                            <a href="#!"
+                            <a href="?page=product-detail&slug=<?= htmlspecialchars($sps->getDuong_dan_slug(), ENT_QUOTES, 'UTF-8') ?>"
                                 class="swiper-slide sale-product-item">
 
                                 <div class="card sale-card border-0">
