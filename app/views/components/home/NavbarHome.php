@@ -189,6 +189,9 @@ foreach ($cartItems as $item) {
                                     <i class="bi <?= htmlspecialchars($rankIcon) ?> me-1"></i>Hạng <?= htmlspecialchars($rankName) ?>
                                 </div>
                             </div>
+                            <a class="dropdown-item" href="?page=profile">
+                                <i class="bi bi-person-circle me-2"></i>Thông tin cá nhân
+                            </a>
                             <a class="dropdown-item" href="?page=my-orders">
                                 <i class="bi bi-bag-heart me-2"></i>Đơn hàng của tôi
                             </a>
