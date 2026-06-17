@@ -13,7 +13,7 @@
                     <div class="info-card__icon">
                         <img
                             class="icon"
-                            src="public/assets/images/favicons/img-vanchuyen.svg"
+                            src="assets/images/favicons/img-vanchuyen.svg"
                             alt="" />
                     </div>
                     <div>
@@ -27,7 +27,7 @@
                     <div class="info-card__icon">
                         <img
                             class="icon"
-                            src="public/assets/images/favicons/img-chatluong.svg"
+                            src="assets/images/favicons/img-chatluong.svg"
                             alt="" />
                     </div>
                     <div>
@@ -41,7 +41,7 @@
                     <div class="info-card__icon">
                         <img
                             class="icon"
-                            src="public/assets/images/favicons/img-thanhtoan.svg"
+                            src="assets/images/favicons/img-thanhtoan.svg"
                             alt="" />
                     </div>
                     <div>
@@ -55,7 +55,7 @@
                     <div class="info-card__icon">
                         <img
                             class="icon"
-                            src="public/assets/images/favicons/img-doitra.svg"
+                            src="assets/images/favicons/img-doitra.svg"
                             alt="" />
                     </div>
                     <div>

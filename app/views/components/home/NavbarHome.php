@@ -46,7 +46,7 @@ foreach ($cartItems as $item) {
             <div class="logo-container ">
                 <a class="logo-container__link d-flex" href="#home">
                     <img
-                        src="public/assets/images/favicons/logo.png"
+                        src="assets/images/favicons/logo.png"
                         alt="Logo"
                         class="logo-container__icon" />
 
@@ -218,7 +218,7 @@ foreach ($cartItems as $item) {
             <div class="logo-container ">
                 <a class="logo-container__link" href="#home">
                     <img
-                        src="public/assets/images/favicons/logo.png"
+                        src="assets/images/favicons/logo.png"
                         alt="Logo"
                         class="logo-container__icon" />
                 </a>

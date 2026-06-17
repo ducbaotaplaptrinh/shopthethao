@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link rel="stylesheet" href="/ShopTheThao/public/assets/css/contact.css">
+<link rel="stylesheet" href="assets/css/contact.css">
 
 <div class="contact-container">
     <div class="contact-info">
@@ -92,4 +92,4 @@
     </div>
 </div>
 
-<script src="/ShopTheThao/public/assets/js/contact.js"></script>
+<script src="assets/js/contact.js"></script>
