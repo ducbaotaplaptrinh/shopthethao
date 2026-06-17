@@ -333,4 +333,10 @@ return [
 		'action' => 'detail',
 		'pageStyles' => ['assets/css/news.css']
 	],
+	'notify-out-of-stock' => [
+		'title' => 'Đăng ký thông báo hết hàng',
+		'view' => 'errors/404.php',
+		'controller' => \app\controllers\SanPhamController::class,
+		'action' => 'dangKyThongBao',
+	],
 ];

@@ -122,6 +122,19 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
                         </button>
                     </div>
                     <div id="qtyError" class="text-danger small mt-2 fw-semibold" style="display: none;"></div>
+                    
+                    <!-- Form thông báo hết hàng -->
+                    <div id="outOfStockFormBox" style="display: none;" class="mt-3 p-3 border rounded bg-light w-100">
+                        <h6 class="text-danger fw-bold mb-1"><i class="bi bi-bell-fill"></i> Đăng ký nhận thông báo khi có hàng</h6>
+                        <p class="small text-muted mb-2">Sản phẩm này hiện đang hết hàng. Hãy để lại email để chúng tôi thông báo cho bạn ngay khi có hàng trở lại.</p>
+                        <form id="frmNotifyStock" onsubmit="submitNotifyStock(event)">
+                            <div class="input-group">
+                                <input type="email" class="form-control" id="notifyEmail" placeholder="Nhập email của bạn..." required style="height: 38px;">
+                                <button class="btn btn-danger text-white px-3" type="submit" id="btnNotifySubmit" style="font-weight: 600;">Đăng ký</button>
+                            </div>
+                            <div id="notifyMessage" class="small mt-2 fw-semibold" style="display: none;"></div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -309,15 +322,6 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
     }
 
     function checkCurrentVariation() {
-        if (productVariations.length === 0) return;
-
-        // Find variation where all selected options match
-        activeVariation = productVariations.find(bt => {
-            return bt.attributes.every(attr => {
-                return selectedOptions[attr.ten_thuoc_tinh] && selectedOptions[attr.ten_thuoc_tinh] == attr.gia_tri_id;
-            });
-        });
-
         const priceNewEl = document.getElementById("displayPriceNew");
         const priceOldEl = document.getElementById("displayPriceOld");
         const badgeEl = document.getElementById("displayDiscountBadge");
@@ -327,84 +331,115 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
         const mainImgEl = document.getElementById("productMainImg");
         const btnCart = document.getElementById("btnAddToCart");
         const btnBuy = document.getElementById("btnBuyNow");
+        const formBox = document.getElementById("outOfStockFormBox");
 
-        if (activeVariation) {
-            // Variation match found!
-            skuEl.textContent = activeVariation.ma_vach_sku ? activeVariation.ma_vach_sku : defaultProductSKU;
-            
-            // Stock
-            const stock = parseInt(activeVariation.so_luong_ton);
-            stockCountEl.textContent = stock;
-            specStockEl.textContent = stock > 0 ? "Còn hàng (" + stock + " sản phẩm)" : "Hết hàng";
+        if (productVariations.length > 0) {
+            // Find variation where all selected options match
+            activeVariation = productVariations.find(bt => {
+                return bt.attributes.every(attr => {
+                    return selectedOptions[attr.ten_thuoc_tinh] && selectedOptions[attr.ten_thuoc_tinh] == attr.gia_tri_id;
+                });
+            });
 
-            if (stock <= 0) {
-                btnCart.disabled = true;
-                btnCart.innerHTML = "Hết hàng";
-                btnBuy.disabled = true;
-            } else {
-                btnCart.disabled = false;
-                btnCart.innerHTML = '<i class="bi bi-cart3"></i> Thêm vào giỏ hàng';
-                btnBuy.disabled = false;
-            }
+            if (activeVariation) {
+                // Variation match found!
+                skuEl.textContent = activeVariation.ma_vach_sku ? activeVariation.ma_vach_sku : defaultProductSKU;
+                
+                // Stock
+                const stock = parseInt(activeVariation.so_luong_ton);
+                stockCountEl.textContent = stock;
+                specStockEl.textContent = stock > 0 ? "Còn hàng (" + stock + " sản phẩm)" : "Hết hàng";
 
-            // Price
-            let currentPrice = activeVariation.gia_ban_rieng ? parseFloat(activeVariation.gia_ban_rieng) : defaultProductPrice;
-            // Calculate promotional price if default product is on sale
-            if (defaultProductPromoPrice > 0) {
-                let discountRate = (defaultProductPrice - defaultProductPromoPrice) / defaultProductPrice;
-                let currentPromoPrice = Math.round(currentPrice * (1 - discountRate));
-                priceNewEl.textContent = formatVND(currentPromoPrice);
-                priceOldEl.textContent = formatVND(currentPrice);
-                priceOldEl.classList.remove("d-none");
-                badgeEl.classList.remove("d-none");
-            } else {
-                priceNewEl.textContent = formatVND(currentPrice);
-                priceOldEl.classList.add("d-none");
-                badgeEl.classList.add("d-none");
-            }
-
-            // Image
-            if (activeVariation.anh_rieng) {
-                let varImg = activeVariation.anh_rieng;
-                if (!varImg.startsWith("assets/")) {
-                    varImg = "assets/images/" + varImg;
+                if (stock <= 0) {
+                    btnCart.disabled = true;
+                    btnCart.innerHTML = "Hết hàng";
+                    btnBuy.disabled = true;
+                    if (formBox) formBox.style.display = "block";
+                } else {
+                    btnCart.disabled = false;
+                    btnCart.innerHTML = '<i class="bi bi-cart3"></i> Thêm vào giỏ hàng';
+                    btnBuy.disabled = false;
+                    if (formBox) formBox.style.display = "none";
                 }
-                mainImgEl.src = varImg;
-            } else {
-                mainImgEl.src = defaultProductImage;
-            }
 
-            // Reset quantity to 1 if it exceeds stock
-            const qtyInput = document.getElementById("qtyInput");
-            if (parseInt(qtyInput.value) > stock && stock > 0) {
-                qtyInput.value = 1;
+                // Price
+                let currentPrice = activeVariation.gia_ban_rieng ? parseFloat(activeVariation.gia_ban_rieng) : defaultProductPrice;
+                // Calculate promotional price if default product is on sale
+                if (defaultProductPromoPrice > 0) {
+                    let discountRate = (defaultProductPrice - defaultProductPromoPrice) / defaultProductPrice;
+                    let currentPromoPrice = Math.round(currentPrice * (1 - discountRate));
+                    priceNewEl.textContent = formatVND(currentPromoPrice);
+                    priceOldEl.textContent = formatVND(currentPrice);
+                    priceOldEl.classList.remove("d-none");
+                    badgeEl.classList.remove("d-none");
+                } else {
+                    priceNewEl.textContent = formatVND(currentPrice);
+                    priceOldEl.classList.add("d-none");
+                    badgeEl.classList.add("d-none");
+                }
+
+                // Image
+                if (activeVariation.anh_rieng) {
+                    let varImg = activeVariation.anh_rieng;
+                    if (!varImg.startsWith("assets/")) {
+                        varImg = "assets/images/" + varImg;
+                    }
+                    mainImgEl.src = varImg;
+                } else {
+                    mainImgEl.src = defaultProductImage;
+                }
+
+                // Reset quantity to 1 if it exceeds stock
+                const qtyInput = document.getElementById("qtyInput");
+                if (parseInt(qtyInput.value) > stock && stock > 0) {
+                    qtyInput.value = 1;
+                }
+            } else {
+                // No matching variation found
+                skuEl.textContent = defaultProductSKU;
+                stockCountEl.textContent = defaultProductStock;
+                specStockEl.textContent = defaultProductStock > 0 ? "Còn hàng" : "Hết hàng";
+                mainImgEl.src = defaultProductImage;
+                
+                if (defaultProductPromoPrice > 0) {
+                    priceNewEl.textContent = formatVND(defaultProductPromoPrice);
+                    priceOldEl.textContent = formatVND(defaultProductPrice);
+                    priceOldEl.classList.remove("d-none");
+                    badgeEl.classList.remove("d-none");
+                } else {
+                    priceNewEl.textContent = formatVND(defaultProductPrice);
+                    priceOldEl.classList.add("d-none");
+                    badgeEl.classList.add("d-none");
+                }
+
+                if (defaultProductStock <= 0) {
+                    btnCart.disabled = true;
+                    btnCart.innerHTML = "Hết hàng";
+                    btnBuy.disabled = true;
+                    if (formBox) formBox.style.display = "block";
+                } else {
+                    btnCart.disabled = false;
+                    btnCart.innerHTML = '<i class="bi bi-cart3"></i> Thêm vào giỏ hàng';
+                    btnBuy.disabled = false;
+                    if (formBox) formBox.style.display = "none";
+                }
             }
         } else {
-            // No matching variation found
+            // No variations at all
             skuEl.textContent = defaultProductSKU;
             stockCountEl.textContent = defaultProductStock;
-            specStockEl.textContent = defaultProductStock > 0 ? "Còn hàng" : "Hết hàng";
-            mainImgEl.src = defaultProductImage;
+            specStockEl.textContent = defaultProductStock > 0 ? "Còn hàng (" + defaultProductStock + " sản phẩm)" : "Hết hàng";
             
-            if (defaultProductPromoPrice > 0) {
-                priceNewEl.textContent = formatVND(defaultProductPromoPrice);
-                priceOldEl.textContent = formatVND(defaultProductPrice);
-                priceOldEl.classList.remove("d-none");
-                badgeEl.classList.remove("d-none");
-            } else {
-                priceNewEl.textContent = formatVND(defaultProductPrice);
-                priceOldEl.classList.add("d-none");
-                badgeEl.classList.add("d-none");
-            }
-
             if (defaultProductStock <= 0) {
                 btnCart.disabled = true;
                 btnCart.innerHTML = "Hết hàng";
                 btnBuy.disabled = true;
+                if (formBox) formBox.style.display = "block";
             } else {
                 btnCart.disabled = false;
                 btnCart.innerHTML = '<i class="bi bi-cart3"></i> Thêm vào giỏ hàng';
                 btnBuy.disabled = false;
+                if (formBox) formBox.style.display = "none";
             }
         }
         kiemTraSoLuong();
@@ -607,6 +642,51 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
             btnBuy.innerText = originalText;
             console.error('Error buying now:', err);
             alert('Không thể kết nối đến máy chủ.');
+        });
+    }
+
+    function submitNotifyStock(event) {
+        event.preventDefault();
+        const email = document.getElementById("notifyEmail").value;
+        const productId = <?= $sanpham->getId() ?>;
+        const variationId = activeVariation ? activeVariation.id : '';
+
+        const btnSubmit = document.getElementById("btnNotifySubmit");
+        const msgEl = document.getElementById("notifyMessage");
+
+        btnSubmit.disabled = true;
+        btnSubmit.innerText = "Đang xử lý...";
+        msgEl.style.display = "none";
+
+        const formData = new FormData();
+        formData.append('product_id', productId);
+        formData.append('variation_id', variationId);
+        formData.append('email', email);
+
+        fetch('?page=notify-out-of-stock', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = "Đăng ký";
+            msgEl.textContent = data.message;
+            msgEl.style.display = "block";
+            if (data.success) {
+                msgEl.className = "small mt-2 fw-semibold text-success";
+                document.getElementById("notifyEmail").value = "";
+            } else {
+                msgEl.className = "small mt-2 fw-semibold text-danger";
+            }
+        })
+        .catch(err => {
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = "Đăng ký";
+            msgEl.textContent = "Không thể kết nối đến máy chủ.";
+            msgEl.className = "small mt-2 fw-semibold text-danger";
+            msgEl.style.display = "block";
+            console.error('Error:', err);
         });
     }
 </script>

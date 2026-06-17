@@ -275,4 +275,30 @@ class SanPhamController
         echo json_encode($suggestions);
         exit();
     }
+
+    public function dangKyThongBao(): void
+    {
+        $productId = isset($_POST['product_id']) ? (int)$_POST['product_id'] : 0;
+        $variationId = isset($_POST['variation_id']) && $_POST['variation_id'] !== '' ? (int)$_POST['variation_id'] : null;
+        $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+
+        if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['success' => false, 'message' => 'Email không hợp lệ!']);
+            exit();
+        }
+
+        if ($productId <= 0) {
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(['success' => false, 'message' => 'Sản phẩm không hợp lệ!']);
+            exit();
+        }
+
+        $model = new \app\models\ThongBaoHetHangModel();
+        $result = $model->luuDangKy($productId, $variationId, $email);
+
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($result);
+        exit();
+    }
 }
