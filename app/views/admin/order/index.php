@@ -9,10 +9,28 @@ $statusLabels = [
 $statusFilter = $_GET['status'] ?? 'all';
 ?>
 
+<?php
+// Hiển thị thông báo thành công / lỗi từ query param
+$successMsg = $_GET['success'] ?? '';
+$errorMsg = $_GET['error'] ?? '';
+?>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="page-title mb-0">Quản lý Đơn hàng</h2>
     <div class="text-muted" style="font-size: 13px;">Tổng: <strong><?= count($orders) ?></strong> đơn hàng</div>
 </div>
+
+<?php if ($successMsg === 'deleted'): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i> Xóa đơn hàng thành công!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($errorMsg === 'cannot_delete'): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i> Không thể xóa đơn hàng đang xử lý, đang giao hoặc đã hoàn thành!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 
 <!-- Tab lọc trạng thái -->
 <div class="d-flex gap-2 flex-wrap mb-4">
@@ -57,9 +75,16 @@ $statusFilter = $_GET['status'] ?? 'all';
                     <td><?= date('d/m/Y H:i', strtotime($o['ngay_tao'])) ?></td>
                     <td><span class="badge <?= $s['class'] ?>"><?= $s['label'] ?></span></td>
                     <td class="text-end">
-                        <a href="?page=admin-order-detail&id=<?= $o['id'] ?>" class="btn btn-sm btn-light text-primary">
+                        <a href="?page=admin-order-detail&id=<?= $o['id'] ?>" class="btn btn-sm btn-light text-primary me-1">
                             <i class="bi bi-eye"></i> Xem
                         </a>
+                        <?php if (in_array($o['trang_thai_don_hang'], ['da_huy', 'cho_xac_nhan'])): ?>
+                            <a href="?page=admin-order-delete&id=<?= $o['id'] ?>" 
+                               class="btn btn-sm btn-light text-danger"
+                               onclick="return confirm('Xóa đơn hàng này? Hành động này không thể hoàn tác!')">
+                                <i class="bi bi-trash"></i> Xóa
+                            </a>
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; ?>

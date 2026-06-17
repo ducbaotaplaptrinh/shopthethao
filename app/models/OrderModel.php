@@ -48,6 +48,20 @@ class OrderModel extends Model
         try {
             $this->conn->beginTransaction();
 
+            // Kiểm tra tồn kho thực tế trước khi đặt hàng để tránh mua quá số lượng tồn
+            foreach ($cartItems as $item) {
+                $tableName = !empty($item['variation_id']) ? "bien_the_san_pham" : "san_pham";
+                $targetId = !empty($item['variation_id']) ? $item['variation_id'] : $item['product_id'];
+                
+                $stmtCheck = $this->conn->prepare("SELECT so_luong_ton FROM {$tableName} WHERE id = ?");
+                $stmtCheck->execute([$targetId]);
+                $realStock = $stmtCheck->fetchColumn();
+                
+                if ($realStock !== false && $item['qty'] > (int)$realStock) {
+                    throw new \Exception('Sản phẩm "' . $item['name'] . '" (hoặc biến thể của nó) chỉ còn lại ' . $realStock . ' sản phẩm trong kho. Vui lòng điều chỉnh lại số lượng trong giỏ hàng!');
+                }
+            }
+
             // 1. Get or create user ID if not explicitly set
             $userId = $order->getMa_nguoi_dung();
             if ($userId <= 0) {

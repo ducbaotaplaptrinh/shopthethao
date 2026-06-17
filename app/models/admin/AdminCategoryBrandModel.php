@@ -7,17 +7,92 @@ use PDO;
 
 class AdminCategoryBrandModel extends Model
 {
+    // =========================================================
+    // DANH MỤC (CATEGORY)
+    // =========================================================
+
     public function getAllCategories()
     {
-        $stmt = $this->conn->query("SELECT * FROM danh_muc ORDER BY id DESC");
+        $sql = "SELECT dm.*, 
+                (SELECT COUNT(*) FROM san_pham sp WHERE sp.ma_danh_muc = dm.id AND sp.ngay_xoa IS NULL) as so_san_pham
+                FROM danh_muc dm 
+                WHERE dm.ngay_xoa IS NULL 
+                ORDER BY dm.id DESC";
+        $stmt = $this->conn->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getCategoryById($id)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM danh_muc WHERE id = ? AND ngay_xoa IS NULL");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /** Kiểm tra trùng tên danh mục (bỏ qua id hiện tại khi cập nhật) */
+    public function findCategoryByName($ten, $excludeId = null)
+    {
+        if ($excludeId) {
+            $stmt = $this->conn->prepare("SELECT id FROM danh_muc WHERE ten_danh_muc = ? AND id != ? AND ngay_xoa IS NULL");
+            $stmt->execute([$ten, $excludeId]);
+        } else {
+            $stmt = $this->conn->prepare("SELECT id FROM danh_muc WHERE ten_danh_muc = ? AND ngay_xoa IS NULL");
+            $stmt->execute([$ten]);
+        }
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /** Kiểm tra trùng slug danh mục */
+    public function findCategoryBySlug($slug, $excludeId = null)
+    {
+        if ($excludeId) {
+            $stmt = $this->conn->prepare("SELECT id FROM danh_muc WHERE duong_dan_slug = ? AND id != ? AND ngay_xoa IS NULL");
+            $stmt->execute([$slug, $excludeId]);
+        } else {
+            $stmt = $this->conn->prepare("SELECT id FROM danh_muc WHERE duong_dan_slug = ? AND ngay_xoa IS NULL");
+            $stmt->execute([$slug]);
+        }
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /** Đếm sản phẩm đang dùng danh mục này (để chặn xóa) */
+    public function countProductsByCategory($categoryId)
+    {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM san_pham WHERE ma_danh_muc = ? AND ngay_xoa IS NULL");
+        $stmt->execute([$categoryId]);
+        return (int) $stmt->fetchColumn();
+    }
+
+    /** Thêm mới danh mục - Sửa lỗi: dùng đúng tên cột duong_dan_slug */
     public function insertCategory($ten, $slug, $trangthai)
     {
-        $stmt = $this->conn->prepare("INSERT INTO danh_muc (ten_danh_muc, duong_dan, trang_thai) VALUES (?, ?, ?)");
+        $stmt = $this->conn->prepare(
+            "INSERT INTO danh_muc (ten_danh_muc, duong_dan_slug, trang_thai) VALUES (?, ?, ?)"
+        );
         return $stmt->execute([$ten, $slug, $trangthai]);
     }
+
+    /** Cập nhật danh mục */
+    public function updateCategory($id, $ten, $slug, $trangthai)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE danh_muc SET ten_danh_muc = ?, duong_dan_slug = ?, trang_thai = ? WHERE id = ? AND ngay_xoa IS NULL"
+        );
+        return $stmt->execute([$ten, $slug, $trangthai, $id]);
+    }
+
+    /** Xóa mềm danh mục - chỉ cho phép khi không còn sản phẩm */
+    public function xoaMemCategory($id)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE danh_muc SET trang_thai = 0, ngay_xoa = NOW() WHERE id = ? AND ngay_xoa IS NULL"
+        );
+        return $stmt->execute([$id]);
+    }
+
+    // =========================================================
+    // THƯƠNG HIỆU (BRAND)
+    // =========================================================
 
     public function getAllBrands()
     {

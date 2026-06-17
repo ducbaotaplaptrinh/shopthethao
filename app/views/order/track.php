@@ -36,28 +36,18 @@
                     <div class="d-flex flex-column gap-3">
                         <?php foreach ($orders as $order): ?>
                             <?php 
-                            // Status badges colors
-                            $statusLabel = 'Chờ xác nhận';
-                            $statusClass = 'bg-warning text-dark';
-                            
-                            switch ($order->getTrang_thai_don_hang()) {
-                                case 'da_xac_nhan':
-                                    $statusLabel = 'Đã xác nhận';
-                                    $statusClass = 'bg-info text-white';
-                                    break;
-                                case 'dang_giao':
-                                    $statusLabel = 'Đang giao hàng';
-                                    $statusClass = 'bg-primary text-white';
-                                    break;
-                                case 'hoan_thanh':
-                                    $statusLabel = 'Đã giao thành công';
-                                    $statusClass = 'bg-success text-white';
-                                    break;
-                                case 'da_huy':
-                                    $statusLabel = 'Đã hủy đơn';
-                                    $statusClass = 'bg-danger text-white';
-                                    break;
-                            }
+                            // Bộ trạng thái — đồng bộ với admin
+                            $statusMap = [
+                                'cho_xac_nhan' => ['label' => 'Chờ xác nhận',  'class' => 'bg-warning text-dark'],
+                                'dang_xu_ly'   => ['label' => 'Đang xử lý',    'class' => 'bg-info text-white'],
+                                'dang_giao'    => ['label' => 'Đang giao hàng', 'class' => 'bg-primary text-white'],
+                                'hoan_thanh'   => ['label' => 'Đã giao thành công', 'class' => 'bg-success text-white'],
+                                'da_huy'       => ['label' => 'Đã hủy đơn',    'class' => 'bg-danger text-white'],
+                            ];
+                            $trangThai = $order->getTrang_thai_don_hang();
+                            $si = $statusMap[$trangThai] ?? ['label' => $trangThai, 'class' => 'bg-secondary text-white'];
+                            $statusLabel = $si['label'];
+                            $statusClass = $si['class'];
                             ?>
                             <div class="card shadow-sm border-0 rounded-4 p-4">
                                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 border-bottom pb-3 mb-3">

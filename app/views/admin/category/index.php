@@ -1,3 +1,52 @@
+<?php
+// Hiển thị thông báo từ query param
+$successMsg = $_GET['success'] ?? '';
+$errorMsg   = $_GET['error']   ?? '';
+$count      = $_GET['count']   ?? 0;
+?>
+
+<?php if ($successMsg === 'created'): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i> Thêm danh mục thành công!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($successMsg === 'updated'): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i> Cập nhật danh mục thành công!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($successMsg === 'deleted'): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i> Xóa danh mục thành công!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($errorMsg === 'duplicate_name'): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i> Tên danh mục đã tồn tại! Vui lòng chọn tên khác.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($errorMsg === 'duplicate_slug'): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i> Đường dẫn (slug) đã tồn tại!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($errorMsg === 'empty_fields'): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i> Vui lòng nhập đầy đủ thông tin!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($errorMsg === 'has_products'): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i> Không thể xóa danh mục này vì còn <strong><?= intval($count) ?></strong> sản phẩm đang sử dụng!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($errorMsg === 'not_found'): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i> Không tìm thấy danh mục!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
 <div class="row g-4">
     <!-- Cột thêm mới -->
     <div class="col-12 col-lg-4">
@@ -10,7 +59,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Đường dẫn (Slug) <span class="text-danger">*</span></label>
-                    <input type="text" name="duong_dan" id="catSlug" class="form-control" required readonly bg-light>
+                    <input type="text" name="duong_dan_slug" id="catSlug" class="form-control" required readonly style="background-color: #f8f9fa;">
                 </div>
                 <div class="form-check form-switch mb-4">
                     <input class="form-check-input" type="checkbox" name="trang_thai" id="catStatus" checked>
@@ -32,6 +81,7 @@
                             <th>ID</th>
                             <th>Tên Danh Mục</th>
                             <th>Đường dẫn</th>
+                            <th>Số SP</th>
                             <th>Trạng thái</th>
                             <th class="text-end">Thao tác</th>
                         </tr>
@@ -43,6 +93,11 @@
                                 <td class="fw-bold text-dark"><?= htmlspecialchars($c['ten_danh_muc']) ?></td>
                                 <td class="text-muted">/<?= htmlspecialchars($c['duong_dan_slug']) ?></td>
                                 <td>
+                                    <span class="badge bg-secondary bg-opacity-10 text-secondary">
+                                        <?= $c['so_san_pham'] ?? 0 ?> SP
+                                    </span>
+                                </td>
+                                <td>
                                     <?php if ($c['trang_thai'] == 1): ?>
                                         <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">Hiện</span>
                                     <?php else: ?>
@@ -50,11 +105,26 @@
                                     <?php endif; ?>
                                 </td>
                                 <td class="text-end">
-                                    <button class="btn btn-sm btn-light text-primary me-1"><i class="bi bi-pencil-square"></i></button>
-                                    <button class="btn btn-sm btn-light text-danger"><i class="bi bi-trash"></i></button>
+                                    <a href="?page=admin-category-edit&id=<?= $c['id'] ?>" class="btn btn-sm btn-light text-primary me-1" title="Sửa">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a href="?page=admin-category-delete&id=<?= $c['id'] ?>" 
+                                       class="btn btn-sm btn-light text-danger" 
+                                       title="Xóa"
+                                       onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục \'<?= htmlspecialchars($c['ten_danh_muc'], ENT_QUOTES) ?>\'?')">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
+                        <?php if (empty($categories)): ?>
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">
+                                    <i class="bi bi-folder2-open fs-1 d-block mb-3"></i>
+                                    Chưa có danh mục nào
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
@@ -74,7 +144,7 @@
         slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
         slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
         slug = slug.replace(/đ/gi, 'd');
-        slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
+        slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
         slug = slug.replace(/ /gi, "-");
         slug = slug.replace(/\-\-\-\-\-/gi, '-');
         slug = slug.replace(/\-\-\-\-/gi, '-');

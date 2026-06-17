@@ -5,7 +5,7 @@
     </a>
 </div>
 
-<form action="?page=admin-product-store" method="POST" id="productForm">
+<form action="?page=admin-product-store" method="POST" id="productForm" enctype="multipart/form-data">
     <div class="row g-4">
         <!-- Thông tin cơ bản -->
         <div class="col-12 col-xl-8">
@@ -20,7 +20,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Danh mục <span class="text-danger">*</span></label>
-                        <select name="id_danh_muc" class="form-select" required>
+                        <select name="ma_danh_muc" class="form-select" required>
                             <option value="">-- Chọn danh mục --</option>
                             <?php foreach($categories as $c): ?>
                                 <option value="<?= $c['id'] ?>"><?= htmlspecialchars($c['ten_danh_muc']) ?></option>
@@ -29,7 +29,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Thương hiệu</label>
-                        <select name="id_thuong_hieu" class="form-select">
+                        <select name="ma_thuong_hieu" class="form-select">
                             <option value="">-- Chọn thương hiệu --</option>
                             <?php foreach($brands as $b): ?>
                                 <option value="<?= $b['id'] ?>"><?= htmlspecialchars($b['ten_thuong_hieu']) ?></option>
@@ -41,14 +41,19 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Giá bán chung (VNĐ) <span class="text-danger">*</span></label>
-                        <input type="number" name="gia_goc" class="form-control" required placeholder="Nhập giá bán chung" min="0">
+                        <input type="number" name="gia_ban" class="form-control" required placeholder="Nhập giá bán chung" min="0">
                         <small class="text-muted">Đây là giá áp dụng nếu biến thể không set giá riêng.</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Số lượng tồn kho (Sản phẩm gốc)</label>
+                        <input type="number" name="so_luong_ton" class="form-control" placeholder="Nhập số lượng" min="0" value="0">
+                        <small class="text-muted">Dùng cho sản phẩm không có biến thể.</small>
                     </div>
                 </div>
 
                 <div class="mb-3">
                     <label class="form-label">Mô tả sản phẩm</label>
-                    <textarea name="mo_ta" class="form-control" rows="5" placeholder="Nhập mô tả chi tiết..."></textarea>
+                    <textarea name="mo_ta_chi_tiet" class="form-control" rows="5" placeholder="Nhập mô tả chi tiết..."></textarea>
                 </div>
             </div>
 
@@ -117,11 +122,13 @@
                 <hr class="my-4">
                 
                 <h4 class="admin-card-title mb-3">Hình ảnh đại diện</h4>
-                <div class="border rounded p-4 text-center bg-light" style="border-style: dashed !important; cursor: pointer;">
-                    <i class="bi bi-cloud-arrow-up fs-1 text-primary mb-2"></i>
-                    <p class="mb-0 text-muted">Nhấp để chọn ảnh</p>
-                    <!-- In a real scenario, an file input goes here -->
-                </div>
+                <input type="file" name="anh_dai_dien" class="form-control mb-3" accept="image/*">
+                
+                <hr class="my-4">
+                
+                <h4 class="admin-card-title mb-3">Thư viện ảnh phụ (Nhiều ảnh)</h4>
+                <input type="file" name="anh_thu_vien[]" class="form-control mb-1" accept="image/*" multiple>
+                <small class="text-muted d-block">Chọn nhiều ảnh mô tả bổ sung cho sản phẩm.</small>
             </div>
 
             <div class="d-grid gap-2">

@@ -99,26 +99,29 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
                 </div>
 
                 <!-- Buy Actions -->
-                <div class="buy-action-box">
-                    <div class="quantity-control">
-                        <button type="button" class="quantity-btn" onclick="updateQuantity(-1)">-</button>
-                        <input type="text" class="quantity-input" id="qtyInput" value="1" readonly>
-                        <button type="button" class="quantity-btn" onclick="updateQuantity(1)">+</button>
+                <div class="buy-action-box flex-column align-items-start">
+                    <div class="d-flex align-items-center gap-3 flex-wrap w-100">
+                        <div class="quantity-control">
+                            <button type="button" class="quantity-btn" onclick="updateQuantity(-1)">-</button>
+                            <input type="number" class="quantity-input" id="qtyInput" value="1" min="1" style="width: 65px; border: none; text-align: center; font-weight: 600; outline: none;">
+                            <button type="button" class="quantity-btn" onclick="updateQuantity(1)">+</button>
+                        </div>
+
+                        <span class="stock-status-text" id="displayStockText">
+                            Còn lại: <strong id="displayStockCount"><?= htmlspecialchars($sanpham->getSo_luong_ton()) ?></strong> sản phẩm
+                        </span>
+
+                        <div class="w-100 d-block d-md-none my-2"></div>
+
+                        <button type="button" class="btn-add-cart" id="btnAddToCart" onclick="addToCartClick()">
+                            <i class="bi bi-cart3"></i> Thêm vào giỏ hàng
+                        </button>
+                        
+                        <button type="button" class="btn-buy-now" id="btnBuyNow" onclick="buyNowClick()">
+                            Mua ngay
+                        </button>
                     </div>
-
-                    <span class="stock-status-text" id="displayStockText">
-                        Còn lại: <strong id="displayStockCount"><?= htmlspecialchars($sanpham->getSo_luong_ton()) ?></strong> sản phẩm
-                    </span>
-
-                    <div class="w-100 d-block d-md-none my-2"></div>
-
-                    <button type="button" class="btn-add-cart" id="btnAddToCart" onclick="addToCartClick()">
-                        <i class="bi bi-cart3"></i> Thêm vào giỏ hàng
-                    </button>
-                    
-                    <button type="button" class="btn-buy-now" id="btnBuyNow" onclick="buyNowClick()">
-                        Mua ngay
-                    </button>
+                    <div id="qtyError" class="text-danger small mt-2 fw-semibold" style="display: none;"></div>
                 </div>
             </div>
         </div>
@@ -278,6 +281,18 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
         });
         
         checkCurrentVariation();
+
+        // Ràng buộc nhập số lượng và validate
+        const qtyInput = document.getElementById("qtyInput");
+        if (qtyInput) {
+            qtyInput.addEventListener("input", kiemTraSoLuong);
+            qtyInput.addEventListener("change", kiemTraSoLuong);
+            qtyInput.addEventListener("keydown", function(e) {
+                if ([".", ",", "-", "+", "e", "E"].includes(e.key)) {
+                    e.preventDefault();
+                }
+            });
+        }
     });
 
     function selectVariantOption(btn, attrName, valId) {
@@ -392,6 +407,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
                 btnBuy.disabled = false;
             }
         }
+        kiemTraSoLuong();
     }
 
     // Helper VND formatter
@@ -423,7 +439,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
     // Quantity update
     function updateQuantity(amount) {
         const qtyInput = document.getElementById("qtyInput");
-        let currentQty = parseInt(qtyInput.value);
+        let currentQty = parseInt(qtyInput.value) || 0;
         let maxStock = activeVariation ? parseInt(activeVariation.so_luong_ton) : defaultProductStock;
 
         let newQty = currentQty + amount;
@@ -431,6 +447,65 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
         if (newQty > maxStock && maxStock > 0) newQty = maxStock;
         
         qtyInput.value = newQty;
+        kiemTraSoLuong();
+    }
+
+    // Hàm kiểm tra số lượng mua bằng tiếng Việt dễ hiểu
+    function kiemTraSoLuong() {
+        const qtyInput = document.getElementById("qtyInput");
+        const qtyError = document.getElementById("qtyError");
+        const btnCart = document.getElementById("btnAddToCart");
+        const btnBuy = document.getElementById("btnBuyNow");
+
+        if (!qtyInput) return;
+
+        let maxStock = activeVariation ? parseInt(activeVariation.so_luong_ton) : defaultProductStock;
+        let valStr = qtyInput.value;
+
+        // Nếu sản phẩm hết hàng
+        if (maxStock <= 0) {
+            qtyError.textContent = "Sản phẩm hiện đang hết hàng!";
+            qtyError.style.display = "block";
+            btnCart.disabled = true;
+            btnCart.innerHTML = "Hết hàng";
+            btnBuy.disabled = true;
+            return;
+        }
+
+        // Khôi phục chữ mặc định của nút thêm giỏ hàng
+        if (btnCart.innerHTML === "Hết hàng") {
+            btnCart.innerHTML = '<i class="bi bi-cart3"></i> Thêm vào giỏ hàng';
+        }
+
+        if (valStr.trim() === "") {
+            qtyError.textContent = "Vui lòng nhập số lượng!";
+            qtyError.style.display = "block";
+            btnCart.disabled = true;
+            btnBuy.disabled = true;
+            return;
+        }
+
+        let qty = parseInt(valStr);
+        if (isNaN(qty) || qty <= 0) {
+            qtyError.textContent = "Số lượng mua phải là số nguyên dương!";
+            qtyError.style.display = "block";
+            btnCart.disabled = true;
+            btnBuy.disabled = true;
+            return;
+        }
+
+        if (qty > maxStock) {
+            qtyError.textContent = "Số lượng vượt quá tồn kho (Tối đa: " + maxStock + ")!";
+            qtyError.style.display = "block";
+            btnCart.disabled = true;
+            btnBuy.disabled = true;
+            return;
+        }
+
+        // Hợp lệ
+        qtyError.style.display = "none";
+        btnCart.disabled = false;
+        btnBuy.disabled = false;
     }
 
     // Add To Cart and Buy actions

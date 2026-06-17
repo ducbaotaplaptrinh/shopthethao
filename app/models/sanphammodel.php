@@ -423,7 +423,7 @@ class SanPhamModel extends Model
     public function getCartItemDetails($productId, $variationId = null): ?array
     {
         // Fetch product info
-        $sql = "SELECT id, ten_san_pham, anh_dai_dien, gia_ban, gia_khuyen_mai 
+        $sql = "SELECT id, ten_san_pham, anh_dai_dien, gia_ban, gia_khuyen_mai, so_luong_ton 
                 FROM san_pham 
                 WHERE id = :id AND ngay_xoa IS NULL AND trang_thai = 1 LIMIT 1";
         $stmt = $this->conn->prepare($sql);
@@ -435,14 +435,16 @@ class SanPhamModel extends Model
         $image = $prod['anh_dai_dien'];
         $price = ($prod['gia_khuyen_mai'] > 0) ? $prod['gia_khuyen_mai'] : $prod['gia_ban'];
         $attributes = "";
+        $stock = (int)$prod['so_luong_ton'];
 
         // If variation is set, fetch variation info
         if (!empty($variationId)) {
-            $sqlVar = "SELECT id, gia_ban_rieng, anh_rieng FROM bien_the_san_pham WHERE id = :id LIMIT 1";
+            $sqlVar = "SELECT id, gia_ban_rieng, anh_rieng, so_luong_ton FROM bien_the_san_pham WHERE id = :id LIMIT 1";
             $stmtVar = $this->conn->prepare($sqlVar);
             $stmtVar->execute(['id' => $variationId]);
             $var = $stmtVar->fetch();
             if ($var) {
+                $stock = (int)$var['so_luong_ton'];
                 if ($var['gia_ban_rieng'] > 0) {
                     $price = $var['gia_ban_rieng'];
                     // Apply discount if parent product is on sale
@@ -479,7 +481,8 @@ class SanPhamModel extends Model
             'name' => $name,
             'image' => $image,
             'price' => (float)$price,
-            'attributes' => $attributes
+            'attributes' => $attributes,
+            'so_luong_ton' => $stock
         ];
     }
 

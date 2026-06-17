@@ -1,27 +1,29 @@
 <?php
-// Status definitions — label, icon, CSS class, timeline order
+// Định nghĩa bộ trạng thái đơn hàng — đồng bộ với admin
 $statusMap = [
-    'cho_xac_nhan'   => ['label' => 'Chờ xác nhận',    'icon' => 'bi-hourglass-split',   'class' => 'status-cho_xac_nhan',   'step' => 1],
-    'cho_van_chuyen' => ['label' => 'Chờ vận chuyển',  'icon' => 'bi-box-seam',           'class' => 'status-cho_van_chuyen', 'step' => 2],
-    'dang_giao'      => ['label' => 'Đang giao hàng',  'icon' => 'bi-truck',              'class' => 'status-dang_giao',      'step' => 3],
-    'hoan_thanh'     => ['label' => 'Giao thành công', 'icon' => 'bi-patch-check-fill',   'class' => 'status-hoan_thanh',     'step' => 4],
-    'da_huy'         => ['label' => 'Đã hủy',          'icon' => 'bi-x-circle-fill',      'class' => 'status-da_huy',         'step' => 0],
+    'cho_xac_nhan' => ['label' => 'Chờ xác nhận',  'icon' => 'bi-hourglass-split',  'class' => 'status-cho_xac_nhan', 'step' => 1],
+    'dang_xu_ly'   => ['label' => 'Đang xử lý',    'icon' => 'bi-gear-fill',        'class' => 'status-dang_xu_ly',   'step' => 2],
+    'dang_giao'    => ['label' => 'Đang giao hàng', 'icon' => 'bi-truck',            'class' => 'status-dang_giao',    'step' => 3],
+    'hoan_thanh'   => ['label' => 'Giao thành công','icon' => 'bi-patch-check-fill', 'class' => 'status-hoan_thanh',   'step' => 4],
+    'da_huy'       => ['label' => 'Đã hủy',         'icon' => 'bi-x-circle-fill',   'class' => 'status-da_huy',       'step' => 0],
 ];
 
+// Dòng thời gian hiển thị tiến trình đơn hàng
 $timelineSteps = [
-    ['key' => 'cho_xac_nhan',   'icon' => 'bi-hourglass-split', 'label' => 'Xác nhận'],
-    ['key' => 'cho_van_chuyen', 'icon' => 'bi-box-seam',        'label' => 'Đóng gói'],
-    ['key' => 'dang_giao',      'icon' => 'bi-truck',           'label' => 'Vận chuyển'],
-    ['key' => 'hoan_thanh',     'icon' => 'bi-patch-check-fill', 'label' => 'Đã giao'],
+    ['key' => 'cho_xac_nhan', 'icon' => 'bi-hourglass-split',  'label' => 'Xác nhận'],
+    ['key' => 'dang_xu_ly',   'icon' => 'bi-gear-fill',        'label' => 'Xử lý'],
+    ['key' => 'dang_giao',    'icon' => 'bi-truck',            'label' => 'Vận chuyển'],
+    ['key' => 'hoan_thanh',   'icon' => 'bi-patch-check-fill', 'label' => 'Đã giao'],
 ];
 
+// Tabs lọc đơn hàng
 $tabs = [
-    'all'            => ['label' => 'Tất cả',           'icon' => 'bi-grid'],
-    'cho_xac_nhan'   => ['label' => 'Chờ xác nhận',     'icon' => 'bi-hourglass-split'],
-    'cho_van_chuyen' => ['label' => 'Chờ vận chuyển',   'icon' => 'bi-box-seam'],
-    'dang_giao'      => ['label' => 'Đang giao',         'icon' => 'bi-truck'],
-    'hoan_thanh'     => ['label' => 'Thành công',        'icon' => 'bi-patch-check-fill'],
-    'da_huy'         => ['label' => 'Đã hủy',            'icon' => 'bi-x-circle'],
+    'all'          => ['label' => 'Tất cả',        'icon' => 'bi-grid'],
+    'cho_xac_nhan' => ['label' => 'Chờ xác nhận', 'icon' => 'bi-hourglass-split'],
+    'dang_xu_ly'   => ['label' => 'Đang xử lý',   'icon' => 'bi-gear-fill'],
+    'dang_giao'    => ['label' => 'Đang giao',     'icon' => 'bi-truck'],
+    'hoan_thanh'   => ['label' => 'Thành công',    'icon' => 'bi-patch-check-fill'],
+    'da_huy'       => ['label' => 'Đã hủy',       'icon' => 'bi-x-circle'],
 ];
 
 $totalAll = array_sum($statusCounts ?? []);

@@ -195,6 +195,9 @@ foreach ($cartItems as $item) {
                             <a class="dropdown-item" href="?page=order-track">
                                 <i class="bi bi-search me-2"></i>Tra cứu đơn hàng
                             </a>
+                            <a class="dropdown-item" href="?page=change-password">
+                                <i class="bi bi-key me-2"></i>Đổi mật khẩu
+                            </a>
                             <hr class="dropdown-divider my-1">
                             <a class="dropdown-item text-danger" href="?page=logout"><i class="fa-solid fa-arrow-right-from-bracket pe-2"></i>Đăng xuất</a>
                         <?php else: ?>

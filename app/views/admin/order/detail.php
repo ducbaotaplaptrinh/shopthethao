@@ -8,6 +8,10 @@ $statusLabels = [
 ];
 $currentStatus = $order['trang_thai_don_hang'];
 $s = $statusLabels[$currentStatus] ?? ['label' => $currentStatus, 'class' => 'bg-secondary', 'icon' => 'bi-circle'];
+
+// Thông báo từ query param
+$successMsg = $_GET['success'] ?? '';
+$errorMsg   = $_GET['error']   ?? '';
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
@@ -23,6 +27,27 @@ $s = $statusLabels[$currentStatus] ?? ['label' => $currentStatus, 'class' => 'bg
     </div>
 </div>
 
+<?php if ($successMsg === 'updated'): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle me-2"></i> Cập nhật trạng thái đơn hàng thành công!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($errorMsg === 'cannot_update'): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i> Không thể cập nhật đơn hàng đã hoàn thành hoặc đã hủy!
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($errorMsg === 'invalid_transition'): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i> Không thể chuyển sang trạng thái này! Vui lòng chọn trạng thái tiếp theo hợp lệ.
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php elseif ($errorMsg === 'stock_error'): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle me-2"></i> Lỗi kho hàng: <?= htmlspecialchars($_GET['msg'] ?? 'Không đủ tồn kho để xác nhận đơn hàng.') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
 <div class="row g-4">
     <!-- Thông tin đơn + Sản phẩm -->
     <div class="col-12 col-lg-8">
@@ -121,16 +146,16 @@ $s = $statusLabels[$currentStatus] ?? ['label' => $currentStatus, 'class' => 'bg
             </div>
 
             <!-- Form cập nhật -->
-            <?php if ($currentStatus !== 'hoan_thanh' && $currentStatus !== 'da_huy'): ?>
+            <?php if (!empty($trangThaiCoTheChon)): ?>
                 <form action="?page=admin-order-update-status" method="POST">
                     <input type="hidden" name="id" value="<?= $order['id'] ?>">
                     <div class="mb-3">
                         <label class="form-label">Chuyển sang trạng thái</label>
                         <select name="trang_thai_don_hang" class="form-select">
-                            <?php foreach ($statusLabels as $key => $info): ?>
-                                <option value="<?= $key ?>" <?= $key === $currentStatus ? 'selected' : '' ?>>
-                                    <?= $info['label'] ?>
-                                </option>
+                            <?php foreach ($trangThaiCoTheChon as $key):
+                                $info = $statusLabels[$key] ?? ['label' => $key];
+                            ?>
+                                <option value="<?= $key ?>"><?= $info['label'] ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>

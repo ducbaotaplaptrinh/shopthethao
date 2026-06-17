@@ -77,6 +77,11 @@ img {
     z-index: 1;
 }
 
+.product-price-old {
+    font-size: 1.4rem;
+    color: #999;
+    text-decoration: line-through;
+}
 .pill-badge {
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.16);

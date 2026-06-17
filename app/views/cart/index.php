@@ -6,6 +6,19 @@
 
     <h2 class="section-title mb-4">Giỏ Hàng</h2>
 
+    <?php if (isset($_SESSION['cart_warning'])): ?>
+        <div class="alert alert-warning alert-dismissible fade show rounded-4 mb-4 shadow-sm border-0" role="alert" style="background-color: #fff3cd; color: #664d03; border-left: 5px solid #ffc107 !important;">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+                <div>
+                    <?= $_SESSION['cart_warning'] ?>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php unset($_SESSION['cart_warning']); ?>
+    <?php endif; ?>
+
     <?php if (empty($cartItems)): ?>
         <div class="card text-center py-5 shadow-sm border-0 rounded-4">
             <div class="card-body">
@@ -59,7 +72,7 @@
                                             <td class="text-center fw-medium"><?= htmlspecialchars(formatVND($item['price'])) ?></td>
                                             <td class="text-center">
                                                 <div class="d-flex align-items-center justify-content-center">
-                                                    <input type="number" name="qty[<?= htmlspecialchars($key) ?>]" class="form-control form-control-sm text-center fw-semibold" value="<?= htmlspecialchars($item['qty']) ?>" min="1" max="100" style="width: 60px;" onchange="document.getElementById('cartForm').submit()">
+                                                    <input type="number" name="qty[<?= htmlspecialchars($key) ?>]" class="form-control form-control-sm text-center fw-semibold qty-input-box" value="<?= htmlspecialchars($item['qty']) ?>" min="1" max="<?= isset($item['so_luong_ton']) ? htmlspecialchars($item['so_luong_ton']) : 100 ?>" style="width: 65px;" onchange="capQuantityAndSubmit(this, <?= isset($item['so_luong_ton']) ? (int)$item['so_luong_ton'] : 100 ?>)">
                                                 </div>
                                             </td>
                                             <td class="text-end fw-bold text-danger"><?= htmlspecialchars(formatVND($subtotal)) ?></td>
@@ -116,3 +129,26 @@
         </div>
     <?php endif; ?>
 </div>
+
+<script>
+// Hàm tiếng Việt dễ hiểu để giới hạn số lượng và submit form
+function capQuantityAndSubmit(input, maxStock) {
+    let val = parseInt(input.value) || 1;
+    if (val < 1) {
+        input.value = 1;
+    } else if (val > maxStock) {
+        alert("Số lượng sản phẩm trong giỏ hàng vượt quá tồn kho thực tế! Hệ thống đã điều chỉnh về tối đa là " + maxStock + " sản phẩm.");
+        input.value = maxStock;
+    }
+    document.getElementById('cartForm').submit();
+}
+
+// Chặn gõ các ký tự không phải số nguyên dương
+document.querySelectorAll('.qty-input-box').forEach(function(input) {
+    input.addEventListener("keydown", function(e) {
+        if ([".", ",", "-", "+", "e", "E"].includes(e.key)) {
+            e.preventDefault();
+        }
+    });
+});
+</script>

@@ -13,6 +13,18 @@ return [
 		'controller' => \app\controllers\AuthController::class,
 		'action' => 'register',
 	],
+	'verify-otp' => [
+		'title' => 'Xác thực OTP | Bảo Đạt Sport',
+		'view' => 'auth/verify-otp.php',
+		'controller' => \app\controllers\AuthController::class,
+		'action' => 'verifyOtp',
+	],
+	'change-password' => [
+		'title' => 'Đổi mật khẩu | Bảo Đạt Sport',
+		'view' => 'auth/change-password.php',
+		'controller' => \app\controllers\AuthController::class,
+		'action' => 'changePassword',
+	],
 	'logout' => [
 		'title' => 'Đăng xuất',
 		'view' => 'auth/login.php',
@@ -162,6 +174,27 @@ return [
 		'action' => 'storeCategory',
 		'pageStyles' => ['assets/css/admin.css']
 	],
+	'admin-category-edit' => [
+		'title' => 'Sửa Danh mục | Quản trị',
+		'view' => 'admin/category/edit.php',
+		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
+		'action' => 'editCategory',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-category-update' => [
+		'title' => 'Cập nhật Danh mục',
+		'view' => 'admin/category/index.php',
+		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
+		'action' => 'updateCategory',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-category-delete' => [
+		'title' => 'Xóa Danh mục',
+		'view' => 'admin/category/index.php',
+		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
+		'action' => 'deleteCategory',
+		'pageStyles' => ['assets/css/admin.css']
+	],
 	'admin-brands' => [
 		'title' => 'Thương hiệu | Quản trị',
 		'view' => 'admin/brand/index.php',
@@ -222,7 +255,14 @@ return [
 		'title' => 'Cập nhật trạng thái',
 		'view' => 'admin/order/detail.php',
 		'controller' => \app\controllers\admin\AdminOrderController::class,
-		'action' => 'updateStatus',
+		'action' => 'capNhatTrangThaiDonHang',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-order-delete' => [
+		'title' => 'Xóa Đơn hàng',
+		'view' => 'admin/order/index.php',
+		'controller' => \app\controllers\admin\AdminOrderController::class,
+		'action' => 'xoaDonHang',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-customers' => [
@@ -239,9 +279,51 @@ return [
 		'action' => 'toggleStatus',
 		'pageStyles' => ['assets/css/admin.css']
 	],
+	'admin-product-edit' => [
+		'title' => 'Sửa Sản phẩm | Quản trị',
+		'view' => 'admin/product/edit.php',
+		'controller' => \app\controllers\admin\AdminProductController::class,
+		'action' => 'edit',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-product-update' => [
+		'title' => 'Cập nhật Sản phẩm | Quản trị',
+		'view' => 'admin/product/index.php',
+		'controller' => \app\controllers\admin\AdminProductController::class,
+		'action' => 'update',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-product-delete' => [
+		'title' => 'Xóa Sản phẩm | Quản trị',
+		'view' => 'admin/product/index.php',
+		'controller' => \app\controllers\admin\AdminProductController::class,
+		'action' => 'xoaSanPham',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-product-restore' => [
+		'title' => 'Khôi phục Sản phẩm | Quản trị',
+		'view' => 'admin/product/index.php',
+		'controller' => \app\controllers\admin\AdminProductController::class,
+		'action' => 'khoiPhucSanPham',
+		'pageStyles' => ['assets/css/admin.css']
+	],
 	'contact' => [
 		'title' => 'Liên hệ',
 		'view' => 'contact/contact.php',
 		'pageStyles' => ['assets/css/contact.css']
+	],
+	'new' => [
+		'title' => 'Tin tức thể thao',
+		'view' => 'news/index.php',
+		'controller' => \app\controllers\NewsController::class,
+		'action' => 'index',
+		'pageStyles' => ['assets/css/news.css']
+	],
+	'new-detail' => [
+		'title' => 'Chi tiết tin tức',
+		'view' => 'news/detail.php',
+		'controller' => \app\controllers\NewsController::class,
+		'action' => 'detail',
+		'pageStyles' => ['assets/css/news.css']
 	],
 ];

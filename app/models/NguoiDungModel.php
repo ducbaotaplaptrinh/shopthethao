@@ -73,4 +73,15 @@ class NguoiDungModel extends Model
         $stmtRank = $this->conn->prepare($sqlRank);
         $stmtRank->execute(['id' => $userId]);
     }
+
+    public function updatePassword(int $id, string $hashedPassword): bool
+    {
+        $sql = "UPDATE nguoi_dung SET mat_khau = :password, ngay_cap_nhat = NOW() WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            'password' => $hashedPassword,
+            'id' => $id
+        ]);
+    }
 }
+

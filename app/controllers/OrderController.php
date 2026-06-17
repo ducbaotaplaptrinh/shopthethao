@@ -155,8 +155,8 @@ class OrderController
         $userId    = (int)$_SESSION['user']['id'];
         $activeTab = $_GET['status'] ?? 'all';
 
-        // Chỉ cho phép các giá trị hợp lệ
-        $validStatuses = ['all', 'cho_xac_nhan', 'cho_van_chuyen', 'dang_giao', 'hoan_thanh', 'da_huy'];
+        // Chỉ cho phép các giá trị hợp lệ — đồng bộ với bộ trạng thái admin
+        $validStatuses = ['all', 'cho_xac_nhan', 'dang_xu_ly', 'dang_giao', 'hoan_thanh', 'da_huy'];
         if (!in_array($activeTab, $validStatuses)) {
             $activeTab = 'all';
         }
