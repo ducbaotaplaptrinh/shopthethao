@@ -43,4 +43,45 @@ class NguoiDungModel extends Model
 
         return (int)$this->conn->lastInsertId();
     }
+
+    public function getUserById(int $id): ?NguoiDung
+    {
+        $sql = "SELECT * FROM nguoi_dung WHERE id = :id AND ngay_xoa IS NULL LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['id' => $id]);
+        $row = $stmt->fetch();
+        return $row ? new NguoiDung($row) : null;
+    }
+
+    public function updateRank(int $userId, float $amountSpent): void
+    {
+        // Update total spent
+        $sql = "UPDATE nguoi_dung SET tong_chi_tieu = tong_chi_tieu + :amount WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['amount' => $amountSpent, 'id' => $userId]);
+
+        // Recalculate rank based on hang_thanh_vien table
+        $sqlRank = "UPDATE nguoi_dung 
+                    SET ma_hang = (
+                        SELECT id 
+                        FROM hang_thanh_vien 
+                        WHERE muc_chi_tieu_toi_thieu <= nguoi_dung.tong_chi_tieu 
+                        ORDER BY muc_chi_tieu_toi_thieu DESC 
+                        LIMIT 1
+                    ) 
+                    WHERE id = :id";
+        $stmtRank = $this->conn->prepare($sqlRank);
+        $stmtRank->execute(['id' => $userId]);
+    }
+
+    public function updatePassword(int $id, string $hashedPassword): bool
+    {
+        $sql = "UPDATE nguoi_dung SET mat_khau = :password, ngay_cap_nhat = NOW() WHERE id = :id";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            'password' => $hashedPassword,
+            'id' => $id
+        ]);
+    }
 }
+

@@ -76,7 +76,15 @@ img {
     position: relative;
     z-index: 1;
 }
-
+.product-new,
+.product-sale {
+    height: fit-content;
+}
+.product-price-old {
+    font-size: 1.4rem;
+    color: #999;
+    text-decoration: line-through;
+}
 .pill-badge {
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.16);
@@ -488,7 +496,7 @@ img {
     height: 40px;
     border-color: var(--card);
     color: #fff;
-    transition: all 0.5s ease;
+    transition: all 0.3s ease;
     border: none;
     border-radius: 999px;
 }

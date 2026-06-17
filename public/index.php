@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 // Kích hoạt thông báo lỗi tối đa để dễ bắt bệnh
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
@@ -25,7 +25,7 @@ spl_autoload_register(function ($className) {
 
 // Khởi chạy Core App
 require_once BASE_PATH . '/app/core/App.php';
-require_once BASE_PATH . '/app/helpers/fomat_helper.php';
+require_once BASE_PATH . '/app/helpers/FomatHelper.php';
 
 $app = new App();
 $app->run();

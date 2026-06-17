@@ -1,5 +1,5 @@
 .site-header {
-    top: -31px;
+    margin-top: -31px;
     background: linear-gradient(135deg, #1b1b1b, #2b1100 50%, #ff6f00 130%);
 }
 .topbar {
@@ -342,9 +342,6 @@
 @media (min-width: 991.98px) {
     .mySearch {
         border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-    .site-header {
-        top: -31px;
     }
 }
 @media (max-width: 991.98px) {

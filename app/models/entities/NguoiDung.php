@@ -16,7 +16,6 @@ class NguoiDung
     private string $vai_tro = "khach_hang";
     private bool $trang_thai = true;
     private float $tong_chi_tieu = 0.0;
-    private string $hang_khach_hang = 'dong'; // dong | bac | vang | kim_cuong
     private ?DateTime $lan_dang_nhap_cuoi = null;
     private ?DateTime $ngay_tao = null;
     private ?DateTime $ngay_cap_nhat = null;
@@ -35,7 +34,6 @@ class NguoiDung
             $this->vai_tro = $data['vai_tro'] ?? "khach_hang";
             $this->trang_thai = (bool)($data['trang_thai'] ?? true);
             $this->tong_chi_tieu = (float)($data['tong_chi_tieu'] ?? 0.0);
-            $this->hang_khach_hang = $data['hang_khach_hang'] ?? 'dong';
             
             $this->lan_dang_nhap_cuoi = isset($data['lan_dang_nhap_cuoi']) && !empty($data['lan_dang_nhap_cuoi'])
                 ? new DateTime($data['lan_dang_nhap_cuoi']) : null;
@@ -199,17 +197,6 @@ class NguoiDung
     public function setNgay_xoa(?DateTime $ngay_xoa): self
     {
         $this->ngay_xoa = $ngay_xoa;
-        return $this;
-    }
-
-    public function getHang_khach_hang(): string
-    {
-        return $this->hang_khach_hang;
-    }
-
-    public function setHang_khach_hang(string $hang_khach_hang): self
-    {
-        $this->hang_khach_hang = $hang_khach_hang;
         return $this;
     }
 }

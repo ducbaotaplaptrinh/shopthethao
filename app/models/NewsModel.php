@@ -24,19 +24,19 @@ class NewsModel extends Model
                 LEFT JOIN nguoi_dung n ON t.ma_tac_gia = n.id
                 WHERE t.trang_thai = 1";
         $params = [];
-        
+
         // Lọc tìm kiếm theo tiêu đề hoặc tóm tắt bài viết
         if ($search !== null && $search !== '') {
             $sql .= " AND (t.tieu_de LIKE :search OR t.tom_tat LIKE :search)";
             $params['search'] = '%' . $search . '%';
         }
-        
+
         // Sắp xếp bài viết mới nhất lên đầu
         $sql .= " ORDER BY t.ngay_tao DESC";
-        
+
         $stmt = $this->conn->prepare($sql);
         $stmt->execute($params);
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 
@@ -55,7 +55,7 @@ class NewsModel extends Model
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['slug' => $slug]);
         $data = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         return $data ?: null;
     }
 
@@ -87,11 +87,11 @@ class NewsModel extends Model
                 WHERE t.id != :excludeId AND t.trang_thai = 1 
                 ORDER BY t.ngay_tao DESC LIMIT :limit";
         $stmt = $this->conn->prepare($sql);
-        
+
         $stmt->bindValue(':excludeId', (int)$excludeId, PDO::PARAM_INT);
         $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
         $stmt->execute();
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
     }
 }

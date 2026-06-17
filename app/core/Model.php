@@ -10,6 +10,10 @@ class Model
     protected $conn;
     public function __construct()
     {
+        // $localHost = "sql103.infinityfree.com";
+        // $dbName = "if0_42192939_bao_dat_sport";
+        // $userName = "if0_42192939";
+        // $password = "AY3cLd8uNlfK7";
         $localHost = "localhost";
         $dbName = "bd_baodatsport";
         $userName = "root";

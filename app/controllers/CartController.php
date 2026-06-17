@@ -51,21 +51,35 @@ class CartController
                     $_SESSION['cart'] = [];
                 }
 
-                if (isset($_SESSION['cart'][$key])) {
-                    $_SESSION['cart'][$key]['qty'] += $qty;
+                $existingQty = isset($_SESSION['cart'][$key]) ? $_SESSION['cart'][$key]['qty'] : 0;
+                $totalRequested = $existingQty + $qty;
+
+                if ($totalRequested > $details['so_luong_ton']) {
+                    $success = false;
+                    if ($details['so_luong_ton'] <= 0) {
+                        $message = 'Sản phẩm "' . $details['name'] . '" hiện đã hết hàng!';
+                    } else {
+                        $message = 'Không thể thêm! Tổng số lượng trong giỏ hàng sẽ vượt quá tồn kho (Tối đa ' . $details['so_luong_ton'] . ', bạn đã có ' . $existingQty . ').';
+                    }
                 } else {
-                    $_SESSION['cart'][$key] = [
-                        'product_id' => $details['product_id'],
-                        'variation_id' => $details['variation_id'],
-                        'name' => $details['name'],
-                        'image' => $details['image'],
-                        'price' => $details['price'],
-                        'qty' => $qty,
-                        'attributes' => $details['attributes']
-                    ];
+                    if (isset($_SESSION['cart'][$key])) {
+                        $_SESSION['cart'][$key]['qty'] = $totalRequested;
+                        $_SESSION['cart'][$key]['so_luong_ton'] = $details['so_luong_ton'];
+                    } else {
+                        $_SESSION['cart'][$key] = [
+                            'product_id' => $details['product_id'],
+                            'variation_id' => $details['variation_id'],
+                            'name' => $details['name'],
+                            'image' => $details['image'],
+                            'price' => $details['price'],
+                            'qty' => $qty,
+                            'attributes' => $details['attributes'],
+                            'so_luong_ton' => $details['so_luong_ton']
+                        ];
+                    }
+                    $success = true;
+                    $message = 'Đã thêm "' . $details['name'] . '" vào giỏ hàng thành công!';
                 }
-                $success = true;
-                $message = 'Đã thêm "' . $details['name'] . '" vào giỏ hàng thành công!';
             }
         }
 
@@ -140,15 +154,38 @@ class CartController
                 $_SESSION['cart'] = [];
             }
 
+            $hasWarning = false;
+            $warnings = [];
+
             foreach ($_POST['qty'] as $key => $qty) {
                 $qty = (int)$qty;
                 if (isset($_SESSION['cart'][$key])) {
                     if ($qty <= 0) {
                         unset($_SESSION['cart'][$key]);
                     } else {
-                        $_SESSION['cart'][$key]['qty'] = $qty;
+                        // Lấy thông tin tồn kho thực tế từ CSDL
+                        $item = $_SESSION['cart'][$key];
+                        $details = $this->sanPhamModel->getCartItemDetails($item['product_id'], $item['variation_id']);
+                        
+                        if ($details) {
+                            $maxStock = (int)$details['so_luong_ton'];
+                            $_SESSION['cart'][$key]['so_luong_ton'] = $maxStock;
+                            if ($qty > $maxStock) {
+                                $_SESSION['cart'][$key]['qty'] = $maxStock;
+                                $warnings[] = 'Sản phẩm "' . $details['name'] . '" chỉ còn tối đa ' . $maxStock . ' sản phẩm tồn kho (số lượng của bạn đã được điều chỉnh về tối đa).';
+                                $hasWarning = true;
+                            } else {
+                                $_SESSION['cart'][$key]['qty'] = $qty;
+                            }
+                        } else {
+                            $_SESSION['cart'][$key]['qty'] = $qty;
+                        }
                     }
                 }
+            }
+
+            if ($hasWarning) {
+                $_SESSION['cart_warning'] = implode('<br>', $warnings);
             }
         }
 
