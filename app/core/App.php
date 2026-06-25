@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use app\models\SanPhamModel;
+
 if (!defined('BASE_PATH')) {
 	define('BASE_PATH', dirname(__DIR__, 2));
 }
@@ -15,7 +17,7 @@ class App
 
 		$view = BASE_PATH . '/app/views/' . $route['view'];
 		$routeData = $route['data'] ?? [];
-		$danhMucModel = new \app\models\SanPhamModel();
+		$danhMucModel = new SanPhamModel();
 		$chung = [
 			'megaMenu' => $danhMucModel->getDanhMucThuongHieu(), // Tự động nạp menu cho tất cả các trang
 		];

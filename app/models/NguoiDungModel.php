@@ -160,6 +160,14 @@ class NguoiDungModel extends Model
         $sql = "INSERT INTO dia_chi_nguoi_dung (ma_nguoi_dung, ho_ten_nguoi_nhan, so_dien_thoai, dia_chi_chi_tiet, phuong_xa, quan_huyen, tinh_thanh_pho, la_mac_dinh)
                 VALUES (:uid, :recipient_name, :phone, :detail, :ward, :district, :province, :is_default)";
         $stmt = $this->conn->prepare($sql);
+        $sqlCheck = "SELECT id FROM nguoi_dung WHERE id = ?";
+        $stmtCheck = $this->conn->prepare($sqlCheck);
+        $stmtCheck->execute([$data['ma_nguoi_dung']]);
+
+        // echo '<pre>';
+        // var_dump($data['ma_nguoi_dung']);
+        // var_dump($stmtCheck->fetch(PDO::FETCH_ASSOC));
+        // die();
         return $stmt->execute([
             'uid' => $data['ma_nguoi_dung'],
             'recipient_name' => $data['ho_ten_nguoi_nhan'],

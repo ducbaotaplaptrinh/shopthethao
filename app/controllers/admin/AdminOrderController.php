@@ -15,10 +15,10 @@ class AdminOrderController
      */
     private const TRANG_THAI_CHO_PHEP = [
         'cho_xac_nhan' => ['dang_xu_ly', 'dang_giao', 'hoan_thanh', 'da_huy'],
-        'dang_xu_ly'   => ['cho_xac_nhan', 'dang_giao', 'hoan_thanh', 'da_huy'],
-        'dang_giao'    => ['cho_xac_nhan', 'dang_xu_ly', 'hoan_thanh', 'da_huy'],
-        'hoan_thanh'   => ['cho_xac_nhan', 'dang_xu_ly', 'dang_giao', 'da_huy'],
-        'da_huy'       => ['cho_xac_nhan', 'dang_xu_ly', 'dang_giao', 'hoan_thanh'],
+        'dang_xu_ly'   => ['dang_giao', 'hoan_thanh', 'da_huy'],
+        'dang_giao'    => ['hoan_thanh', 'da_huy'],
+        'hoan_thanh'   => [],
+        'da_huy'       => [],
     ];
 
     public function __construct()

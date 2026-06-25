@@ -111,7 +111,7 @@ class AdminProductModel extends Model
                 LIMIT :limit OFFSET :offset";
 
         $stmt = $this->conn->prepare($sql);
-        
+
         foreach ($params as $key => $value) {
             $stmt->bindValue(':' . $key, $value);
         }
@@ -178,8 +178,8 @@ class AdminProductModel extends Model
 
             // Xử lý giá khuyến mãi: nếu rỗng hoặc = 0 thì lưu NULL
             $giaKhuyenMai = !empty($data['gia_khuyen_mai']) && (float)$data['gia_khuyen_mai'] > 0
-                            ? (float)$data['gia_khuyen_mai']
-                            : null;
+                ? (float)$data['gia_khuyen_mai']
+                : null;
 
             $stmtProd = $this->conn->prepare($sqlProd);
             $stmtProd->execute([
@@ -281,8 +281,8 @@ class AdminProductModel extends Model
 
             // Xử lý giá khuyến mãi: nếu rỗng hoặc = 0 thì lưu NULL
             $giaKhuyenMai = !empty($data['gia_khuyen_mai']) && (float)$data['gia_khuyen_mai'] > 0
-                            ? (float)$data['gia_khuyen_mai']
-                            : null;
+                ? (float)$data['gia_khuyen_mai']
+                : null;
 
             $stmtProd = $this->conn->prepare($sqlProd);
             $stmtProd->execute([

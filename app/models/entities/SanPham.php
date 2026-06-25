@@ -267,11 +267,23 @@ class SanPham
     }
 
     // Phuương thức xử lý
+
+    //Lấy phần trăm giảm giá
     public function getPhanTramGiam(): int
     {
         if (!empty($this->gia_khuyen_mai && $this->gia_ban > 0)) {
             return (int)round((($this->gia_ban - $this->gia_khuyen_mai) / $this->gia_ban * 100));
         }
         return 0;
+    }
+    //kiểm tra  sản phẩm mới 
+    public function isNew($day = 7): bool
+    {
+        if (empty($this->ngay_tao)) {
+            return false;
+        }
+        $hanDinhMuc = new DateTime("-$day days");
+
+        return $this->ngay_tao >= $hanDinhMuc;
     }
 }

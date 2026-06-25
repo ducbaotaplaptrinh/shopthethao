@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\OrderModel;
+use app\models\NguoiDungModel;
 use app\models\entities\DonHang;
 
 class OrderController
@@ -22,7 +23,37 @@ class OrderController
             exit;
         }
 
-        $cartItems = $_SESSION['cart'] ?? [];
+        $fullCart = $_SESSION['cart'] ?? [];
+        if (empty($fullCart)) {
+            header("Location: ?page=cart");
+            exit;
+        }
+
+        if (isset($_GET['buy_now'])) {
+            $_SESSION['carts_checked'] = [$_GET['buy_now']];
+        } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            if (isset($_POST['selected_items']) && is_array($_POST['selected_items'])) {
+                $_SESSION['carts_checked'] = $_POST['selected_items'];
+            } else {
+                $_SESSION['cart_warning'] = 'Vui lòng chọn ít nhất một sản phẩm để tiến hành đặt hàng.';
+                header("Location: ?page=cart");
+                exit;
+            }
+        }
+
+        $cartsChecked = $_SESSION['carts_checked'] ?? [];
+        if (empty($cartsChecked)) {
+            $cartsChecked = array_keys($fullCart);
+            $_SESSION['carts_checked'] = $cartsChecked;
+        }
+
+        $cartItems = [];
+        foreach ($cartsChecked as $key) {
+            if (isset($fullCart[$key])) {
+                $cartItems[$key] = $fullCart[$key];
+            }
+        }
+
         if (empty($cartItems)) {
             header("Location: ?page=cart");
             exit;
@@ -33,10 +64,15 @@ class OrderController
             $totalPayment += $item['price'] * $item['qty'];
         }
 
+        $userId = (int)$_SESSION['user']['id'];
+        $nguoiDungModel = new NguoiDungModel();
+        $addresses = $nguoiDungModel->getUserAddresses($userId);
+
         return [
             'title' => 'Thanh toán đơn hàng | Bảo Đạt Sport',
             'cartItems' => $cartItems,
-            'totalPayment' => $totalPayment
+            'totalPayment' => $totalPayment,
+            'addresses' => $addresses
         ];
     }
 
@@ -48,7 +84,24 @@ class OrderController
             exit;
         }
 
-        $cartItems = $_SESSION['cart'] ?? [];
+        $fullCart = $_SESSION['cart'] ?? [];
+        if (empty($fullCart)) {
+            header("Location: ?page=cart");
+            exit;
+        }
+
+        $cartsChecked = $_SESSION['carts_checked'] ?? [];
+        if (empty($cartsChecked)) {
+            $cartsChecked = array_keys($fullCart);
+        }
+
+        $cartItems = [];
+        foreach ($cartsChecked as $key) {
+            if (isset($fullCart[$key])) {
+                $cartItems[$key] = $fullCart[$key];
+            }
+        }
+
         if (empty($cartItems)) {
             header("Location: ?page=cart");
             exit;
@@ -72,7 +125,7 @@ class OrderController
         foreach ($cartItems as $item) {
             $subtotal += $item['price'] * $item['qty'];
         }
-        
+
         $shipping = 0.00; // Free shipping
         $discount = 0.00;
         $total = $subtotal + $shipping - $discount;
@@ -95,7 +148,7 @@ class OrderController
 
         try {
             $orderCode = $this->orderModel->placeOrder($order, $cartItems);
-            
+
             // Gửi email hóa đơn cho khách hàng nếu có địa chỉ email
             $targetEmail = !empty($email) ? $email : ($_SESSION['user']['email'] ?? '');
             if (!empty($targetEmail)) {
@@ -110,9 +163,12 @@ class OrderController
                 }
             }
 
-            // Clear cart
-            unset($_SESSION['cart']);
-            
+            // Remove only the checked items from $_SESSION['cart'] instead of clearing all!
+            foreach ($cartsChecked as $key) {
+                unset($_SESSION['cart'][$key]);
+            }
+            unset($_SESSION['carts_checked']);
+
             header("Location: ?page=order-success&code=" . $orderCode);
             exit;
         } catch (\Exception $e) {

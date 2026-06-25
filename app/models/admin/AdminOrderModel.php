@@ -52,6 +52,30 @@ class AdminOrderModel extends Model
      */
     public function capNhatTrangThaiDonHang($id, $trangThaiMoi, $trangThaiCu)
     {
+        // 0. Ràng buộc bảo vệ cấp dữ liệu: không cho chuyển ngược trạng thái hoặc sửa đơn đã kết thúc
+        $statusWeights = [
+            'cho_xac_nhan' => 1,
+            'dang_xu_ly'   => 2,
+            'dang_giao'    => 3,
+            'hoan_thanh'   => 4,
+            'da_huy'       => 5
+        ];
+
+        if (!isset($statusWeights[$trangThaiMoi]) || !isset($statusWeights[$trangThaiCu])) {
+            throw new \Exception("Trạng thái đơn hàng không hợp lệ.");
+        }
+
+        $wCu = $statusWeights[$trangThaiCu];
+        $wMoi = $statusWeights[$trangThaiMoi];
+
+        if ($trangThaiCu === 'hoan_thanh' || $trangThaiCu === 'da_huy') {
+            throw new \Exception("Đơn hàng đã kết thúc (Hoàn thành/Đã hủy), không thể thay đổi trạng thái.");
+        }
+
+        if ($trangThaiMoi !== 'da_huy' && $wMoi < $wCu) {
+            throw new \Exception("Không thể chuyển ngược trạng thái đơn hàng.");
+        }
+
         try {
             $this->conn->beginTransaction();
 

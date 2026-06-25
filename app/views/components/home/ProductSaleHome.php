@@ -27,15 +27,19 @@
                                 class="swiper-slide sale-product-item">
 
                                 <div class="card sale-card border-0">
-                                    <div class="sale-badge">
-                                        <?php echo htmlspecialchars($sps->getPhanTramGiam(), ENT_QUOTES, 'UTF-8') ?>%
+                                    <div class="product-badges">
+                                        <?php if ($sps->getGia_khuyen_mai() > 0): ?>
+                                            <span class="product-badge bg-danger">-<?= $sps->getPhanTramGiam() ?>%</span>
+                                        <?php endif; ?>
+                                        <?php if ($sps->isNew()): ?>
+                                            <span class="product-badge bg-success">NEW</span>
+                                        <?php endif; ?>
                                     </div>
 
-                                    <div
-                                        class="sale-thumb bg-white">
+                                    <div class="sale-thumb bg-white">
 
                                         <img
-                                            src="<?php echo htmlspecialchars(getProductImage($sps->getAnh_dai_dien()), ENT_QUOTES, 'UTF-8') ?>"
+                                            src="<?php echo htmlspecialchars(getProductImage("assets/images/products/" . $sps->getAnh_dai_dien()), ENT_QUOTES, 'UTF-8') ?>"
                                             alt="<?php echo htmlspecialchars($sps->getTen_san_pham(), ENT_QUOTES, 'UTF-8') ?>"
                                             onerror="handleImageError(this)">
 

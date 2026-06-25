@@ -42,7 +42,7 @@ class ThongBaoHetHangModel extends Model
                            AND (ma_bien_the = :variation_id OR (ma_bien_the IS NULL AND :variation_id_check IS NULL)) 
                            AND email = :email 
                            AND trang_thai = 0";
-            
+
             $stmtCheck = $this->conn->prepare($sqlCheck);
             $stmtCheck->execute([
                 'product_id' => $productId,
@@ -50,7 +50,7 @@ class ThongBaoHetHangModel extends Model
                 'variation_id_check' => $variationId,
                 'email' => $email
             ]);
-            
+
             if ($stmtCheck->fetchColumn() > 0) {
                 return [
                     'success' => false,

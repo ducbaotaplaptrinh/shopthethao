@@ -79,6 +79,10 @@ $currentPage = $_GET['page'] ?? 'admin-dashboard';
                 </a>
 
                 <div class="text-uppercase text-muted fw-bold mb-2 px-3 mt-4" style="font-size: 0.75rem; letter-spacing: 1px;">Hệ thống</div>
+                <a href="?page=admin-banners" class="sidebar-menu-item <?= strpos($currentPage, 'admin-banner') === 0 ? 'active' : '' ?>">
+                    <i class="bi bi-images"></i>
+                    <span>Quản lý Banner</span>
+                </a>
                 <a href="?page=home" class="sidebar-menu-item text-primary bg-light mt-2 border border-primary-subtle">
                     <i class="bi bi-shop"></i>
                     <span>Ra trang cửa hàng</span>

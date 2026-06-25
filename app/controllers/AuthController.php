@@ -324,6 +324,15 @@ class AuthController
             exit;
         }
 
+        $rankInfo = $this->hangThanhVienModel->getHangThanhVien($userId);
+        if ($rankInfo) {
+            $_SESSION['user']['hang_khach_hang'] = [
+                'ten_hang' => $rankInfo['ten_hang'],
+                'mau_sac' => $rankInfo['mau_sac'],
+                'bieu_tuong' => $rankInfo['bieu_tuong']
+            ];
+        }
+
         $error = $_SESSION['profile_error'] ?? '';
         $success = $_SESSION['profile_success'] ?? '';
         unset($_SESSION['profile_error'], $_SESSION['profile_success']);
@@ -550,7 +559,8 @@ class AuthController
             'addresses' => $addresses,
             'error' => $error,
             'success' => $success,
-            'activeTab' => $activeTab
+            'activeTab' => $activeTab,
+            'rankInfo' => $rankInfo
         ];
     }
 }

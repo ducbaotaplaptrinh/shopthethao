@@ -35,14 +35,14 @@ if (isset($danhSachDanhMuc) && is_array($danhSachDanhMuc)) {
                 <div class="row g-3">
                     <?php foreach (array_slice($child, 0, 8)  as $index => $dmc): ?>
 
-                        <div class="col-6 col-md-3">
+                        <div class="col-6 col-md-3 h-100">
 
                             <a href="?page=product-index&category=<?php echo htmlspecialchars($dmc->GetDuong_dan_slug()) ?>" class="categories-content__card card">
-                                <div class="categories-content__thumb">
+                                <div class="categories-content__thumb h-100">
                                     <img
-                                        src="assets/images/categories/category-normal.png"
+                                        src="<?php echo getProductImage("assets/images/categories/" . $dmc->getHinh_anh()) ?>"
                                         alt="<?php echo htmlspecialchars($dmc->getTen_danh_muc()) ?>"
-                                        class="categories-content__img">
+                                        class="categories-content__img h-100">
                                 </div>
 
                                 <div class="categories-content__info">

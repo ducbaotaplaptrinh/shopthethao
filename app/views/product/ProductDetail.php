@@ -3,7 +3,7 @@
 $basePrice = $sanpham->getGia_ban();
 $promoPrice = $sanpham->getGia_khuyen_mai();
 $isSale = $promoPrice > 0;
-$mainImage = getProductImage($sanpham->getAnh_dai_dien());
+$mainImage = getProductImage("assets/images/products/" . $sanpham->getAnh_dai_dien());
 ?>
 
 <div class="container-xl py-4">
@@ -26,7 +26,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
                         <?php if ($isSale): ?>
                             <span class="product-badge">-<?= $sanpham->getPhanTramGiam() ?>%</span>
                         <?php endif; ?>
-                        <img id="productMainImg" src="<?= htmlspecialchars($mainImage) ?>" alt="<?= htmlspecialchars($sanpham->getTen_san_pham()) ?>" onerror="handleImageError(this)">
+                        <img id="productMainImg" src="<?= htmlspecialchars($mainImage) ?>" alt="<?= htmlspecialchars("assets/images/products/" . $sanpham->getTen_san_pham()) ?>" onerror="handleImageError(this)">
                     </div>
 
                     <!-- Thumbnails List -->
@@ -39,7 +39,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
                         <!-- Gallery Images from DB -->
                         <?php if (!empty($gallery)): ?>
                             <?php foreach ($gallery as $img): ?>
-                                <?php $galImg = getProductImage($img['duong_dan_anh']); ?>
+                                <?php $galImg = getProductImage("assets/images/products/" . $img['duong_dan_anh']); ?>
                                 <div class="detail-gallery__thumb" onclick="switchMainImage(this, '<?= htmlspecialchars($galImg) ?>')">
                                     <img src="<?= htmlspecialchars($galImg) ?>" alt="Gallery Image" onerror="handleImageError(this)">
                                 </div>
@@ -51,8 +51,15 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
 
             <!-- Right: Info Panel -->
             <div class="col-lg-7">
-                <h1 class="product-title"><?= htmlspecialchars($sanpham->getTen_san_pham()) ?></h1>
-                
+                <h1 class="product-title d-flex align-items-center gap-2">
+                    <?= htmlspecialchars(($tenDanhMuc === 'Vợt cầu lông') ? 'Vợt cầu lông ' . $sanpham->getTen_san_pham() : $sanpham->getTen_san_pham()) ?>
+                    <?php if ($sanpham->isNew()): ?>
+                        <span class="tagnew p-2">
+                            new
+                        </span>
+                    <?php endif; ?>
+                </h1>
+
                 <div class="product-meta">
                     <span>Thương hiệu: <strong><?= htmlspecialchars($tenThuongHieu ?? 'Chính hãng') ?></strong></span>
                     <span>Danh mục: <strong><?= htmlspecialchars($tenDanhMuc ?? 'Thể thao') ?></strong></span>
@@ -116,13 +123,13 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
                         <button type="button" class="btn-add-cart" id="btnAddToCart" onclick="addToCartClick()">
                             <i class="bi bi-cart3"></i> Thêm vào giỏ hàng
                         </button>
-                        
+
                         <button type="button" class="btn-buy-now" id="btnBuyNow" onclick="buyNowClick()">
                             Mua ngay
                         </button>
                     </div>
                     <div id="qtyError" class="text-danger small mt-2 fw-semibold" style="display: none;"></div>
-                    
+
                     <!-- Form thông báo hết hàng -->
                     <div id="outOfStockFormBox" style="display: none;" class="mt-3 p-3 border rounded bg-light w-100">
                         <h6 class="text-danger fw-bold mb-1"><i class="bi bi-bell-fill"></i> Đăng ký nhận thông báo khi có hàng</h6>
@@ -292,7 +299,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
                 selectedOptions[attrName] = activeBtn.getAttribute("data-val-id");
             }
         });
-        
+
         checkCurrentVariation();
 
         // Ràng buộc nhập số lượng và validate
@@ -312,7 +319,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
         // Remove active class from sibling buttons in this group
         const group = btn.closest(".variant-group");
         group.querySelectorAll(".variant-btn").forEach(b => b.classList.remove("active"));
-        
+
         // Make this active
         btn.classList.add("active");
         selectedOptions[attrName] = valId;
@@ -344,7 +351,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
             if (activeVariation) {
                 // Variation match found!
                 skuEl.textContent = activeVariation.ma_vach_sku ? activeVariation.ma_vach_sku : defaultProductSKU;
-                
+
                 // Stock
                 const stock = parseInt(activeVariation.so_luong_ton);
                 stockCountEl.textContent = stock;
@@ -400,7 +407,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
                 stockCountEl.textContent = defaultProductStock;
                 specStockEl.textContent = defaultProductStock > 0 ? "Còn hàng" : "Hết hàng";
                 mainImgEl.src = defaultProductImage;
-                
+
                 if (defaultProductPromoPrice > 0) {
                     priceNewEl.textContent = formatVND(defaultProductPromoPrice);
                     priceOldEl.textContent = formatVND(defaultProductPrice);
@@ -429,7 +436,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
             skuEl.textContent = defaultProductSKU;
             stockCountEl.textContent = defaultProductStock;
             specStockEl.textContent = defaultProductStock > 0 ? "Còn hàng (" + defaultProductStock + " sản phẩm)" : "Hết hàng";
-            
+
             if (defaultProductStock <= 0) {
                 btnCart.disabled = true;
                 btnCart.innerHTML = "Hết hàng";
@@ -447,7 +454,9 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
 
     // Helper VND formatter
     function formatVND(price) {
-        return new Intl.NumberFormat('vi-VN', { style: 'decimal' }).format(price) + ' ₫';
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'decimal'
+        }).format(price) + ' ₫';
     }
 
     // switch image main
@@ -480,7 +489,7 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
         let newQty = currentQty + amount;
         if (newQty < 1) newQty = 1;
         if (newQty > maxStock && maxStock > 0) newQty = maxStock;
-        
+
         qtyInput.value = newQty;
         kiemTraSoLuong();
     }
@@ -561,48 +570,48 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
         btnCart.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang xử lý...';
 
         fetch('?page=cart-add', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            btnCart.disabled = false;
-            btnCart.innerHTML = originalHtml;
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                btnCart.disabled = false;
+                btnCart.innerHTML = originalHtml;
 
-            if (data.success) {
-                // Update header cart count badge
-                const cartCountBadge = document.getElementById('cartCount');
-                if (cartCountBadge) {
-                    cartCountBadge.textContent = data.cart_count;
-                }
+                if (data.success) {
+                    // Update header cart count badge
+                    const cartCountBadge = document.getElementById('cartCount');
+                    if (cartCountBadge) {
+                        cartCountBadge.textContent = data.cart_count;
+                    }
 
-                // Update mini-cart dropdown html
-                const miniCartDropdown = document.querySelector('.dropdown-menu.cart');
-                if (miniCartDropdown && data.mini_cart_html) {
-                    miniCartDropdown.innerHTML = data.mini_cart_html;
-                }
+                    // Update mini-cart dropdown html
+                    const miniCartDropdown = document.querySelector('.dropdown-menu.cart');
+                    if (miniCartDropdown && data.mini_cart_html) {
+                        miniCartDropdown.innerHTML = data.mini_cart_html;
+                    }
 
-                // Show Toast Notification
-                const toastMessageEl = document.getElementById('cartToastMessage');
-                if (toastMessageEl) {
-                    toastMessageEl.textContent = data.message;
+                    // Show Toast Notification
+                    const toastMessageEl = document.getElementById('cartToastMessage');
+                    if (toastMessageEl) {
+                        toastMessageEl.textContent = data.message;
+                    }
+
+                    const toastEl = document.getElementById('cartToast');
+                    if (toastEl) {
+                        const toast = new bootstrap.Toast(toastEl);
+                        toast.show();
+                    }
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra, vui lòng thử lại.');
                 }
-                
-                const toastEl = document.getElementById('cartToast');
-                if (toastEl) {
-                    const toast = new bootstrap.Toast(toastEl);
-                    toast.show();
-                }
-            } else {
-                alert(data.message || 'Có lỗi xảy ra, vui lòng thử lại.');
-            }
-        })
-        .catch(err => {
-            btnCart.disabled = false;
-            btnCart.innerHTML = originalHtml;
-            console.error('Error adding to cart:', err);
-            alert('Không thể kết nối đến máy chủ.');
-        });
+            })
+            .catch(err => {
+                btnCart.disabled = false;
+                btnCart.innerHTML = originalHtml;
+                console.error('Error adding to cart:', err);
+                alert('Không thể kết nối đến máy chủ.');
+            });
     }
 
     function buyNowClick() {
@@ -622,27 +631,27 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
         btnBuy.innerText = 'Đang xử lý...';
 
         fetch('?page=cart-add', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            btnBuy.disabled = false;
-            btnBuy.innerText = originalText;
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                btnBuy.disabled = false;
+                btnBuy.innerText = originalText;
 
-            if (data.success) {
-                // Redirect immediately to checkout
-                window.location.href = '?page=checkout';
-            } else {
-                alert(data.message || 'Có lỗi xảy ra, vui lòng thử lại.');
-            }
-        })
-        .catch(err => {
-            btnBuy.disabled = false;
-            btnBuy.innerText = originalText;
-            console.error('Error buying now:', err);
-            alert('Không thể kết nối đến máy chủ.');
-        });
+                if (data.success) {
+                    // Redirect immediately to checkout with the buy_now param
+                    window.location.href = '?page=checkout&buy_now=' + encodeURIComponent(data.key);
+                } else {
+                    alert(data.message || 'Có lỗi xảy ra, vui lòng thử lại.');
+                }
+            })
+            .catch(err => {
+                btnBuy.disabled = false;
+                btnBuy.innerText = originalText;
+                console.error('Error buying now:', err);
+                alert('Không thể kết nối đến máy chủ.');
+            });
     }
 
     function submitNotifyStock(event) {
@@ -664,29 +673,29 @@ $mainImage = getProductImage($sanpham->getAnh_dai_dien());
         formData.append('email', email);
 
         fetch('?page=notify-out-of-stock', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            btnSubmit.disabled = false;
-            btnSubmit.innerText = "Đăng ký";
-            msgEl.textContent = data.message;
-            msgEl.style.display = "block";
-            if (data.success) {
-                msgEl.className = "small mt-2 fw-semibold text-success";
-                document.getElementById("notifyEmail").value = "";
-            } else {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = "Đăng ký";
+                msgEl.textContent = data.message;
+                msgEl.style.display = "block";
+                if (data.success) {
+                    msgEl.className = "small mt-2 fw-semibold text-success";
+                    document.getElementById("notifyEmail").value = "";
+                } else {
+                    msgEl.className = "small mt-2 fw-semibold text-danger";
+                }
+            })
+            .catch(err => {
+                btnSubmit.disabled = false;
+                btnSubmit.innerText = "Đăng ký";
+                msgEl.textContent = "Không thể kết nối đến máy chủ.";
                 msgEl.className = "small mt-2 fw-semibold text-danger";
-            }
-        })
-        .catch(err => {
-            btnSubmit.disabled = false;
-            btnSubmit.innerText = "Đăng ký";
-            msgEl.textContent = "Không thể kết nối đến máy chủ.";
-            msgEl.className = "small mt-2 fw-semibold text-danger";
-            msgEl.style.display = "block";
-            console.error('Error:', err);
-        });
+                msgEl.style.display = "block";
+                console.error('Error:', err);
+            });
     }
 </script>

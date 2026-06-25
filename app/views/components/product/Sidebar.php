@@ -11,29 +11,29 @@ $basePageParam = $isFlashSale ? 'flash-sale' : 'product-index';
 
     <!-- ========= CATEGORY LIST ========= -->
     <?php if (!empty($sidebarCategories)): ?>
-    <div class="filter-group">
-        <h4 class="filter-title">
-            <?php
-            // Determine label: if we are inside a sub-category group, show the parent name
-            $parentName = 'Danh mục sản phẩm';
-            if (!empty($tenDanhMucMD)) {
-                $parentId = $tenDanhMucMD->getMa_danh_muc_cha();
-                if ($parentId !== null) {
-                    // We're in a sub-category, find the parent from the full list
-                    foreach (($dsDanhMuc ?? []) as $dm) {
-                        if ($dm->getId() === $parentId) {
-                            $parentName = htmlspecialchars($dm->getTen_danh_muc());
-                            break;
+        <div class="filter-group">
+            <h4 class="filter-title">
+                <?php
+
+                $parentName = 'Danh mục sản phẩm';
+                if (!empty($tenDanhMucMD)) {
+                    $parentId = $tenDanhMucMD->getMa_danh_muc_cha();
+                    if ($parentId !== null) {
+                        // We're in a sub-category, find the parent from the full list
+                        foreach (($dsDanhMuc ?? []) as $dm) {
+                            if ($dm->getId() === $parentId) {
+                                $parentName = htmlspecialchars($dm->getTen_danh_muc());
+                                break;
+                            }
                         }
                     }
                 }
-            }
-            echo $parentName;
-            ?>
-        </h4>
-        <div class="filter-content">
-            <?php foreach ($sidebarCategories as $cat): ?>
-                <?php
+                echo $parentName;
+                ?>
+            </h4>
+            <div class="filter-content">
+                <?php foreach ($sidebarCategories as $cat): ?>
+                    <?php
                     $catSlug = $cat->getDuong_dan_slug();
                     $catName = $cat->getTen_danh_muc();
                     $isActive = ($slugDM ?? '') === $catSlug;
@@ -42,21 +42,21 @@ $basePageParam = $isFlashSale ? 'flash-sale' : 'product-index';
                     if (!empty($slugTH)) {
                         $href .= '&brand=' . urlencode($slugTH);
                     }
-                ?>
-                <a href="<?= $href ?>"
-                   class="filter-item d-flex align-items-center gap-2 text-decoration-none <?= $isActive ? 'active-category' : '' ?>"
-                   style="padding: 6px 4px; border-radius:6px; transition: background .15s;
+                    ?>
+                    <a href="<?= $href ?>"
+                        class="filter-item d-flex align-items-center gap-2 text-decoration-none <?= $isActive ? 'active-category' : '' ?>"
+                        style="padding: 6px 4px; border-radius:6px; transition: background .15s;
                           <?= $isActive ? 'background:#fff3ec; color:#ff6800; font-weight:700;' : 'color:#444;' ?>">
-                    <?php if ($isActive): ?>
-                        <i class="fas fa-chevron-right" style="font-size:10px; color:#ff6800;"></i>
-                    <?php else: ?>
-                        <i class="fas fa-tag" style="font-size:10px; color:#bbb;"></i>
-                    <?php endif; ?>
-                    <span><?= htmlspecialchars($catName) ?></span>
-                </a>
-            <?php endforeach; ?>
+                        <?php if ($isActive): ?>
+                            <i class="fas fa-chevron-right" style="font-size:10px; color:#ff6800;"></i>
+                        <?php else: ?>
+                            <i class="fas fa-tag" style="font-size:10px; color:#bbb;"></i>
+                        <?php endif; ?>
+                        <span><?= htmlspecialchars($catName) ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
         </div>
-    </div>
     <?php endif; ?>
 
     <!-- ========= BRAND FILTER ========= -->
@@ -87,7 +87,7 @@ $basePageParam = $isFlashSale ? 'flash-sale' : 'product-index';
             }
             $result[$gt['tenThuocTinh']][] = ['gt' => $gt['giaTri'], 'id' => $gt['id']];
         }
-        ?>
+    ?>
         <?php foreach ($result as $i => $item): ?>
             <div class="filter-group">
                 <h4 class="filter-title"><?= htmlspecialchars($i) ?></h4>

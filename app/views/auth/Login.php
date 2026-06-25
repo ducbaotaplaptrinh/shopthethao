@@ -25,7 +25,7 @@
                                 id="email"
                                 type="email"
                                 class="form-control login-form__input"
-                                name="email" 
+                                name="email"
                                 placeholder=" "
                                 value="<?= htmlspecialchars($email ?? '') ?>">
 
@@ -60,6 +60,9 @@
                     </form>
 
                     <div class="text-center mt-3">
+                        <a href="?page=change-password<?= !empty($redirect) ? '&redirect=' . urlencode($redirect) : '' ?>" class="login-form__link">
+                            Quên mật khẩu
+                        </a>
                         Chưa có tài khoản?
                         <a href="?page=register<?= !empty($redirect) ? '&redirect=' . urlencode($redirect) : '' ?>" class="login-form__link">
                             Đăng ký

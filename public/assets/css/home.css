@@ -1,0 +1,15 @@
+@import url("product-new.css");
+@import url("product-sale.css");
+@import url("category-home.css");
+@import url("review.css");
+
+.quick-info {
+    margin-top: 40px;
+}
+.quick-info__card {
+    transition: all 0.3s;
+}
+.quick-info__card:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}

@@ -1,26 +1,18 @@
 <?php
-// Rank definition based on spending
+// Rank definition dynamically loaded from database
 $tongChiTieu = $user->getTong_chi_tieu();
-if ($tongChiTieu >= 20000000) {
-    $rankName = 'Kim Cương';
-    $rankColor = '#00d2ff';
-    $rankIcon = 'bi-gem';
+
+$rankName = $rankInfo['ten_hang'] ?? 'Đồng';
+$rankColor = $rankInfo['mau_sac'] ?? '#cd7f32';
+$rankIcon = $rankInfo['bieu_tuong'] ?? 'bi-star-half';
+
+$rankClass = 'rank-bronze';
+if ($rankName === 'Kim Cương') {
     $rankClass = 'rank-diamond';
-} elseif ($tongChiTieu >= 5000000) {
-    $rankName = 'Vàng';
-    $rankColor = '#ffd700';
-    $rankIcon = 'bi-award-fill';
+} elseif ($rankName === 'Vàng') {
     $rankClass = 'rank-gold';
-} elseif ($tongChiTieu >= 1000000) {
-    $rankName = 'Bạc';
-    $rankColor = '#b5b5b5';
-    $rankIcon = 'bi-award';
+} elseif ($rankName === 'Bạc') {
     $rankClass = 'rank-silver';
-} else {
-    $rankName = 'Đồng';
-    $rankColor = '#b87333';
-    $rankIcon = 'bi-shield-shaded';
-    $rankClass = 'rank-bronze';
 }
 
 function getAvatarImage($avatarPath) {

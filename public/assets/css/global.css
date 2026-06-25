@@ -1,8 +1,4 @@
 @import url("navbar.css");
-@import url("product-new.css");
-@import url("product-sale.css");
-@import url("category-home.css");
-@import url("review.css");
 @import url("auth.css");
 @import url("about.css");
 
@@ -33,7 +29,7 @@ body {
     overflow-x: hidden;
     font-family: "Inter", "Poppins", sans-serif;
     font-weight: 400;
-    font-size: 1.6rem !important;
+    font-size: 16px !important;
     color: var(--text-dark);
     background: var(--surface);
 }
@@ -160,7 +156,6 @@ img {
     bottom: 22px;
 }
 
-.quick-info,
 .section-surface {
     margin: 70px 0;
 }
@@ -263,6 +258,7 @@ img {
 .product-badge {
     display: inline-flex;
     align-items: center;
+    width: fit-content;
     gap: 0.35rem;
     border-radius: 999px;
     padding: 0.35rem 0.75rem;

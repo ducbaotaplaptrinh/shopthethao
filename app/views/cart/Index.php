@@ -54,6 +54,7 @@
                                 </thead>
                                 <tbody>
                                     <?php foreach ($cartItems as $key => $item): ?>
+
                                         <?php
                                         $subtotal = $item['price'] * $item['qty'];
                                         $imgUrl = getProductImage($item['image']);
@@ -137,61 +138,63 @@
 </div>
 
 <script>
-// Hàm tiếng Việt dễ hiểu để giới hạn số lượng và submit form
-function capQuantityAndSubmit(input, maxStock) {
-    let val = parseInt(input.value) || 1;
-    if (val < 1) {
-        input.value = 1;
-    } else if (val > maxStock) {
-        alert("Số lượng sản phẩm trong giỏ hàng vượt quá tồn kho thực tế! Hệ thống đã điều chỉnh về tối đa là " + maxStock + " sản phẩm.");
-        input.value = maxStock;
-    }
-    document.getElementById('cartForm').submit();
-}
-
-// Chặn gõ các ký tự không phải số nguyên dương
-document.querySelectorAll('.qty-input-box').forEach(function(input) {
-    input.addEventListener("keydown", function(e) {
-        if ([".", ",", "-", "+", "e", "E"].includes(e.key)) {
-            e.preventDefault();
+    //giới hạn số lượng và submit form
+    function capQuantityAndSubmit(input, maxStock) {
+        let val = parseInt(input.value) || 1;
+        if (val < 1) {
+            input.value = 1;
+        } else if (val > maxStock) {
+            alert("Số lượng sản phẩm trong giỏ hàng vượt quá tồn kho thực tế! Hệ thống đã điều chỉnh về tối đa là " + maxStock + " sản phẩm.");
+            input.value = maxStock;
         }
-    });
-});
-
-// Chọn tất cả hoặc bỏ chọn tất cả sản phẩm
-function toggleSelectAll(master) {
-    const checkboxes = document.querySelectorAll('.cart-item-checkbox');
-    checkboxes.forEach(cb => {
-        cb.checked = master.checked;
-    });
-    updateCartSelection();
-}
-
-// Cập nhật tổng số tiền hiển thị dựa trên các sản phẩm được chọn
-function updateCartSelection() {
-    const checkboxes = document.querySelectorAll('.cart-item-checkbox');
-    let total = 0;
-    let checkedCount = 0;
-
-    checkboxes.forEach(cb => {
-        if (cb.checked) {
-            const price = parseFloat(cb.getAttribute('data-price'));
-            const qty = parseInt(cb.getAttribute('data-qty'));
-            total += price * qty;
-            checkedCount++;
-        }
-    });
-
-    // Cập nhật trạng thái checkbox "Chọn tất cả"
-    const selectAllCb = document.getElementById('selectAllItems');
-    if (selectAllCb) {
-        selectAllCb.checked = (checkedCount === checkboxes.length);
+        document.getElementById('cartForm').submit();
     }
 
-    // Định dạng VND hiển thị
-    const formattedTotal = new Intl.NumberFormat('vi-VN', { style: 'decimal' }).format(total) + ' ₫';
-    
-    document.getElementById('cartSubtotal').textContent = formattedTotal;
-    document.getElementById('cartTotal').textContent = formattedTotal;
-}
+    // Chặn gõ các ký tự không phải số nguyên dương
+    document.querySelectorAll('.qty-input-box').forEach(function(input) {
+        input.addEventListener("keydown", function(e) {
+            if ([".", ",", "-", "+", "e", "E"].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Chọn tất cả hoặc bỏ chọn tất cả sản phẩm
+    function toggleSelectAll(master) {
+        const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+        checkboxes.forEach(cb => {
+            cb.checked = master.checked;
+        });
+        updateCartSelection();
+    }
+
+    // Cập nhật tổng số tiền hiển thị dựa trên các sản phẩm được chọn
+    function updateCartSelection() {
+        const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+        let total = 0;
+        let checkedCount = 0;
+
+        checkboxes.forEach(cb => {
+            if (cb.checked) {
+                const price = parseFloat(cb.getAttribute('data-price'));
+                const qty = parseInt(cb.getAttribute('data-qty'));
+                total += price * qty;
+                checkedCount++;
+            }
+        });
+
+        // Cập nhật trạng thái checkbox "Chọn tất cả"
+        const selectAllCb = document.getElementById('selectAllItems');
+        if (selectAllCb) {
+            selectAllCb.checked = (checkedCount === checkboxes.length);
+        }
+
+        // Định dạng VND hiển thị
+        const formattedTotal = new Intl.NumberFormat('vi-VN', {
+            style: 'decimal'
+        }).format(total) + ' ₫';
+
+        document.getElementById('cartSubtotal').textContent = formattedTotal;
+        document.getElementById('cartTotal').textContent = formattedTotal;
+    }
 </script>
