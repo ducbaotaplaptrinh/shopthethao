@@ -10,11 +10,16 @@ class Model
     public $conn;
     public function __construct()
     {
-        $host = "gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com";
-        $port = "4000";
+        $host = "sql103.infinityfree.com";
+        $port = "3306";
         $dbName = "bd_baodatsport";
-        $userName = "3NCDKG8eN9oMkmX.root";
-        $password = "caKjtcMgEHyM2Vgx";
+        $userName = "if0_42192939_db_baodatsport2";
+        $password = "AY3cLd8uNlfK7";
+        // $host = "gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com";
+        // $port = "4000";
+        // $dbName = "bd_baodatsport";
+        // $userName = "3NCDKG8eN9oMkmX.root";
+        // $password = "caKjtcMgEHyM2Vgx";
         $option = [
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
