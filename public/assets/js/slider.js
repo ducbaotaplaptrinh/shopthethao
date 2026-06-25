@@ -1,6 +1,3 @@
-const $ = document.querySelector.bind(document);
-const $$ = document.querySelectorAll.bind(document);
-
 document.addEventListener("DOMContentLoaded", function () {
     if (typeof Swiper === "undefined") return;
 

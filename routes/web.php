@@ -1,5 +1,5 @@
-<?php
-require BASE_PATH . "/app/controllers/SanPhamController.php";
+﻿<?php
+
 return [
 	'login' => [
 		'title' => 'Đăng nhập',
@@ -36,6 +36,7 @@ return [
 		'view' => 'home/Index.php',
 		'controller' => \app\controllers\HomeController::class,
 		'action' => 'index',
+		'pageStyles' => ['assets/css/home.css']
 	],
 	'product-index' => [
 		'title' => 'Danh sách sản phẩm',
@@ -312,6 +313,48 @@ return [
 		'view' => 'admin/product/Index.php',
 		'controller' => \app\controllers\admin\AdminProductController::class,
 		'action' => 'khoiPhucSanPham',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-banners' => [
+		'title' => 'Quản lý Banner | Quản trị',
+		'view' => 'admin/banner/Index.php',
+		'controller' => \app\controllers\admin\AdminBannerController::class,
+		'action' => 'index',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-banner-create' => [
+		'title' => 'Thêm Banner Mới | Quản trị',
+		'view' => 'admin/banner/Form.php',
+		'controller' => \app\controllers\admin\AdminBannerController::class,
+		'action' => 'create',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-banner-store' => [
+		'title' => 'Lưu Banner | Quản trị',
+		'view' => 'admin/banner/Index.php',
+		'controller' => \app\controllers\admin\AdminBannerController::class,
+		'action' => 'store',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-banner-edit' => [
+		'title' => 'Sửa Banner | Quản trị',
+		'view' => 'admin/banner/Form.php',
+		'controller' => \app\controllers\admin\AdminBannerController::class,
+		'action' => 'edit',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-banner-update' => [
+		'title' => 'Cập nhật Banner | Quản trị',
+		'view' => 'admin/banner/Index.php',
+		'controller' => \app\controllers\admin\AdminBannerController::class,
+		'action' => 'update',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-banner-delete' => [
+		'title' => 'Xóa Banner | Quản trị',
+		'view' => 'admin/banner/Index.php',
+		'controller' => \app\controllers\admin\AdminBannerController::class,
+		'action' => 'delete',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'contact' => [

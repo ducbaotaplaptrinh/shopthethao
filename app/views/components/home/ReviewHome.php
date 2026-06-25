@@ -1,7 +1,7 @@
 <div class="conatainer-xl">
     <section class="review row justify-content-betwwen">
         <div class="review-content col-12 col-md-6">
-            <h2 class="review-content__title">Đánh giá từ khách hàng của Bảo Đạt Sport</h2>
+            <h2 class="section-title">Đánh giá từ khách hàng của Bảo Đạt Sport</h2>
             <p class="review-content__desc"><span style="">Bảo Đạt Sport</span> đã phục vụ với hơn 50.000 khách hàng trực tiếp trên cả nước. cùng xem những đánh giá về shop nhé!</p>
             <div class="review-content__srateguest d-flex gap-3 align-items-center">
                 <ul class="review-content__srateguest-list m-0 ps-3">

@@ -2,27 +2,20 @@
 
 namespace app\services;
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
-
 require_once BASE_PATH . '/app/services/PHPMailer/Exception.php';
 require_once BASE_PATH . '/app/services/PHPMailer/PHPMailer.php';
 require_once BASE_PATH . '/app/services/PHPMailer/SMTP.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+use app\models\entities\DonHang;
 
 class MailService
 {
     public static function sendOTP(string $toEmail, string $recipientName, string $otpCode): bool
     {
-        // 1. Ghi log ra file để test tiện lợi trên localhost đề phòng SMTP cấu hình sai hoặc chưa thay đổi thông tin
-        $logDir = BASE_PATH . '/logs';
-        if (!is_dir($logDir)) {
-            mkdir($logDir, 0777, true);
-        }
-        $logFile = $logDir . '/email_logs.log';
-        $logContent = "[" . date('Y-m-d H:i:s') . "] [PHPMailer Service] Gửi tới: $toEmail | Tên: $recipientName | OTP: $otpCode\r\n";
-        file_put_contents($logFile, $logContent, FILE_APPEND);
-        
+
         $_SESSION['last_sent_otp'] = $otpCode;
 
         // 2. Gửi mail qua PHPMailer SMTP
@@ -47,7 +40,7 @@ class MailService
             // Nội dung thư
             $mail->isHTML(true);
             $mail->Subject = 'Mã xác thực đăng ký tài khoản - Bảo Đạt Sport';
-            
+
             $mail->Body = "
             <html>
             <head>
@@ -84,23 +77,14 @@ class MailService
             $mail->send();
             return true;
         } catch (Exception $e) {
-            // Ghi nhận lỗi SMTP cụ thể ra file logs
-            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] SMTP Error: " . $mail->ErrorInfo . "\r\n", FILE_APPEND);
+            // Ghi nhận lỗi
+            var_dump("Đã có lỗi khi gửi mail: " . $e->getMessage());
             return false;
         }
     }
 
-    public static function sendOrderInvoice(string $toEmail, string $recipientName, \app\models\entities\DonHang $order, array $items): bool
+    public static function sendOrderInvoice(string $toEmail, string $recipientName, DonHang $order, array $items): bool
     {
-        // 1. Ghi log ra file để test tiện lợi trên localhost đề phòng SMTP cấu hình sai hoặc chưa thay đổi thông tin
-        $logDir = BASE_PATH . '/logs';
-        if (!is_dir($logDir)) {
-            mkdir($logDir, 0777, true);
-        }
-        $logFile = $logDir . '/email_logs.log';
-        $logContent = "[" . date('Y-m-d H:i:s') . "] [PHPMailer Service] Gửi Hóa đơn tới: $toEmail | Mã DH: " . $order->getMa_don_hang() . "\r\n";
-        file_put_contents($logFile, $logContent, FILE_APPEND);
-
         // 2. Gửi mail qua PHPMailer SMTP
         $mail = new PHPMailer(true);
 
@@ -122,7 +106,7 @@ class MailService
             // Nội dung thư
             $mail->isHTML(true);
             $mail->Subject = 'Hóa đơn mua hàng #' . $order->getMa_don_hang() . ' - Bảo Đạt Sport';
-            
+
             // Tạo danh sách sản phẩm dạng HTML
             $itemsHtml = '';
             foreach ($items as $item) {
@@ -184,7 +168,7 @@ class MailService
                             <strong>Họ và tên người nhận:</strong> " . htmlspecialchars($order->getHo_ten_nguoi_nhan()) . "<br>
                             <strong>Số điện thoại:</strong> " . htmlspecialchars($order->getSo_dien_thoai()) . "<br>
                             <strong>Địa chỉ giao hàng:</strong> " . htmlspecialchars($order->getDia_chi_giao_hang()) . "<br>" .
-                            ($order->getGhi_chu() ? "<strong>Ghi chú:</strong> " . htmlspecialchars($order->getGhi_chu()) . "<br>" : "") . "
+                ($order->getGhi_chu() ? "<strong>Ghi chú:</strong> " . htmlspecialchars($order->getGhi_chu()) . "<br>" : "") . "
                         </div>
 
                         <div class='section-title'>Chi tiết sản phẩm</div>
@@ -211,7 +195,7 @@ class MailService
                                 <td><strong>Phí giao hàng:</strong></td>
                                 <td style='color: green; font-weight: 600;'>Miễn phí</td>
                             </tr>" .
-                            ($order->getTien_giam_gia() > 0 ? "
+                ($order->getTien_giam_gia() > 0 ? "
                             <tr>
                                 <td><strong>Giảm giá:</strong></td>
                                 <td style='color: red; font-weight: 600;'>-" . number_format($order->getTien_giam_gia(), 0, ',', '.') . " ₫</td>
@@ -234,8 +218,89 @@ class MailService
             $mail->send();
             return true;
         } catch (Exception $e) {
-            // Ghi nhận lỗi SMTP cụ thể ra file logs
-            file_put_contents($logFile, "[" . date('Y-m-d H:i:s') . "] SMTP Error (Invoice): " . $mail->ErrorInfo . "\r\n", FILE_APPEND);
+            var_dump("Đã có lỗi khi gửi mail: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    public static function sendConsultation(string $fullName, string $phone, string $email, string $content): bool
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Cấu hình Server gửi mail
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';                     // Máy chủ SMTP của Gmail
+            $mail->SMTPAuth   = true;                                 // Bật xác thực SMTP
+            $mail->Username   = 'nbao33446@gmail.com';               // Email gửi tin
+            $mail->Password   = 'mqma nont tgvq fvmp';                  // Mật khẩu ứng dụng Gmail (16 chữ số)
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;       // Mã hóa STARTTLS
+            $mail->Port       = 587;                                  // Cổng TCP kết nối
+            $mail->CharSet    = 'UTF-8';
+
+            // Người nhận & Người gửi
+            $mail->setFrom('nbao33446@gmail.com', 'Bảo Đạt Sport');
+            $mail->addAddress('nbao33446@gmail.com', 'Ban Quản Trị'); // Gửi tới email của admin/shop
+            $mail->addReplyTo($email, $fullName); // Cho phép admin trả lời lại trực tiếp tới email khách hàng
+
+            // Nội dung thư
+            $mail->isHTML(true);
+            $mail->Subject = 'Yêu cầu tư vấn mới từ khách hàng - ' . $fullName;
+
+            $mail->Body = "
+            <html>
+            <head>
+                <title>Yêu cầu tư vấn mới</title>
+                <style>
+                    body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+                    .header { background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); color: white; padding: 20px; text-align: center; border-radius: 12px 12px 0 0; }
+                    .content { padding: 30px; background-color: #f8f9fa; border-radius: 0 0 12px 12px; }
+                    .info-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+                    .info-table td { padding: 10px; border-bottom: 1px solid #eee; font-size: 14px; }
+                    .info-table td.label { font-weight: bold; width: 30%; color: #555; }
+                    .footer { font-size: 12px; color: #888; text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h2 style='margin:0; font-size: 24px; font-weight: 700;'>Yêu Cầu Tư Vấn Mới</h2>
+                    </div>
+                    <div class='content'>
+                        <p>Bạn nhận được một yêu cầu tư vấn mới từ khách hàng với thông tin chi tiết dưới đây:</p>
+                        <table class='info-table'>
+                            <tr>
+                                <td class='label'>Họ và tên:</td>
+                                <td>" . htmlspecialchars($fullName) . "</td>
+                            </tr>
+                            <tr>
+                                <td class='label'>Số điện thoại:</td>
+                                <td>" . htmlspecialchars($phone) . "</td>
+                            </tr>
+                            <tr>
+                                <td class='label'>Email:</td>
+                                <td><a href='mailto:" . urlencode($email) . "'>" . htmlspecialchars($email) . "</a></td>
+                            </tr>
+                            <tr>
+                                <td class='label'>Nội dung yêu cầu:</td>
+                                <td>" . nl2br(htmlspecialchars($content)) . "</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class='footer'>
+                        Đây là email tự động từ hệ thống Bảo Đạt Sport.<br>
+                        &copy; " . date('Y') . " Bảo Đạt Sport. All rights reserved.
+                    </div>
+                </div>
+            </body>
+            </html>
+            ";
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            var_dump("Đã có lỗi khi gửi mail tư vấn: " . $e->getMessage());
             return false;
         }
     }

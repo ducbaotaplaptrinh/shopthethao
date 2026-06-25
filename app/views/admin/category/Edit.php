@@ -31,25 +31,25 @@ $errorMsg = $_GET['error'] ?? '';
         <div class="admin-card">
             <h4 class="admin-card-title mb-4">Thông tin Danh mục</h4>
             <form action="?page=admin-category-update" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="id" value="<?= $category['id'] ?>">
-                
+                <input type="hidden" name="id" value="<?= isset($category) ? $category->getId() : 'Trống' ?>">
+
                 <div class="mb-3">
                     <label class="form-label">Tên danh mục <span class="text-danger">*</span></label>
                     <input type="text" name="ten_danh_muc" id="editCatName" class="form-control" required
-                           value="<?= htmlspecialchars($category['ten_danh_muc']) ?>" 
-                           onkeyup="generateEditSlug()">
+                        value="<?= htmlspecialchars(isset($category) ? $category->getTen_danh_muc() : "Trống") ?>"
+                        onkeyup="generateEditSlug()">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Đường dẫn (Slug) <span class="text-danger">*</span></label>
                     <input type="text" name="duong_dan_slug" id="editCatSlug" class="form-control" required readonly
-                           style="background-color: #f8f9fa;"
-                           value="<?= htmlspecialchars($category['duong_dan_slug']) ?>">
+                        style="background-color: #f8f9fa;"
+                        value="<?= htmlspecialchars(isset($category) ? $category->getDuong_dan_slug() : "Trống") ?>">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Hình ảnh danh mục</label>
                     <input type="file" name="hinh_anh" id="editCatImage" class="form-control mb-2" accept="image/*">
-                    <?php 
-                    $currentImg = getProductImage($category['hinh_anh'] ?? '');
+                    <?php
+                    $currentImg = getProductImage("assets/images/products/" . $category->getHinh_anh() ?? '');
                     ?>
                     <div class="d-flex align-items-center gap-2">
                         <span class="text-muted small">Ảnh hiện tại:</span>
@@ -57,8 +57,8 @@ $errorMsg = $_GET['error'] ?? '';
                     </div>
                 </div>
                 <div class="form-check form-switch mb-4">
-                    <input class="form-check-input" type="checkbox" name="trang_thai" id="editCatStatus" 
-                           <?= $category['trang_thai'] == 1 ? 'checked' : '' ?>>
+                    <input class="form-check-input" type="checkbox" name="trang_thai" id="editCatStatus"
+                        <?= $category->getTrang_thai() == 1 ? 'checked' : '' ?>>
                     <label class="form-check-label" for="editCatStatus">Hiển thị</label>
                 </div>
                 <div class="d-flex gap-2">
@@ -78,6 +78,7 @@ $errorMsg = $_GET['error'] ?? '';
     function generateEditSlug() {
         let title = document.getElementById('editCatName').value;
         let slug = title.toLowerCase();
+
         slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
         slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
         slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
@@ -85,14 +86,15 @@ $errorMsg = $_GET['error'] ?? '';
         slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
         slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
         slug = slug.replace(/đ/gi, 'd');
-        slug = slug.replace(/\`|\~|\!|\@|\#|\||\$|\%|\^|\&|\*|\(|\)|\+|\=|\,|\.|\\/|\?|\>|\<|\'|\"|\:|\;|_/gi, '');
-        slug = slug.replace(/ /gi, "-");
-        slug = slug.replace(/\-\-\-\-\-/gi, '-');
-        slug = slug.replace(/\-\-\-\-/gi, '-');
-        slug = slug.replace(/\-\-\-/gi, '-');
-        slug = slug.replace(/\-\-/gi, '-');
-        slug = '@' + slug + '@';
-        slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+
+        slug = slug.replace(/[`~!@#$%^&*()+=_,\./?><:'";\\|]/g, ' ');
+
+        slug = slug.replace(/\s+/g, '-');
+
+        slug = slug.replace(/-+/g, '-');
+
+        slug = slug.replace(/^-+|-+$/g, '');
+
         document.getElementById('editCatSlug').value = slug;
     }
 </script>

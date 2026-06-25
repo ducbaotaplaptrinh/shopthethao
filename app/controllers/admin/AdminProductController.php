@@ -13,7 +13,7 @@ class AdminProductController
         $this->model = new AdminProductModel();
     }
 
-    private function handleFileUpload($fileField, $targetDir = 'assets/images/')
+    private function handleFileUpload($fileField, $targetDir = 'assets/images/products/')
     {
         if (!isset($_FILES[$fileField]) || $_FILES[$fileField]['error'] !== UPLOAD_ERR_OK) {
             return null;
@@ -165,7 +165,7 @@ class AdminProductController
 
             try {
                 $productId = $this->model->insertProductWithVariants($_POST, $_POST['variants'] ?? '');
-                
+
                 if ($productId && !empty($anhPhuList)) {
                     $this->model->insertProductGalleryImages($productId, $anhPhuList);
                 }
@@ -181,7 +181,7 @@ class AdminProductController
     public function edit(): array
     {
         $id = $_GET['id'] ?? 0;
-        
+
         $product = $this->model->getProductById($id);
         if (!$product) {
             header("Location: ?page=admin-products");
@@ -238,7 +238,7 @@ class AdminProductController
 
             try {
                 $this->model->updateProductWithVariants($id, $_POST, $_POST['variants'] ?? '');
-                
+
                 if (!empty($anhPhuMoi)) {
                     $this->model->insertProductGalleryImages($id, $anhPhuMoi);
                 }
@@ -260,7 +260,8 @@ class AdminProductController
                 header("Location: ?page=admin-products&success=deleted");
                 exit;
             } catch (\Exception $e) {
-                die("Lỗi khi xóa sản phẩm: " . $e->getMessage());
+                header("Location: ?page=admin-products&error=" . urlencode($e->getMessage()));
+                exit;
             }
         }
         header("Location: ?page=admin-products");

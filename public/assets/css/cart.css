@@ -194,3 +194,88 @@ textarea:focus {
     height: 54px;
     font-size: 16px;
 }
+
+/* ====================
+   RESPONSIVE CHECKOUT TYPOGRAPHY
+==================== */
+.checkout-page {
+    font-size: 1.6rem;
+}
+
+.checkout-page .form-control,
+.checkout-page .form-select,
+.checkout-page .form-label,
+.checkout-page .card,
+.checkout-page .address-select-card,
+.checkout-page .text-muted,
+.checkout-page .small,
+.checkout-page small,
+.checkout-page .form-check-label,
+.checkout-page .checkout-items-list,
+.checkout-page .checkout-items-list div,
+.checkout-page .checkout-items-list span,
+.checkout-page .checkout-items-list small,
+.checkout-page .d-flex span,
+.checkout-page .d-flex div {
+    font-size: 1.6rem !important;
+}
+
+.checkout-page h2.section-title {
+    font-size: 2.6rem !important;
+}
+
+.checkout-page h4 {
+    font-size: 2rem !important;
+}
+
+@media (max-width: 768px) {
+    .checkout-page .form-control,
+    .checkout-page .form-select,
+    .checkout-page .form-label,
+    .checkout-page .card,
+    .checkout-page .address-select-card,
+    .checkout-page .text-muted,
+    .checkout-page .small,
+    .checkout-page small,
+    .checkout-page .form-check-label,
+    .checkout-page .checkout-items-list,
+    .checkout-page .checkout-items-list div,
+    .checkout-page .checkout-items-list span,
+    .checkout-page .checkout-items-list small,
+    .checkout-page .d-flex span,
+    .checkout-page .d-flex div {
+        font-size: 1.5rem !important;
+    }
+    .checkout-page h2.section-title {
+        font-size: 2.2rem !important;
+    }
+    .checkout-page h4 {
+        font-size: 1.8rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .checkout-page .form-control,
+    .checkout-page .form-select,
+    .checkout-page .form-label,
+    .checkout-page .card,
+    .checkout-page .address-select-card,
+    .checkout-page .text-muted,
+    .checkout-page .small,
+    .checkout-page small,
+    .checkout-page .form-check-label,
+    .checkout-page .checkout-items-list,
+    .checkout-page .checkout-items-list div,
+    .checkout-page .checkout-items-list span,
+    .checkout-page .checkout-items-list small,
+    .checkout-page .d-flex span,
+    .checkout-page .d-flex div {
+        font-size: 1.4rem !important;
+    }
+    .checkout-page h2.section-title {
+        font-size: 2rem !important;
+    }
+    .checkout-page h4 {
+        font-size: 1.6rem !important;
+    }
+}

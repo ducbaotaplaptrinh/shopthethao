@@ -87,60 +87,7 @@ class SanPhamModel extends Model
         return $danhSachEntities;
     }
 
-    // public function getSPTheoDanhMuc($slugDM): ?array
-    // {
-    //     $sql = "select d.ten_danh_muc, t.ten_thuong_hieu, s.* from san_pham s 
-    //             join thuong_hieu t 
-    //             on s.ma_thuong_hieu = t.id
-    //             join danh_muc d 
-    //             on d.id = s.ma_danh_muc
-    //             where  d.duong_dan_slug = :slug_dm 
-    //             and s.ngay_xoa is null 
-    //             and t.ngay_xoa is null 
-    //             and d.ngay_xoa is null 
-    //             and s.trang_thai = 1 ";
-    //     $stmt = $this->conn->prepare($sql);
-    //     $stmt->execute(['slug_dm' => $slugDM]);
-    //     $data = $stmt->fetchAll();
-    //     if (empty($data)) {
-    //         return null;
-    //     }
-    //     $danhSachEntities = [];
-    //     foreach ($data as $dong) {
-    //         $danhSachEntities[] = [
-    //             'item' => new SanPham($dong),
-    //             'tenThuongHieu' => $dong['ten_thuong_hieu'],
-    //             'tenDanhMuc' => $dong['ten_danh_muc'],
-    //         ];
-    //     }
-    //     return $danhSachEntities;
-    // }
-
-    // public function getSanPhamTheoBrand($slugThuongHieu): ?array
-    // {
-    //     $sql = "select d.ten_danh_muc, t.ten_thuong_hieu, s.* from san_pham s 
-    //             join thuong_hieu t 
-    //             on s.ma_thuong_hieu = t.id
-    //             join danh_muc d 
-    //             on d.id = s.ma_danh_muc
-    //             where t.duong_dan_slug = :slug 
-    //             and s.ngay_xoa is null 
-    //             and t.ngay_xoa is null 
-    //             and d.ngay_xoa is null 
-    //             and s.trang_thai = 1 ";
-    //     $stmt = $this->conn->prepare($sql);
-    //     $stmt->execute(['slug' => $slugThuongHieu]);
-    //     $data = $stmt->fetchAll();
-    //     $danhSachEntities = [];
-    //     foreach ($data as $dong) {
-    //         $danhSachEntities[] = [
-    //             'item' => new SanPham($dong),
-    //             'tenThuongHieu' => $dong['ten_thuong_hieu'],
-    //             'tenDanhMuc' => $dong['ten_danh_muc'],
-    //         ];
-    //     }
-    //     return $danhSachEntities;
-    // }
+    //Lấy mega menu
     public function getDanhMucThuongHieu()
     {
         $sql = "select distinct ten_danh_muc, ten_thuong_hieu, d.duong_dan_slug as slug_dm , th.duong_dan_slug as slug_th, d.ma_danh_muc_cha
@@ -235,7 +182,7 @@ class SanPhamModel extends Model
         // 4. Lọc sản phẩm đang giảm giá
         if ($onlySale) {
             $sql .= " AND s.gia_khuyen_mai > 0";
-            // LƯU Ý: Nếu anh đã chuyển gia_khuyen_mai sang bảng biến thể, hãy đổi lại logic check ở đây bằng EXISTS nhé!
+            // LƯU Ý: Nếu đã chuyển gia_khuyen_mai sang bảng biến thể, hãy đổi lại logic check ở đây bằng EXISTS nhé!
         }
 
         // 5. Lọc theo Thuộc tính (Đã tối ưu, bỏ hoàn toàn bảng cũ)
@@ -342,13 +289,14 @@ class SanPhamModel extends Model
 
         // 5. Lọc theo Thuộc tính (Đã loại bỏ hoàn toàn bảng trung gian cũ)
         if (!empty($selectedAttrs) && is_array($selectedAttrs)) {
-            $attrIds = array_map('intval', $selectedAttrs);
+            $attrIds = array_map('intval', $selectedAttrs); //array_map(): chuyển các id gtbt về dạng số nguyên
             $placeholders = [];
             foreach ($attrIds as $index => $id) {
                 $key = "attr_" . $index;
                 $placeholders[] = ":" . $key;
                 $bindParams[$key] = $id;
             }
+
             $placeholderStr = implode(',', $placeholders);
 
             // Chỉ check duy nhất điều kiện EXISTS qua nhánh biến thể

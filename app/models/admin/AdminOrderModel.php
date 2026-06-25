@@ -30,10 +30,10 @@ class AdminOrderModel extends Model
 
     public function getOrderItems($orderId)
     {
-        $sqlItems = "SELECT ct.*, sp.ten_san_pham, bt.ma_vach_sku 
+        $sqlItems = "SELECT ct.*, sp.duong_dan_slug, sp.so_luong_ton as sp_ton, bt.ma_vach_sku, bt.so_luong_ton as bt_ton 
                      FROM chi_tiet_don_hang ct
                      LEFT JOIN bien_the_san_pham bt ON ct.ma_bien_the = bt.id
-                     LEFT JOIN san_pham sp ON bt.ma_san_pham = sp.id
+                     LEFT JOIN san_pham sp ON ct.ma_san_pham = sp.id
                      WHERE ct.ma_don_hang = ?";
         $stmtItems = $this->conn->prepare($sqlItems);
         $stmtItems->execute([$orderId]);
@@ -52,6 +52,30 @@ class AdminOrderModel extends Model
      */
     public function capNhatTrangThaiDonHang($id, $trangThaiMoi, $trangThaiCu)
     {
+        // 0. Ràng buộc bảo vệ cấp dữ liệu: không cho chuyển ngược trạng thái hoặc sửa đơn đã kết thúc
+        $statusWeights = [
+            'cho_xac_nhan' => 1,
+            'dang_xu_ly'   => 2,
+            'dang_giao'    => 3,
+            'hoan_thanh'   => 4,
+            'da_huy'       => 5
+        ];
+
+        if (!isset($statusWeights[$trangThaiMoi]) || !isset($statusWeights[$trangThaiCu])) {
+            throw new \Exception("Trạng thái đơn hàng không hợp lệ.");
+        }
+
+        $wCu = $statusWeights[$trangThaiCu];
+        $wMoi = $statusWeights[$trangThaiMoi];
+
+        if ($trangThaiCu === 'hoan_thanh' || $trangThaiCu === 'da_huy') {
+            throw new \Exception("Đơn hàng đã kết thúc (Hoàn thành/Đã hủy), không thể thay đổi trạng thái.");
+        }
+
+        if ($trangThaiMoi !== 'da_huy' && $wMoi < $wCu) {
+            throw new \Exception("Không thể chuyển ngược trạng thái đơn hàng.");
+        }
+
         try {
             $this->conn->beginTransaction();
 

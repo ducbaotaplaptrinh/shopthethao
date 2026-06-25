@@ -64,11 +64,11 @@ class SanPhamController
         $sidebarCategories = [];
         if ($tenDanhMuc) {
             $parentId = $tenDanhMuc->getMa_danh_muc_cha() ?? $tenDanhMuc->getId();
-            $sidebarCategories = array_filter($dsDanhMuc, function($dm) use ($parentId) {
+            $sidebarCategories = array_filter($dsDanhMuc, function ($dm) use ($parentId) {
                 return $dm->getMa_danh_muc_cha() === $parentId;
             });
         } else {
-            $sidebarCategories = array_filter($dsDanhMuc, function($dm) {
+            $sidebarCategories = array_filter($dsDanhMuc, function ($dm) {
                 return $dm->getMa_danh_muc_cha() === null;
             });
         }
@@ -84,6 +84,7 @@ class SanPhamController
         } else {
             $title = "Danh sách sản phẩm | Bảo Đạt Sport";
         }
+
 
         return [
             'title' => $title,
@@ -149,11 +150,11 @@ class SanPhamController
         $sidebarCategories = [];
         if ($tenDanhMuc) {
             $parentId = $tenDanhMuc->getMa_danh_muc_cha() ?? $tenDanhMuc->getId();
-            $sidebarCategories = array_filter($dsDanhMuc, function($dm) use ($parentId) {
+            $sidebarCategories = array_filter($dsDanhMuc, function ($dm) use ($parentId) {
                 return $dm->getMa_danh_muc_cha() === $parentId;
             });
         } else {
-            $sidebarCategories = array_filter($dsDanhMuc, function($dm) {
+            $sidebarCategories = array_filter($dsDanhMuc, function ($dm) {
                 return $dm->getMa_danh_muc_cha() === null;
             });
         }
@@ -199,14 +200,14 @@ class SanPhamController
         $sanpham = $sanPhamData['item'];
         $idSP = $sanpham->getId();
 
-        // Fetch related products (same category, limit 4, offset 0)
+
         $categorySlug = $sanPhamData['category_slug'] ?? '';
         $relatedProducts = $this->sanPhamModel->getFilteredProducts($categorySlug, '', [], 'newest', 5, 0);
         if (!empty($relatedProducts)) {
-            $relatedProducts = array_filter($relatedProducts, function($p) use ($idSP) {
+            $relatedProducts = array_filter($relatedProducts, function ($p) use ($idSP) {
                 return $p['item']->getId() !== $idSP;
             });
-            // Slice to ensure exactly 4 products max after filtering out current product
+
             $relatedProducts = array_slice($relatedProducts, 0, 4);
         }
 
@@ -243,7 +244,10 @@ class SanPhamController
             'variations' => $variations,
             'uniqueAttributes' => $uniqueAttributes,
             'relatedProducts' => $relatedProducts,
-            'pageStyles' => ['assets/css/product-detail.css']
+            'pageStyles' => [
+                'assets/css/product.css',
+                'assets/css/product-detail.css'
+            ]
         ];
     }
 
@@ -251,7 +255,7 @@ class SanPhamController
     {
         $keyword = $_GET['keyword'] ?? '';
         $keyword = trim($keyword);
-        
+
         $suggestions = [];
         if ($keyword !== '') {
             $products = $this->sanPhamModel->getSearchSuggestions($keyword);
@@ -270,7 +274,7 @@ class SanPhamController
                 ];
             }
         }
-        
+
         header('Content-Type: application/json; charset=utf-8');
         echo json_encode($suggestions);
         exit();

@@ -18,6 +18,7 @@ class DanhMuc
     private ?DateTime $ngay_tao;
     private ?DateTime $ngay_cap_nhat;
     private ?DateTime $ngay_xoa;
+    public ?int $so_san_pham = null;
     public function __construct(array $data = [])
     {
         if (!empty($data)) {
@@ -33,6 +34,7 @@ class DanhMuc
             $this->ngay_tao = isset($data['ngay_tao']) ? new DateTime($data['ngay_tao']) : null;
             $this->ngay_cap_nhat = isset($data['ngay_cap_nhat']) ? new DateTime($data['ngay_cap_nhat']) : null;
             $this->ngay_xoa = isset($data['ngay_xoa']) ? new DateTime($data['ngay_xoa']) : null;
+            $this->so_san_pham = $data['so_san_pham'] ?? null;
         }
     }
 
@@ -182,6 +184,26 @@ class DanhMuc
     public function setDuong_dan_slug($duong_dan_slug)
     {
         $this->duong_dan_slug = $duong_dan_slug;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of so_san_pham
+     */
+    public function getSo_san_pham()
+    {
+        return $this->so_san_pham;
+    }
+
+    /**
+     * Set the value of so_san_pham
+     *
+     * @return  self
+     */
+    public function setSo_san_pham($so_san_pham)
+    {
+        $this->so_san_pham = $so_san_pham;
 
         return $this;
     }

@@ -137,7 +137,8 @@ class CartController
                 'success' => $success,
                 'message' => $message,
                 'cart_count' => $totalCartItems,
-                'mini_cart_html' => $miniCartHtml
+                'mini_cart_html' => $miniCartHtml,
+                'key' => $key ?? ''
             ]);
             exit;
         }

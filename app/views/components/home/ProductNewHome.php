@@ -11,7 +11,7 @@
 ?>
     <section class="product-new py-4 my-16-mobile py-0-mobile">
         <div class="container-xl ">
-            <h2 class="product-new__title ">
+            <h2 class="section-title">
                 Sản phẩm mới
             </h2>
             <div class="d-flex align-items-center justify-content-between gap-3 mb-3">
@@ -51,7 +51,7 @@
 
 
 
-            <div class="product-frame p-3  rounded">
+            <div class="gradient-frame p-3 rounded">
                 <div class=" swiper product-swiper ">
                     <div class="swiper-wrapper">
                         <?php if (isset($sanPhamMoi) && is_array($sanPhamMoi)): ?>
@@ -70,7 +70,7 @@
                                                 <div class="product-price text-danger fw-bold">
                                                     <?php if ($p['item']->getGia_khuyen_mai() > 0): ?>
                                                         <span><?php echo htmlspecialchars(formatVND($p['item']->getGia_khuyen_mai())) ?></span>
-                                                        <span class="product-price-old"><?php echo htmlspecialchars(formatVND($p['item']->getGia_ban())) ?></span>
+                                                        <span class="price-old"><?php echo htmlspecialchars(formatVND($p['item']->getGia_ban())) ?></span>
                                                     <?php else: ?>
                                                         <span><?php echo htmlspecialchars(formatVND($p['item']->getGia_ban())) ?></span>
                                                     <?php endif; ?>

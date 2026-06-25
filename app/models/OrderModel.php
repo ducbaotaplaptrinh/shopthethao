@@ -142,7 +142,20 @@ class OrderModel extends Model
                     'thanh_tien' => $subtotalItem
                 ]);
 
-                // Stock deduction has been moved to AdminOrderModel upon order confirmation
+                // Deduct stock levels immediately
+                if (!empty($item['variation_id'])) {
+                    $stmtTruVar = $this->conn->prepare(
+                        "UPDATE bien_the_san_pham SET so_luong_ton = so_luong_ton - ? WHERE id = ?"
+                    );
+                    $stmtTruVar->execute([(int)$item['qty'], $item['variation_id']]);
+                }
+
+                if (!empty($item['product_id'])) {
+                    $stmtTruProd = $this->conn->prepare(
+                        "UPDATE san_pham SET so_luong_ton = so_luong_ton - ? WHERE id = ?"
+                    );
+                    $stmtTruProd->execute([(int)$item['qty'], $item['product_id']]);
+                }
             }
 
             // Update user total spent and rank

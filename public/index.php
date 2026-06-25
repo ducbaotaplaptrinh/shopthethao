@@ -8,7 +8,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Định nghĩa hằng số BASE_PATH trỏ thẳng về thư mục gốc dự án Shop_TheThao
+// Định nghĩa hằng số BASE_PATH trỏ thẳng về thư mục gốc dự án
 define('BASE_PATH', dirname(__DIR__));
 
 // ĐĂNG KÝ AUTOLOAD 

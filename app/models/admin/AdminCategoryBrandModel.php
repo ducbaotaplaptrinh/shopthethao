@@ -3,6 +3,8 @@
 namespace app\models\admin;
 
 use app\core\Model;
+use app\models\DanhMucModel;
+use app\models\entities\DanhMuc;
 use PDO;
 
 class AdminCategoryBrandModel extends Model
@@ -11,7 +13,7 @@ class AdminCategoryBrandModel extends Model
     // DANH MỤC (CATEGORY)
     // =========================================================
 
-    public function getAllCategories()
+    public function getAllCategories(): array
     {
         $sql = "SELECT dm.*, 
                 (SELECT COUNT(*) FROM san_pham sp WHERE sp.ma_danh_muc = dm.id AND sp.ngay_xoa IS NULL) as so_san_pham
@@ -19,14 +21,23 @@ class AdminCategoryBrandModel extends Model
                 WHERE dm.ngay_xoa IS NULL 
                 ORDER BY dm.id DESC";
         $stmt = $this->conn->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $categories = $stmt->fetchAll();
+        $data = [];
+        foreach ($categories as $index => $dong) {
+            $data[] = new DanhMuc($dong);
+        }
+        return $data;
     }
 
-    public function getCategoryById($id)
+    public function getCategoryById($id): ?DanhMuc
     {
         $stmt = $this->conn->prepare("SELECT * FROM danh_muc WHERE id = ? AND ngay_xoa IS NULL");
         $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $dong = $stmt->fetch();
+        if (!$dong) {
+            return null;
+        }
+        return new DanhMuc($dong);
     }
 
     /** Kiểm tra trùng tên danh mục (bỏ qua id hiện tại khi cập nhật) */
@@ -39,7 +50,7 @@ class AdminCategoryBrandModel extends Model
             $stmt = $this->conn->prepare("SELECT id FROM danh_muc WHERE ten_danh_muc = ? AND ngay_xoa IS NULL");
             $stmt->execute([$ten]);
         }
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch();
     }
 
     /** Kiểm tra trùng slug danh mục */
@@ -52,7 +63,7 @@ class AdminCategoryBrandModel extends Model
             $stmt = $this->conn->prepare("SELECT id FROM danh_muc WHERE duong_dan_slug = ? AND ngay_xoa IS NULL");
             $stmt->execute([$slug]);
         }
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return  $stmt->fetch();
     }
 
     /** Đếm sản phẩm đang dùng danh mục này (để chặn xóa) */
@@ -66,6 +77,21 @@ class AdminCategoryBrandModel extends Model
     /** Thêm mới danh mục - Có hình ảnh */
     public function insertCategory($ten, $slug, $trangthai, $hinh_anh = null)
     {
+        $stmt = $this->conn->prepare(
+            "SELECT id FROM danh_muc WHERE duong_dan_slug = ? AND ngay_xoa IS NOT NULL"
+        );
+        $stmt->execute([$slug]);
+        $deletedCategory = $stmt->fetch();
+
+        if ($deletedCategory) {
+            $stmt = $this->conn->prepare(
+                "UPDATE danh_muc 
+             SET ten_danh_muc = ?, trang_thai = ?, hinh_anh = ?, ngay_xoa = NULL 
+             WHERE id = ?"
+            );
+            return $stmt->execute([$ten, $trangthai, $hinh_anh, $deletedCategory['id']]);
+        }
+
         $stmt = $this->conn->prepare(
             "INSERT INTO danh_muc (ten_danh_muc, duong_dan_slug, trang_thai, hinh_anh) VALUES (?, ?, ?, ?)"
         );
@@ -97,7 +123,7 @@ class AdminCategoryBrandModel extends Model
     public function getAllBrands()
     {
         $stmt = $this->conn->query("SELECT * FROM thuong_hieu ORDER BY id DESC");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll();
     }
 
     public function insertBrand($ten, $hinh_anh, $mota)
@@ -105,4 +131,5 @@ class AdminCategoryBrandModel extends Model
         $stmt = $this->conn->prepare("INSERT INTO thuong_hieu (ten_thuong_hieu, hinh_anh, mo_ta) VALUES (?, ?, ?)");
         return $stmt->execute([$ten, $hinh_anh, $mota]);
     }
+    public function editBrand() {}
 }

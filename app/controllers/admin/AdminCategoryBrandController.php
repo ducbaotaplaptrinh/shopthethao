@@ -65,8 +65,8 @@ class AdminCategoryBrandController
 
         $ten      = trim($_POST['ten_danh_muc'] ?? '');
         $slug     = !empty(trim($_POST['duong_dan_slug'] ?? ''))
-                    ? trim($_POST['duong_dan_slug'])
-                    : $this->taoSlug($ten);
+            ? trim($_POST['duong_dan_slug'])
+            : $this->taoSlug($ten);
         $trangthai = isset($_POST['trang_thai']) ? 1 : 0;
 
         // Validate rỗng
@@ -93,14 +93,14 @@ class AdminCategoryBrandController
             $fileTmpPath = $_FILES['hinh_anh']['tmp_name'];
             $fileName = $_FILES['hinh_anh']['name'];
             $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            
+
             $newFileName = 'cat_' . time() . '_' . rand(100, 999) . '.' . $fileExtension;
-            $uploadFileDir = BASE_PATH . '/public/assets/images/';
-            
+            $uploadFileDir = BASE_PATH . '/public/assets/images/categories/';
+
             if (!is_dir($uploadFileDir)) {
                 mkdir($uploadFileDir, 0777, true);
             }
-            
+
             if (move_uploaded_file($fileTmpPath, $uploadFileDir . $newFileName)) {
                 $hinh_anh = $newFileName;
             }
@@ -141,8 +141,8 @@ class AdminCategoryBrandController
         $id        = intval($_POST['id'] ?? 0);
         $ten       = trim($_POST['ten_danh_muc'] ?? '');
         $slug      = !empty(trim($_POST['duong_dan_slug'] ?? ''))
-                     ? trim($_POST['duong_dan_slug'])
-                     : $this->taoSlug($ten);
+            ? trim($_POST['duong_dan_slug'])
+            : $this->taoSlug($ten);
         $trangthai = isset($_POST['trang_thai']) ? 1 : 0;
 
         if ($id <= 0 || empty($ten) || empty($slug)) {
@@ -164,20 +164,20 @@ class AdminCategoryBrandController
 
         // Lấy hình ảnh cũ đề phòng không cập nhật ảnh mới
         $category = $this->model->getCategoryById($id);
-        $hinh_anh = $category['hinh_anh'] ?? null;
+        $hinh_anh = $category->getHinh_anh() ?? null;
 
         if (isset($_FILES['hinh_anh']) && $_FILES['hinh_anh']['error'] === UPLOAD_ERR_OK) {
             $fileTmpPath = $_FILES['hinh_anh']['tmp_name'];
             $fileName = $_FILES['hinh_anh']['name'];
             $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-            
+
             $newFileName = 'cat_' . time() . '_' . rand(100, 999) . '.' . $fileExtension;
-            $uploadFileDir = BASE_PATH . '/public/assets/images/';
-            
+            $uploadFileDir = BASE_PATH . '/public/assets/images/categories/';
+
             if (!is_dir($uploadFileDir)) {
                 mkdir($uploadFileDir, 0777, true);
             }
-            
+
             if (move_uploaded_file($fileTmpPath, $uploadFileDir . $newFileName)) {
                 // Xóa hình cũ
                 if (!empty($hinh_anh) && file_exists($uploadFileDir . $hinh_anh)) {
@@ -186,6 +186,7 @@ class AdminCategoryBrandController
                 $hinh_anh = $newFileName;
             }
         }
+
 
         $this->model->updateCategory($id, $ten, $slug, $trangthai, $hinh_anh);
         header("Location: ?page=admin-categories&success=updated");

@@ -1,4 +1,4 @@
-<div class="container-xl py-5">
+<div class="container-xl py-5 checkout-page">
     <div class="breadcrumb-wrapper mb-4">
         <a href="?page=home">Trang chủ ></a>
         <a href="?page=cart">Giỏ hàng ></a>
@@ -24,6 +24,37 @@
                     <?php
                     $user = $_SESSION['user'] ?? null;
                     ?>
+
+                    <?php if (!empty($addresses)): ?>
+                        <div class="mb-4">
+                            <label class="form-label fw-bold text-secondary mb-2"><i class="bi bi-geo-alt me-1 text-primary"></i>Chọn địa chỉ giao hàng đã lưu</label>
+                            <div class="row g-2">
+                                <?php foreach ($addresses as $addr): 
+                                    $fullAddress = $addr['dia_chi_chi_tiet'] . ', ' . $addr['phuong_xa'] . ', ' . $addr['quan_huyen'] . ', ' . $addr['tinh_thanh_pho'];
+                                ?>
+                                    <div class="col-12">
+                                        <div class="card p-3 border rounded-3 address-select-card <?= $addr['la_mac_dinh'] ? 'border-primary bg-primary-subtle' : '' ?>" 
+                                             style="cursor: pointer; transition: all 0.2s;"
+                                             data-name="<?= htmlspecialchars($addr['ho_ten_nguoi_nhan']) ?>"
+                                             data-phone="<?= htmlspecialchars($addr['so_dien_thoai']) ?>"
+                                             data-address="<?= htmlspecialchars($fullAddress) ?>">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="fw-bold text-dark"><?= htmlspecialchars($addr['ho_ten_nguoi_nhan']) ?></span>
+                                                    <span class="text-muted ms-2">(<?= htmlspecialchars($addr['so_dien_thoai']) ?>)</span>
+                                                    <div class="text-muted mt-1"><?= htmlspecialchars($fullAddress) ?></div>
+                                                </div>
+                                                <?php if ($addr['la_mac_dinh']): ?>
+                                                    <span class="badge bg-primary">Mặc định</span>
+                                                <?php endif; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
                     <div class="mb-3">
                         <label for="ho_ten" class="form-label fw-semibold">Họ và tên người nhận <span class="text-danger">*</span></label>
                         <input type="text" class="form-control rounded-3" id="ho_ten" name="ho_ten" required placeholder="Nhập họ tên đầy đủ" value="<?= $user ? htmlspecialchars($user['ho_ten']) : '' ?>">
@@ -57,14 +88,14 @@
                             <label class="form-check-label fw-semibold text-dark" for="payment_cod">
                                 <i class="bi bi-cash-stack text-success me-2"></i>Thanh toán khi nhận hàng (COD)
                             </label>
-                            <div class="text-muted small ms-4 mt-1">Khách hàng kiểm tra hàng và thanh toán tiền mặt trực tiếp cho nhân viên giao hàng.</div>
+                            <div class="text-muted ms-4 mt-1">Khách hàng kiểm tra hàng và thanh toán tiền mặt trực tiếp cho nhân viên giao hàng.</div>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="phuong_thuc_thanh_toan" id="payment_bank" value="chuyen_khoan">
                             <label class="form-check-label fw-semibold text-dark" for="payment_bank">
                                 <i class="bi bi-bank text-primary me-2"></i>Chuyển khoản ngân hàng (Qua mã QR)
                             </label>
-                            <div class="text-muted small ms-4 mt-1">Hệ thống sẽ hiển thị mã QR kèm thông tin số tài khoản ở bước sau để chuyển khoản.</div>
+                            <div class="text-muted ms-4 mt-1">Hệ thống sẽ hiển thị mã QR kèm thông tin số tài khoản ở bước sau để chuyển khoản.</div>
                         </div>
                     </div>
 
@@ -81,15 +112,19 @@
                 <h4 class="mb-4">Đơn hàng của bạn</h4>
 
                 <div class="checkout-items-list mb-3" style="max-height: 280px; overflow-y: auto;">
-                    <?php foreach ($cartItems as $item): ?>
+                    <?php foreach ($cartItems as $item):
+                        // var_dump($cartItems);
+                        // die();
+                    ?>
+
                         <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
                             <img src="<?= htmlspecialchars(getProductImage($item['image'])) ?>" alt="" style="width: 55px; height: 55px; object-fit: contain; border-radius: 8px; border: 1px solid #eee; padding: 2px;">
                             <div class="flex-grow-1" style="min-width: 0;">
-                                <div class="text-truncate fw-semibold text-dark small"><?= htmlspecialchars($item['name']) ?></div>
+                                <div class="text-truncate fw-semibold text-dark"><?= htmlspecialchars($item['name']) ?></div>
                                 <?php if (!empty($item['attributes'])): ?>
-                                    <div class="text-muted small" style="font-size: 11px;"><?= htmlspecialchars($item['attributes']) ?></div>
+                                    <div class="text-muted"><?= htmlspecialchars($item['attributes']) ?></div>
                                 <?php endif; ?>
-                                <div class="small text-muted mt-1">Số lượng: <?= htmlspecialchars($item['qty']) ?></div>
+                                <div class="text-muted mt-1">Số lượng: <?= htmlspecialchars($item['qty']) ?></div>
                             </div>
                             <div class="fw-bold text-end text-dark" style="min-width: 90px;"><?= htmlspecialchars(formatVND($item['price'] * $item['qty'])) ?></div>
                         </div>
@@ -116,3 +151,38 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addressCards = document.querySelectorAll('.address-select-card');
+    const inputHoTen = document.getElementById('ho_ten');
+    const inputSDT = document.getElementById('so_dien_thoai');
+    const textareaDiaChi = document.getElementById('dia_chi');
+
+    addressCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Remove active style from all cards
+            addressCards.forEach(c => {
+                c.classList.remove('border-primary', 'bg-primary-subtle');
+                c.style.borderColor = '#ececec';
+            });
+            // Add active style to selected card
+            this.classList.add('border-primary', 'bg-primary-subtle');
+            this.style.borderColor = '#ff7b00';
+
+            // Fill inputs
+            inputHoTen.value = this.getAttribute('data-name');
+            inputSDT.value = this.getAttribute('data-phone');
+            textareaDiaChi.value = this.getAttribute('data-address');
+        });
+    });
+
+    // Auto-fill default address on load
+    const defaultCard = document.querySelector('.address-select-card.border-primary');
+    if (defaultCard) {
+        inputHoTen.value = defaultCard.getAttribute('data-name');
+        inputSDT.value = defaultCard.getAttribute('data-phone');
+        textareaDiaChi.value = defaultCard.getAttribute('data-address');
+    }
+});
+</script>

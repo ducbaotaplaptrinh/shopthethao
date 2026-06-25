@@ -4,6 +4,7 @@ $cartItems = $_SESSION['cart'] ?? [];
 foreach ($cartItems as $item) {
     $totalCartItems += $item['qty'];
 }
+$page = $_GET['page'] ?? "";
 ?>
 <header class="site-header  ">
     <div class="topbar py-2 d-none d-lg-block">
@@ -46,7 +47,7 @@ foreach ($cartItems as $item) {
             <div class="logo-container ">
                 <a class="logo-container__link d-flex" href="#home">
                     <img
-                        src="assets/images/favicons/logo.png"
+                        src="assets/images/favicons/Logo.png"
                         alt="Logo"
                         class="logo-container__icon" />
 
@@ -189,6 +190,12 @@ foreach ($cartItems as $item) {
                                     <i class="bi <?= htmlspecialchars($rankIcon) ?> me-1"></i>Hạng <?= htmlspecialchars($rankName) ?>
                                 </div>
                             </div>
+                            <?php if (isset($_SESSION['user']) && $_SESSION['user']['vai_tro'] === 'quan_tri'): ?>
+                                <a class="dropdown-item fw-bold text-primary" href="?page=admin-dashboard">
+                                    <i class="bi bi-shield-lock me-2"></i>Trang quản trị
+                                </a>
+                                <hr class="dropdown-divider my-1">
+                            <?php endif; ?>
                             <a class="dropdown-item" href="?page=profile">
                                 <i class="bi bi-person-circle me-2"></i>Thông tin cá nhân
                             </a>
@@ -218,7 +225,7 @@ foreach ($cartItems as $item) {
             <div class="logo-container ">
                 <a class="logo-container__link" href="#home">
                     <img
-                        src="assets/images/favicons/logo.png"
+                        src="assets/images/favicons/Logo.png"
                         alt="Logo"
                         class="logo-container__icon" />
                 </a>
@@ -257,25 +264,25 @@ foreach ($cartItems as $item) {
             <nav class=" menu_chinh d-none d-lg-block">
                 <ul class="navbar-nav mx-auto mb-2 mb-lg-0 position-relative ">
                     <li class="nav-item ">
-                        <a class="nav-link " href="?page=home">Trang chủ</a>
+                        <a class="nav-link <?= ($page === 'home') ? 'active' : '' ?> " href="?page=home">Trang chủ</a>
                     </li>
                     <li class="nav-item dropdown mega-menu ">
-                        <a class="nav-link dropdown-toggle" href="#!">Sản phẩm <i class="fa-solid fa-angle-down fa-md"></i></a>
+                        <a class="nav-link <?= ($page === 'product-index') ? 'active' : '' ?> dropdown-toggle" href="#!">Sản phẩm <i class="fa-solid fa-angle-down fa-md"></i></a>
                         <?php require __DIR__ . '/MegaMenuHome.php'; ?>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="?page=flash-sale">Giảm giá</a>
+                        <a class="nav-link <?= ($page === 'flash-sale') ? 'active' : '' ?>" href="?page=flash-sale">Giảm giá</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?page=new">Tin tức</a>
+                        <a class="nav-link <?= ($page === 'new') ? 'active' : '' ?>" href="?page=new">Tin tức</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="?page=about">Giới thiệu</a>
+                        <a class="nav-link <?= ($page === 'about') ? 'active' : '' ?>" href="?page=about">Giới thiệu</a>
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link" href="?page=contact">Liên hệ</a>
+                        <a class="nav-link <?= ($page === 'contact') ? 'active' : '' ?>" href="?page=contact">Liên hệ</a>
                     </li>
                 </ul>
             </nav>

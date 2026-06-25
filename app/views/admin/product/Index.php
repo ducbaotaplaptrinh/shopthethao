@@ -38,6 +38,13 @@ if (!function_exists('buildPageUrl')) {
     <?php endif; ?>
 <?php endif; ?>
 
+<?php if (!empty($errorMsg)): ?>
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i> <?= htmlspecialchars($errorMsg) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2 class="page-title mb-0">Quản lý Sản phẩm</h2>
     <a href="?page=admin-product-create" class="btn btn-primary px-4">

@@ -10,6 +10,10 @@ class Model
     public $conn;
     public function __construct()
     {
+        // $host = "localhost";
+        // $dbName = "bd_baodatsport";
+        // $userName = "root";
+        // $password = "";
         $host = "gateway01.ap-southeast-1.prod.alicloud.tidbcloud.com";
         $port = "4000";
         $dbName = "bd_baodatsport";

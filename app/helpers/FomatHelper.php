@@ -13,14 +13,35 @@ function getProductImage($imagePath)
         return $placeholder;
     }
 
-    $cleanPath = trim($imagePath); //xóa khoảng trắng
-    //strpos kiểm trả chuỗi có  bắt đầu bằng assets không 
-    if (strpos($cleanPath, 'assets/') !== 0) {
-        $cleanPath = 'assets/images/' . $cleanPath;
-    }
+    $cleanPath = trim($imagePath);
+    $filename = basename($cleanPath);
 
-    if (file_exists(BASE_PATH . '/public/' . $cleanPath)) {
-        return $cleanPath;
+    // List of candidate paths to check inside /public/
+    $candidates = [
+        $cleanPath,
+        'assets/images/' . $cleanPath,
+        'assets/images/products/' . $filename,
+        'assets/images/categories/' . $filename,
+        'assets/images/banners/' . $filename,
+        'assets/images/products/' . $cleanPath,
+    ];
+
+    foreach ($candidates as $candidate) {
+        // Clean double slashes
+        $candidate = str_replace('//', '/', $candidate);
+        // Ensure starting with assets/
+        if (strpos($candidate, 'assets/') !== 0) {
+            $candidate = 'assets/images/' . $candidate;
+            $candidate = str_replace('//', '/', $candidate);
+        }
+
+        if (file_exists(BASE_PATH . '/public/' . $candidate)) {
+            return $candidate;
+        }
+
+        if (file_exists(BASE_PATH . '/' . $candidate)) {
+            return $candidate;
+        }
     }
 
     return $placeholder;
