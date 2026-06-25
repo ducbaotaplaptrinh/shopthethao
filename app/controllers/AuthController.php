@@ -255,48 +255,170 @@ class AuthController
 
     public function changePassword(): ?array
     {
-        if (!isset($_SESSION['user'])) {
-            header("Location: ?page=login");
-            exit;
-        }
-
         $error = '';
         $success = '';
+        $step = 1;
+        $email = '';
+
+        // Case A: User is logged in (normal change password)
+        if (isset($_SESSION['user'])) {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $currentPassword = isset($_POST['current_password']) ? $_POST['current_password'] : '';
+                $newPassword = isset($_POST['new_password']) ? $_POST['new_password'] : '';
+                $confirmNewPassword = isset($_POST['confirm_new_password']) ? $_POST['confirm_new_password'] : '';
+
+                if (empty($currentPassword) || empty($newPassword) || empty($confirmNewPassword)) {
+                    $error = 'Vui lòng nhập đầy đủ tất cả các trường!';
+                } elseif ($newPassword !== $confirmNewPassword) {
+                    $error = 'Mật khẩu mới không trùng khớp!';
+                } elseif (strlen($newPassword) < 6) {
+                    $error = 'Mật khẩu mới phải có ít nhất 6 ký tự!';
+                } else {
+                    $userId = $_SESSION['user']['id'];
+                    $user = $this->nguoiDungModel->getUserById($userId);
+
+                    if ($user && password_verify($currentPassword, $user->getMat_khau())) {
+                        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                        $result = $this->nguoiDungModel->updatePassword($userId, $hashedPassword);
+                        if ($result) {
+                            $success = 'Đổi mật khẩu thành công!';
+                        } else {
+                            $error = 'Cập nhật mật khẩu thất bại, vui lòng thử lại!';
+                        }
+                    } else {
+                        $error = 'Mật khẩu hiện tại không chính xác!';
+                    }
+                }
+            }
+
+            return [
+                'title' => 'Đổi mật khẩu | Bảo Đạt Sport',
+                'error' => $error,
+                'success' => $success,
+                'is_logged_in' => true
+            ];
+        }
+
+        // Case B: User is not logged in (Forgot Password via OTP)
+        if (!isset($_SESSION['forgot_password_step'])) {
+            $_SESSION['forgot_password_step'] = 1;
+        }
+        $step = $_SESSION['forgot_password_step'];
+        $email = $_SESSION['forgot_password_email'] ?? '';
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $currentPassword = isset($_POST['current_password']) ? $_POST['current_password'] : '';
-            $newPassword = isset($_POST['new_password']) ? $_POST['new_password'] : '';
-            $confirmNewPassword = isset($_POST['confirm_new_password']) ? $_POST['confirm_new_password'] : '';
+            $action = $_POST['action'] ?? '';
 
-            if (empty($currentPassword) || empty($newPassword) || empty($confirmNewPassword)) {
-                $error = 'Vui lòng nhập đầy đủ tất cả các trường!';
-            } elseif ($newPassword !== $confirmNewPassword) {
-                $error = 'Mật khẩu mới không trùng khớp!';
-            } elseif (strlen($newPassword) < 6) {
-                $error = 'Mật khẩu mới phải có ít nhất 6 ký tự!';
-            } else {
-                $userId = $_SESSION['user']['id'];
-                // Lấy thông tin người dùng từ DB để verify mật khẩu cũ
-                $user = $this->nguoiDungModel->getUserById($userId);
-
-                if ($user && password_verify($currentPassword, $user->getMat_khau())) {
-                    $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-                    $result = $this->nguoiDungModel->updatePassword($userId, $hashedPassword);
-                    if ($result) {
-                        $success = 'Đổi mật khẩu thành công!';
-                    } else {
-                        $error = 'Cập nhật mật khẩu thất bại, vui lòng thử lại!';
-                    }
+            if ($step === 1) {
+                // Step 1: Input Email & Send OTP
+                $emailInput = isset($_POST['email']) ? trim($_POST['email']) : '';
+                if (empty($emailInput)) {
+                    $error = 'Vui lòng nhập địa chỉ email!';
                 } else {
-                    $error = 'Mật khẩu hiện tại không chính xác!';
+                    $user = $this->nguoiDungModel->getUserByEmail($emailInput);
+                    if (!$user) {
+                        $error = 'Địa chỉ email này không tồn tại trong hệ thống!';
+                    } else {
+                        $otpCode = (string)rand(100000, 999999);
+                        $_SESSION['forgot_password_email'] = $emailInput;
+                        $_SESSION['forgot_password_otp'] = [
+                            'code' => $otpCode,
+                            'expires_at' => time() + 300 // 5 minutes expiration
+                        ];
+                        $_SESSION['forgot_password_step'] = 2;
+
+                        // Send OTP email
+                        MailService::sendOTP($emailInput, $user->getHo_ten(), $otpCode);
+                        header("Location: ?page=change-password");
+                        exit;
+                    }
+                }
+            } elseif ($step === 2) {
+                // Step 2: Verify OTP
+                if ($action === 'resend') {
+                    if (empty($email)) {
+                        header("Location: ?page=change-password");
+                        exit;
+                    }
+                    $user = $this->nguoiDungModel->getUserByEmail($email);
+                    $otpCode = (string)rand(100000, 999999);
+                    $_SESSION['forgot_password_otp'] = [
+                        'code' => $otpCode,
+                        'expires_at' => time() + 300
+                    ];
+                    MailService::sendOTP($email, $user->getHo_ten(), $otpCode);
+                    $success = 'Mã OTP mới đã được gửi lại vào email của bạn!';
+                } else {
+                    $otpInput = isset($_POST['otp']) ? trim($_POST['otp']) : '';
+                    if (empty($otpInput)) {
+                        $error = 'Vui lòng nhập mã OTP!';
+                    } elseif (!isset($_SESSION['forgot_password_otp'])) {
+                        $error = 'Yêu cầu không hợp lệ. Vui lòng thử lại!';
+                        $_SESSION['forgot_password_step'] = 1;
+                        header("Location: ?page=change-password");
+                        exit;
+                    } elseif (time() > $_SESSION['forgot_password_otp']['expires_at']) {
+                        $error = 'Mã OTP đã hết hạn! Vui lòng nhấn Gửi lại mã.';
+                    } elseif ($otpInput !== $_SESSION['forgot_password_otp']['code']) {
+                        $error = 'Mã OTP không chính xác!';
+                    } else {
+                        $_SESSION['forgot_password_step'] = 3;
+                        $_SESSION['forgot_password_verified'] = true;
+                        header("Location: ?page=change-password");
+                        exit;
+                    }
+                }
+            } elseif ($step === 3) {
+                // Step 3: Reset Password
+                if (!isset($_SESSION['forgot_password_verified']) || $_SESSION['forgot_password_verified'] !== true) {
+                    $_SESSION['forgot_password_step'] = 1;
+                    header("Location: ?page=change-password");
+                    exit;
+                }
+
+                $newPassword = isset($_POST['new_password']) ? $_POST['new_password'] : '';
+                $confirmNewPassword = isset($_POST['confirm_new_password']) ? $_POST['confirm_new_password'] : '';
+
+                if (empty($newPassword) || empty($confirmNewPassword)) {
+                    $error = 'Vui lòng nhập đầy đủ mật khẩu mới!';
+                } elseif ($newPassword !== $confirmNewPassword) {
+                    $error = 'Mật khẩu mới không trùng khớp!';
+                } elseif (strlen($newPassword) < 6) {
+                    $error = 'Mật khẩu mới phải có ít nhất 6 ký tự!';
+                } else {
+                    $user = $this->nguoiDungModel->getUserByEmail($email);
+                    if ($user) {
+                        $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                        $result = $this->nguoiDungModel->updatePassword($user->getId(), $hashedPassword);
+                        if ($result) {
+                            $success = 'Khôi phục mật khẩu thành công! Vui lòng đăng nhập lại.';
+                            $_SESSION['forgot_password_step'] = 4; // Complete state
+                            unset($_SESSION['forgot_password_email']);
+                            unset($_SESSION['forgot_password_otp']);
+                            unset($_SESSION['forgot_password_verified']);
+                        } else {
+                            $error = 'Cập nhật mật khẩu thất bại, vui lòng thử lại!';
+                        }
+                    } else {
+                        $error = 'Có lỗi xảy ra, không tìm thấy tài khoản!';
+                        $_SESSION['forgot_password_step'] = 1;
+                    }
                 }
             }
         }
 
+        // Clean up step 4 when returning to login page
+        if ($step === 4) {
+            unset($_SESSION['forgot_password_step']);
+        }
+
         return [
-            'title' => 'Đổi mật khẩu | Bảo Đạt Sport',
+            'title' => 'Khôi phục mật khẩu | Bảo Đạt Sport',
             'error' => $error,
-            'success' => $success
+            'success' => $success,
+            'is_logged_in' => false,
+            'step' => $step,
+            'email' => $email
         ];
     }
 
