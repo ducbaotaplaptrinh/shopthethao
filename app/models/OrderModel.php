@@ -365,4 +365,73 @@ class OrderModel extends Model
             throw new Exception($e->getMessage());
         }
     }
+
+    /**
+     * Xác nhận đã nhận hàng
+     */
+    public function confirmReceived(int $userId, string $orderCode): bool
+    {
+        $sql = "SELECT id, ma_nguoi_dung, trang_thai_don_hang FROM don_hang WHERE ma_don_hang = :code LIMIT 1";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['code' => $orderCode]);
+        $order = $stmt->fetch();
+        if (!$order) {
+            throw new Exception("Đơn hàng không tồn tại.");
+        }
+        if ((int)$order['ma_nguoi_dung'] !== $userId) {
+            throw new Exception("Bạn không có quyền xác nhận đơn hàng này.");
+        }
+        if ($order['trang_thai_don_hang'] !== 'dang_giao') {
+            throw new Exception("Đơn hàng phải ở trạng thái đang giao mới có thể xác nhận đã nhận hàng.");
+        }
+        
+        $sqlUp = "UPDATE don_hang SET trang_thai_don_hang = 'hoan_thanh' WHERE id = :id";
+        $stmtUp = $this->conn->prepare($sqlUp);
+        return $stmtUp->execute(['id' => $order['id']]);
+    }
+
+    /**
+     * Kiểm tra xem khách hàng đã đánh giá sản phẩm này chưa
+     */
+    public function hasReviewedProduct(int $userId, int $productId): bool
+    {
+        $sql = "SELECT COUNT(*) FROM danh_gia_san_pham WHERE ma_nguoi_dung = :uid AND ma_san_pham = :pid";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['uid' => $userId, 'pid' => $productId]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Lưu đánh giá sản phẩm mới
+     */
+    public function submitProductReview(int $userId, int $productId, int $diemSo, string $binhLuan): bool
+    {
+        // Kiểm tra xem khách hàng có thực sự đã mua sản phẩm này trong một đơn hàng hoàn thành hay chưa
+        $sqlCheckBuy = "SELECT COUNT(*) 
+                        FROM chi_tiet_don_hang ctdh
+                        JOIN don_hang dh ON ctdh.ma_don_hang = dh.id
+                        WHERE dh.ma_nguoi_dung = :uid 
+                          AND ctdh.ma_san_pham = :pid 
+                          AND dh.trang_thai_don_hang = 'hoan_thanh'";
+        $stmtCheck = $this->conn->prepare($sqlCheckBuy);
+        $stmtCheck->execute(['uid' => $userId, 'pid' => $productId]);
+        if ((int)$stmtCheck->fetchColumn() <= 0) {
+            throw new Exception("Bạn chỉ có thể đánh giá những sản phẩm đã mua và giao thành công.");
+        }
+
+        // Kiểm tra xem đã đánh giá chưa
+        if ($this->hasReviewedProduct($userId, $productId)) {
+            throw new Exception("Bạn đã đánh giá sản phẩm này rồi.");
+        }
+
+        $sql = "INSERT INTO danh_gia_san_pham (ma_nguoi_dung, ma_san_pham, diem_so, binh_luan, trang_thai, ngay_tao)
+                VALUES (:uid, :pid, :score, :comment, 1, NOW())";
+        $stmt = $this->conn->prepare($sql);
+        return $stmt->execute([
+            'uid' => $userId,
+            'pid' => $productId,
+            'score' => $diemSo,
+            'comment' => !empty($binhLuan) ? $binhLuan : null
+        ]);
+    }
 }

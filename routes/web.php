@@ -388,4 +388,51 @@ return [
 		'controller' => \app\controllers\SanPhamController::class,
 		'action' => 'dangKyThongBao',
 	],
+	'order-confirm-received' => [
+		'title' => 'Xác nhận nhận hàng',
+		'view' => 'order/MyOrders.php',
+		'controller' => \app\controllers\OrderController::class,
+		'action' => 'confirmReceived',
+	],
+	'submit-review' => [
+		'title' => 'Gửi đánh giá sản phẩm',
+		'view' => 'order/MyOrders.php',
+		'controller' => \app\controllers\OrderController::class,
+		'action' => 'submitReview',
+	],
+	'admin-reviews' => [
+		'title' => 'Quản lý đánh giá | Quản trị',
+		'view' => 'admin/review/Index.php',
+		'controller' => \app\controllers\admin\AdminReviewController::class,
+		'action' => 'index',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-review-toggle' => [
+		'title' => 'Ẩn hiện đánh giá',
+		'view' => 'admin/review/Index.php',
+		'controller' => \app\controllers\admin\AdminReviewController::class,
+		'action' => 'toggleStatus',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-review-delete' => [
+		'title' => 'Xóa đánh giá',
+		'view' => 'admin/review/Index.php',
+		'controller' => \app\controllers\admin\AdminReviewController::class,
+		'action' => 'delete',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-review-edit' => [
+		'title' => 'Sửa đánh giá | Quản trị',
+		'view' => 'admin/review/Form.php',
+		'controller' => \app\controllers\admin\AdminReviewController::class,
+		'action' => 'edit',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-review-create' => [
+		'title' => 'Thêm đánh giá thủ công | Quản trị',
+		'view' => 'admin/review/Form.php',
+		'controller' => \app\controllers\admin\AdminReviewController::class,
+		'action' => 'create',
+		'pageStyles' => ['assets/css/admin.css']
+	],
 ];
