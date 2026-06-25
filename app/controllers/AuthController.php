@@ -303,107 +303,118 @@ class AuthController
         if (!isset($_SESSION['forgot_password_step'])) {
             $_SESSION['forgot_password_step'] = 1;
         }
+
         $step = $_SESSION['forgot_password_step'];
-        $email = $_SESSION['forgot_password_email'] ?? '';
+        $error = $_SESSION['forgot_password_error'] ?? '';
+        $success = $_SESSION['forgot_password_success'] ?? '';
+        unset($_SESSION['forgot_password_error'], $_SESSION['forgot_password_success']);
 
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $action = $_POST['action'] ?? '';
+            $action = isset($_POST['action']) ? $_POST['action'] : '';
 
-            if ($step === 1) {
-                // Step 1: Input Email & Send OTP
-                $emailInput = isset($_POST['email']) ? trim($_POST['email']) : '';
-                if (empty($emailInput)) {
-                    $error = 'Vui lòng nhập địa chỉ email!';
+            if ($step == 1) {
+                $email = isset($_POST['email']) ? trim($_POST['email']) : '';
+                if (empty($email)) {
+                    $_SESSION['forgot_password_error'] = 'Vui lòng nhập địa chỉ email!';
+                } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    $_SESSION['forgot_password_error'] = 'Định dạng email không hợp lệ!';
                 } else {
-                    $user = $this->nguoiDungModel->getUserByEmail($emailInput);
+                    $user = $this->nguoiDungModel->getUserByEmail($email);
                     if (!$user) {
-                        $error = 'Địa chỉ email này không tồn tại trong hệ thống!';
+                        $_SESSION['forgot_password_error'] = 'Email này không tồn tại trong hệ thống!';
                     } else {
                         $otpCode = (string)rand(100000, 999999);
-                        $_SESSION['forgot_password_email'] = $emailInput;
+                        $_SESSION['forgot_password_email'] = $email;
                         $_SESSION['forgot_password_otp'] = [
                             'code' => $otpCode,
-                            'expires_at' => time() + 300 // 5 minutes expiration
+                            'expires_at' => time() + 300 // Hạn 5 phút
                         ];
-                        $_SESSION['forgot_password_step'] = 2;
+                        $_SESSION['forgot_password_fullname'] = $user->getHo_ten();
 
-                        // Send OTP email
-                        MailService::sendOTP($emailInput, $user->getHo_ten(), $otpCode);
-                        header("Location: ?page=change-password");
-                        exit;
+                        if (MailService::sendOTP($email, $user->getHo_ten(), $otpCode)) {
+                            $_SESSION['forgot_password_step'] = 2;
+                            $_SESSION['forgot_password_success'] = 'Mã OTP đã được gửi đến email của bạn. Vui lòng kiểm tra hộp thư!';
+                        } else {
+                            $_SESSION['forgot_password_error'] = 'Không thể gửi email OTP, vui lòng thử lại sau!';
+                        }
                     }
                 }
-            } elseif ($step === 2) {
-                // Step 2: Verify OTP
+                header("Location: ?page=change-password");
+                exit;
+            } elseif ($step == 2) {
                 if ($action === 'resend') {
+                    $email = $_SESSION['forgot_password_email'] ?? '';
+                    $fullname = $_SESSION['forgot_password_fullname'] ?? 'Khách hàng';
                     if (empty($email)) {
-                        header("Location: ?page=change-password");
-                        exit;
+                        $_SESSION['forgot_password_error'] = 'Thông tin phiên làm việc không hợp lệ. Vui lòng quay lại bước 1.';
+                        $_SESSION['forgot_password_step'] = 1;
+                    } else {
+                        $otpCode = (string)rand(100000, 999999);
+                        $_SESSION['forgot_password_otp'] = [
+                            'code' => $otpCode,
+                            'expires_at' => time() + 300
+                        ];
+                        if (MailService::sendOTP($email, $fullname, $otpCode)) {
+                            $_SESSION['forgot_password_success'] = 'Mã OTP mới đã được gửi lại vào email của bạn!';
+                        } else {
+                            $_SESSION['forgot_password_error'] = 'Không thể gửi lại mã OTP, vui lòng thử lại sau!';
+                        }
                     }
-                    $user = $this->nguoiDungModel->getUserByEmail($email);
-                    $otpCode = (string)rand(100000, 999999);
-                    $_SESSION['forgot_password_otp'] = [
-                        'code' => $otpCode,
-                        'expires_at' => time() + 300
-                    ];
-                    MailService::sendOTP($email, $user->getHo_ten(), $otpCode);
-                    $success = 'Mã OTP mới đã được gửi lại vào email của bạn!';
                 } else {
                     $otpInput = isset($_POST['otp']) ? trim($_POST['otp']) : '';
+                    $otpSession = $_SESSION['forgot_password_otp'] ?? null;
+
                     if (empty($otpInput)) {
-                        $error = 'Vui lòng nhập mã OTP!';
-                    } elseif (!isset($_SESSION['forgot_password_otp'])) {
-                        $error = 'Yêu cầu không hợp lệ. Vui lòng thử lại!';
-                        $_SESSION['forgot_password_step'] = 1;
-                        header("Location: ?page=change-password");
-                        exit;
-                    } elseif (time() > $_SESSION['forgot_password_otp']['expires_at']) {
-                        $error = 'Mã OTP đã hết hạn! Vui lòng nhấn Gửi lại mã.';
-                    } elseif ($otpInput !== $_SESSION['forgot_password_otp']['code']) {
-                        $error = 'Mã OTP không chính xác!';
+                        $_SESSION['forgot_password_error'] = 'Vui lòng nhập mã OTP!';
+                    } elseif (!$otpSession) {
+                        $_SESSION['forgot_password_error'] = 'Không tìm thấy mã OTP. Vui lòng gửi lại mã.';
+                    } elseif (time() > $otpSession['expires_at']) {
+                        $_SESSION['forgot_password_error'] = 'Mã OTP đã hết hạn! Vui lòng nhấn Gửi lại mã.';
+                    } elseif ($otpInput !== $otpSession['code']) {
+                        $_SESSION['forgot_password_error'] = 'Mã OTP không chính xác!';
                     } else {
                         $_SESSION['forgot_password_step'] = 3;
                         $_SESSION['forgot_password_verified'] = true;
-                        header("Location: ?page=change-password");
-                        exit;
                     }
                 }
-            } elseif ($step === 3) {
-                // Step 3: Reset Password
-                if (!isset($_SESSION['forgot_password_verified']) || $_SESSION['forgot_password_verified'] !== true) {
-                    $_SESSION['forgot_password_step'] = 1;
-                    header("Location: ?page=change-password");
-                    exit;
-                }
-
+                header("Location: ?page=change-password");
+                exit;
+            } elseif ($step == 3) {
                 $newPassword = isset($_POST['new_password']) ? $_POST['new_password'] : '';
                 $confirmNewPassword = isset($_POST['confirm_new_password']) ? $_POST['confirm_new_password'] : '';
+                $email = $_SESSION['forgot_password_email'] ?? '';
+                $verified = $_SESSION['forgot_password_verified'] ?? false;
 
-                if (empty($newPassword) || empty($confirmNewPassword)) {
-                    $error = 'Vui lòng nhập đầy đủ mật khẩu mới!';
+                if (empty($email) || !$verified) {
+                    $_SESSION['forgot_password_error'] = 'Yêu cầu không hợp lệ. Vui lòng bắt đầu lại từ bước 1.';
+                    $_SESSION['forgot_password_step'] = 1;
+                } elseif (empty($newPassword) || empty($confirmNewPassword)) {
+                    $_SESSION['forgot_password_error'] = 'Vui lòng điền đầy đủ thông tin mật khẩu mới!';
                 } elseif ($newPassword !== $confirmNewPassword) {
-                    $error = 'Mật khẩu mới không trùng khớp!';
+                    $_SESSION['forgot_password_error'] = 'Mật khẩu xác nhận không khớp!';
                 } elseif (strlen($newPassword) < 6) {
-                    $error = 'Mật khẩu mới phải có ít nhất 6 ký tự!';
+                    $_SESSION['forgot_password_error'] = 'Mật khẩu mới phải có ít nhất 6 ký tự!';
                 } else {
                     $user = $this->nguoiDungModel->getUserByEmail($email);
-                    if ($user) {
+                    if (!$user) {
+                        $_SESSION['forgot_password_error'] = 'Tài khoản không tồn tại!';
+                    } else {
                         $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
-                        $result = $this->nguoiDungModel->updatePassword($user->getId(), $hashedPassword);
-                        if ($result) {
-                            $success = 'Khôi phục mật khẩu thành công! Vui lòng đăng nhập lại.';
-                            $_SESSION['forgot_password_step'] = 4; // Complete state
+                        if ($this->nguoiDungModel->updatePassword($user->getId(), $hashedPassword)) {
+                            $_SESSION['forgot_password_success'] = 'Đổi mật khẩu thành công!';
+                            $_SESSION['forgot_password_step'] = 4;
+                            // Clear session variables
                             unset($_SESSION['forgot_password_email']);
                             unset($_SESSION['forgot_password_otp']);
+                            unset($_SESSION['forgot_password_fullname']);
                             unset($_SESSION['forgot_password_verified']);
                         } else {
-                            $error = 'Cập nhật mật khẩu thất bại, vui lòng thử lại!';
+                            $_SESSION['forgot_password_error'] = 'Có lỗi xảy ra trong quá trình cập nhật mật khẩu!';
                         }
-                    } else {
-                        $error = 'Có lỗi xảy ra, không tìm thấy tài khoản!';
-                        $_SESSION['forgot_password_step'] = 1;
                     }
                 }
+                header("Location: ?page=change-password");
+                exit;
             }
         }
 
