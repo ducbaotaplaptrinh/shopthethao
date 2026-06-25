@@ -235,11 +235,45 @@ class OrderController
         $orders       = $this->orderModel->getOrdersByUser($userId, $filterStatus);
         $statusCounts = $this->orderModel->countOrdersByStatus($userId);
 
+        $error = $_SESSION['order_error'] ?? '';
+        $success = $_SESSION['order_success'] ?? '';
+        unset($_SESSION['order_error'], $_SESSION['order_success']);
+
         return [
             'title'        => 'Đơn hàng của tôi | Bảo Đạt Sport',
             'orders'       => $orders,
             'statusCounts' => $statusCounts,
             'activeTab'    => $activeTab,
+            'error'        => $error,
+            'success'      => $success,
         ];
+    }
+
+    public function cancel(): void
+    {
+        // Bắt buộc phải đăng nhập
+        if (!isset($_SESSION['user'])) {
+            header("Location: ?page=login");
+            exit;
+        }
+
+        $userId = (int)$_SESSION['user']['id'];
+        $code = $_GET['code'] ?? '';
+
+        if (empty($code)) {
+            $_SESSION['order_error'] = 'Mã đơn hàng không hợp lệ.';
+            header("Location: ?page=my-orders");
+            exit;
+        }
+
+        try {
+            $this->orderModel->cancelOrder($userId, $code);
+            $_SESSION['order_success'] = 'Hủy đơn hàng thành công.';
+        } catch (\Exception $e) {
+            $_SESSION['order_error'] = 'Không thể hủy đơn hàng: ' . $e->getMessage();
+        }
+
+        header("Location: ?page=my-orders");
+        exit;
     }
 }

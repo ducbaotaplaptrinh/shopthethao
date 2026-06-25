@@ -129,6 +129,12 @@ return [
 		'action' => 'myOrders',
 		'pageStyles' => ['assets/css/my-orders.css']
 	],
+	'order-cancel' => [
+		'title' => 'Hủy đơn hàng',
+		'view' => 'order/MyOrders.php',
+		'controller' => \app\controllers\OrderController::class,
+		'action' => 'cancel',
+	],
 	'profile' => [
 		'title' => 'Thông tin cá nhân | Bảo Đạt Sport',
 		'view' => 'auth/profile.php',

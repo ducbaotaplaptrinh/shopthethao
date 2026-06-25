@@ -52,9 +52,22 @@
                 </table>
 
                 <div class="mt-4">
-                    <a href="?page=home" class="btn btn-outline-dark w-100 fw-semibold rounded-3 py-2">
-                        Quay lại trang chủ
-                    </a>
+                    <?php if ($order->getTrang_thai_don_hang() === 'cho_xac_nhan'): ?>
+                        <div class="d-flex gap-2">
+                            <a href="?page=home" class="btn btn-outline-dark w-50 fw-semibold rounded-3 py-2">
+                                Quay lại trang chủ
+                            </a>
+                            <a href="?page=order-cancel&code=<?= htmlspecialchars($order->getMa_don_hang()) ?>" 
+                               class="btn btn-danger w-50 fw-semibold rounded-3 py-2"
+                               onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                <i class="bi bi-x-circle me-1"></i>Hủy đơn hàng
+                            </a>
+                        </div>
+                    <?php else: ?>
+                        <a href="?page=home" class="btn btn-outline-dark w-100 fw-semibold rounded-3 py-2">
+                            Quay lại trang chủ
+                        </a>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>

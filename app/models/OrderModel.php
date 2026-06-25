@@ -300,4 +300,69 @@ class OrderModel extends Model
         }
         return $counts;
     }
+
+    /**
+     * Hủy đơn hàng bởi khách hàng và hoàn lại tồn kho sản phẩm
+     */
+    public function cancelOrder(int $userId, string $orderCode): bool
+    {
+        $details = $this->getOrderDetails($orderCode);
+        if (!$details) {
+            throw new Exception("Đơn hàng không tồn tại.");
+        }
+
+        $order = $details['order'];
+        $items = $details['items'];
+
+        if ($order->getMa_nguoi_dung() !== $userId) {
+            throw new Exception("Bạn không có quyền hủy đơn hàng này.");
+        }
+
+        $currentStatus = $order->getTrang_thai_don_hang();
+        if ($currentStatus !== 'cho_xac_nhan') {
+            if ($currentStatus === 'dang_xu_ly') {
+                throw new Exception("Đơn hàng đang được xử lý, không thể hủy.");
+            } elseif ($currentStatus === 'da_huy') {
+                throw new Exception("Đơn hàng đã được hủy trước đó.");
+            } else {
+                throw new Exception("Đơn hàng không thể hủy ở trạng thái hiện tại.");
+            }
+        }
+
+        try {
+            $this->conn->beginTransaction();
+
+            // 1. Cập nhật trạng thái đơn hàng thành 'da_huy'
+            $sql = "UPDATE don_hang SET trang_thai_don_hang = 'da_huy' WHERE id = :id";
+            $stmt = $this->conn->prepare($sql);
+            $stmt->execute(['id' => $order->getId()]);
+
+            // 2. Hoàn lại tồn kho cho sản phẩm và biến thể
+            foreach ($items as $item) {
+                $prodId = $item->getMa_san_pham();
+                $varId  = $item->getMa_bien_the();
+                $qty    = (int)$item->getSo_luong();
+
+                if (!empty($varId)) {
+                    $stmtVar = $this->conn->prepare(
+                        "UPDATE bien_the_san_pham SET so_luong_ton = so_luong_ton + ? WHERE id = ?"
+                    );
+                    $stmtVar->execute([$qty, $varId]);
+                }
+
+                if (!empty($prodId)) {
+                    $stmtProd = $this->conn->prepare(
+                        "UPDATE san_pham SET so_luong_ton = so_luong_ton + ? WHERE id = ?"
+                    );
+                    $stmtProd->execute([$qty, $prodId]);
+                }
+            }
+
+            $this->conn->commit();
+            return true;
+        } catch (Exception $e) {
+            $this->conn->rollBack();
+            throw new Exception($e->getMessage());
+        }
+    }
 }

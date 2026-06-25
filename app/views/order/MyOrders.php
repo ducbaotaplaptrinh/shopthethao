@@ -46,6 +46,19 @@ $totalAll = array_sum($statusCounts ?? []);
 </div>
 
 <div class="container-xl pb-5">
+    <?php if (!empty($error)): ?>
+        <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-4 mt-2" role="alert" style="font-size: 1.4rem;">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i><?= htmlspecialchars($error) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($success)): ?>
+        <div class="alert alert-success alert-dismissible fade show rounded-3 mb-4 mt-2" role="alert" style="font-size: 1.4rem;">
+            <i class="bi bi-check-circle-fill me-2"></i><?= htmlspecialchars($success) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
 
     <!-- ============ STATUS TABS ============ -->
     <div class="order-tabs">
@@ -150,6 +163,13 @@ $totalAll = array_sum($statusCounts ?? []);
                             <a href="?page=product-index"
                                 class="btn btn-sm btn-outline-success rounded-3 fw-semibold">
                                 <i class="bi bi-arrow-repeat me-1"></i>Mua lại
+                            </a>
+                        <?php endif; ?>
+                        <?php if ($status === 'cho_xac_nhan'): ?>
+                            <a href="?page=order-cancel&code=<?= htmlspecialchars($order->getMa_don_hang()) ?>"
+                                class="btn btn-sm btn-outline-danger rounded-3 fw-semibold"
+                                onclick="return confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?');">
+                                <i class="bi bi-x-circle me-1"></i>Hủy đơn
                             </a>
                         <?php endif; ?>
                         <a href="?page=order-success&code=<?= htmlspecialchars($order->getMa_don_hang()) ?>"
