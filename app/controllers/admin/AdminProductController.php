@@ -260,7 +260,8 @@ class AdminProductController
                 header("Location: ?page=admin-products&success=deleted");
                 exit;
             } catch (\Exception $e) {
-                die("Lỗi khi xóa sản phẩm: " . $e->getMessage());
+                header("Location: ?page=admin-products&error=" . urlencode($e->getMessage()));
+                exit;
             }
         }
         header("Location: ?page=admin-products");

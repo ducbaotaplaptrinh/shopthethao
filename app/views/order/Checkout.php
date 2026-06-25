@@ -1,4 +1,4 @@
-<div class="container-xl py-5">
+<div class="container-xl py-5 checkout-page">
     <div class="breadcrumb-wrapper mb-4">
         <a href="?page=home">Trang chủ ></a>
         <a href="?page=cart">Giỏ hàng ></a>
@@ -41,8 +41,8 @@
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <div>
                                                     <span class="fw-bold text-dark"><?= htmlspecialchars($addr['ho_ten_nguoi_nhan']) ?></span>
-                                                    <span class="text-muted small ms-2">(<?= htmlspecialchars($addr['so_dien_thoai']) ?>)</span>
-                                                    <div class="small text-muted mt-1"><?= htmlspecialchars($fullAddress) ?></div>
+                                                    <span class="text-muted ms-2">(<?= htmlspecialchars($addr['so_dien_thoai']) ?>)</span>
+                                                    <div class="text-muted mt-1"><?= htmlspecialchars($fullAddress) ?></div>
                                                 </div>
                                                 <?php if ($addr['la_mac_dinh']): ?>
                                                     <span class="badge bg-primary">Mặc định</span>
@@ -88,14 +88,14 @@
                             <label class="form-check-label fw-semibold text-dark" for="payment_cod">
                                 <i class="bi bi-cash-stack text-success me-2"></i>Thanh toán khi nhận hàng (COD)
                             </label>
-                            <div class="text-muted small ms-4 mt-1">Khách hàng kiểm tra hàng và thanh toán tiền mặt trực tiếp cho nhân viên giao hàng.</div>
+                            <div class="text-muted ms-4 mt-1">Khách hàng kiểm tra hàng và thanh toán tiền mặt trực tiếp cho nhân viên giao hàng.</div>
                         </div>
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="phuong_thuc_thanh_toan" id="payment_bank" value="chuyen_khoan">
                             <label class="form-check-label fw-semibold text-dark" for="payment_bank">
                                 <i class="bi bi-bank text-primary me-2"></i>Chuyển khoản ngân hàng (Qua mã QR)
                             </label>
-                            <div class="text-muted small ms-4 mt-1">Hệ thống sẽ hiển thị mã QR kèm thông tin số tài khoản ở bước sau để chuyển khoản.</div>
+                            <div class="text-muted ms-4 mt-1">Hệ thống sẽ hiển thị mã QR kèm thông tin số tài khoản ở bước sau để chuyển khoản.</div>
                         </div>
                     </div>
 
@@ -120,11 +120,11 @@
                         <div class="d-flex align-items-center gap-3 mb-3 pb-3 border-bottom">
                             <img src="<?= htmlspecialchars(getProductImage($item['image'])) ?>" alt="" style="width: 55px; height: 55px; object-fit: contain; border-radius: 8px; border: 1px solid #eee; padding: 2px;">
                             <div class="flex-grow-1" style="min-width: 0;">
-                                <div class="text-truncate fw-semibold text-dark small"><?= htmlspecialchars($item['name']) ?></div>
+                                <div class="text-truncate fw-semibold text-dark"><?= htmlspecialchars($item['name']) ?></div>
                                 <?php if (!empty($item['attributes'])): ?>
-                                    <div class="text-muted small" style="font-size: 11px;"><?= htmlspecialchars($item['attributes']) ?></div>
+                                    <div class="text-muted"><?= htmlspecialchars($item['attributes']) ?></div>
                                 <?php endif; ?>
-                                <div class="small text-muted mt-1">Số lượng: <?= htmlspecialchars($item['qty']) ?></div>
+                                <div class="text-muted mt-1">Số lượng: <?= htmlspecialchars($item['qty']) ?></div>
                             </div>
                             <div class="fw-bold text-end text-dark" style="min-width: 90px;"><?= htmlspecialchars(formatVND($item['price'] * $item['qty'])) ?></div>
                         </div>

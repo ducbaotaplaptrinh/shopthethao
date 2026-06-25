@@ -372,14 +372,22 @@ class AdminProductModel extends Model
 
     public function xoaMemSanPham($id)
     {
+        // 1. Kiểm tra xem sản phẩm có nằm trong đơn hàng nào không
+        $stmtCheck = $this->conn->prepare("SELECT COUNT(*) FROM chi_tiet_don_hang WHERE ma_san_pham = ?");
+        $stmtCheck->execute([$id]);
+        $count = (int)$stmtCheck->fetchColumn();
+        if ($count > 0) {
+            throw new \Exception("Không thể xóa sản phẩm này vì sản phẩm đã tồn tại trong các đơn hàng trước đó!");
+        }
+
         try {
             $this->conn->beginTransaction();
 
-            // 1. Xóa mềm các biến thể thuộc sản phẩm này
+            // 2. Xóa mềm các biến thể thuộc sản phẩm này
             $stmtVar = $this->conn->prepare("UPDATE bien_the_san_pham SET trang_thai = 0, ngay_xoa = NOW() WHERE ma_san_pham = ?");
             $stmtVar->execute([$id]);
 
-            // 2. Xóa mềm sản phẩm chính
+            // 3. Xóa mềm sản phẩm chính
             $stmtProd = $this->conn->prepare("UPDATE san_pham SET trang_thai = 0, ngay_xoa = NOW() WHERE id = ?");
             $stmtProd->execute([$id]);
 

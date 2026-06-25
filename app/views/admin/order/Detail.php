@@ -69,8 +69,37 @@ $errorMsg   = $_GET['error']   ?? '';
                         ?>
                             <tr>
                                 <td>
-                                    <div class="fw-bold"><?= htmlspecialchars($item['ten_san_pham'] ?? 'Sản phẩm') ?></div>
-                                    <small class="text-muted">SKU: <?= htmlspecialchars($item['ma_vach_sku'] ?? 'N/A') ?></small>
+                                    <div class="d-flex align-items-center gap-3">
+                                        <?php if (!empty($item['duong_dan_slug'])): ?>
+                                            <a href="?page=product-detail&slug=<?= htmlspecialchars($item['duong_dan_slug']) ?>">
+                                                <img src="<?= htmlspecialchars(getProductImage($item['anh_dai_dien'])) ?>" alt="" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px; border: 1px solid #eee; padding: 2px; background: #fff;">
+                                            </a>
+                                        <?php else: ?>
+                                            <img src="<?= htmlspecialchars(getProductImage($item['anh_dai_dien'])) ?>" alt="" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px; border: 1px solid #eee; padding: 2px; background: #fff;">
+                                        <?php endif; ?>
+                                        
+                                        <div>
+                                            <div class="fw-bold">
+                                                <?php if (!empty($item['duong_dan_slug'])): ?>
+                                                    <a href="?page=product-detail&slug=<?= htmlspecialchars($item['duong_dan_slug']) ?>" class="text-decoration-none text-dark hover-primary" style="transition: color 0.2s;">
+                                                        <?= htmlspecialchars($item['ten_san_pham'] ?? 'Sản phẩm') ?>
+                                                    </a>
+                                                <?php else: ?>
+                                                    <?= htmlspecialchars($item['ten_san_pham'] ?? 'Sản phẩm') ?>
+                                                <?php endif; ?>
+                                                
+                                                <?php 
+                                                $currentStock = !empty($item['ma_bien_the']) ? (int)($item['bt_ton'] ?? 0) : (int)($item['sp_ton'] ?? 0);
+                                                if ($currentStock <= 0): ?>
+                                                    <span class="badge bg-danger ms-2" style="font-size: 0.7rem; padding: 0.3em 0.6em;">Hết hàng</span>
+                                                <?php endif; ?>
+                                            </div>
+                                            <small class="text-muted d-block mt-1">SKU: <?= htmlspecialchars($item['ma_vach_sku'] ?? 'N/A') ?></small>
+                                            <?php if (!empty($item['thong_tin_bien_the'])): ?>
+                                                <small class="text-muted d-block mt-1">Biến thể: <?= htmlspecialchars($item['thong_tin_bien_the']) ?></small>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td class="text-center"><?= $item['so_luong'] ?></td>
                                 <td class="text-end"><?= number_format($item['gia_mua'], 0, ',', '.') ?> đ</td>

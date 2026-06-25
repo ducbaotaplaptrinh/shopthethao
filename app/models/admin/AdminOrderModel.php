@@ -30,10 +30,10 @@ class AdminOrderModel extends Model
 
     public function getOrderItems($orderId)
     {
-        $sqlItems = "SELECT ct.*, sp.ten_san_pham, bt.ma_vach_sku 
+        $sqlItems = "SELECT ct.*, sp.duong_dan_slug, sp.so_luong_ton as sp_ton, bt.ma_vach_sku, bt.so_luong_ton as bt_ton 
                      FROM chi_tiet_don_hang ct
                      LEFT JOIN bien_the_san_pham bt ON ct.ma_bien_the = bt.id
-                     LEFT JOIN san_pham sp ON bt.ma_san_pham = sp.id
+                     LEFT JOIN san_pham sp ON ct.ma_san_pham = sp.id
                      WHERE ct.ma_don_hang = ?";
         $stmtItems = $this->conn->prepare($sqlItems);
         $stmtItems->execute([$orderId]);
