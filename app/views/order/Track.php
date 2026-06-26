@@ -38,16 +38,20 @@
                             <?php 
                             // Bộ trạng thái — đồng bộ với admin
                             $statusMap = [
-                                'cho_xac_nhan' => ['label' => 'Chờ xác nhận',  'class' => 'bg-warning text-dark'],
-                                'dang_xu_ly'   => ['label' => 'Đang xử lý',    'class' => 'bg-info text-white'],
-                                'dang_giao'    => ['label' => 'Đang giao hàng', 'class' => 'bg-primary text-white'],
-                                'hoan_thanh'   => ['label' => 'Đã giao thành công', 'class' => 'bg-success text-white'],
-                                'da_huy'       => ['label' => 'Đã hủy đơn',    'class' => 'bg-danger text-white'],
+                                'cho_xac_nhan' => ['label' => 'Chờ xác nhận',  'icon' => 'bi-hourglass-split',  'class' => 'status-cho_xac_nhan', 'step' => 1],
+                                'dang_xu_ly'   => ['label' => 'Đang xử lý',    'icon' => 'bi-gear-fill',        'class' => 'status-dang_xu_ly',   'step' => 2],
+                                'dang_giao'    => ['label' => 'Đang giao hàng', 'icon' => 'bi-truck',            'class' => 'status-dang_giao',    'step' => 3],
+                                'hoan_thanh'   => ['label' => 'Giao thành công', 'icon' => 'bi-patch-check-fill', 'class' => 'status-hoan_thanh',   'step' => 4],
+                                'da_huy'       => ['label' => 'Đã hủy',         'icon' => 'bi-x-circle-fill',   'class' => 'status-da_huy',       'step' => 0],
+                            ];
+                            $timelineSteps = [
+                                ['key' => 'cho_xac_nhan', 'icon' => 'bi-hourglass-split',  'label' => 'Xác nhận'],
+                                ['key' => 'dang_xu_ly',   'icon' => 'bi-gear-fill',        'label' => 'Xử lý'],
+                                ['key' => 'dang_giao',    'icon' => 'bi-truck',            'label' => 'Vận chuyển'],
+                                ['key' => 'hoan_thanh',   'icon' => 'bi-patch-check-fill', 'label' => 'Đã giao'],
                             ];
                             $trangThai = $order->getTrang_thai_don_hang();
-                            $si = $statusMap[$trangThai] ?? ['label' => $trangThai, 'class' => 'bg-secondary text-white'];
-                            $statusLabel = $si['label'];
-                            $statusClass = $si['class'];
+                            $si = $statusMap[$trangThai] ?? ['label' => $trangThai, 'icon' => 'bi-question-circle', 'class' => '', 'step' => 0];
                             ?>
                             <div class="card shadow-sm border-0 rounded-4 p-4">
                                 <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 border-bottom pb-3 mb-3">
@@ -59,9 +63,57 @@
                                     </div>
                                     <div class="text-md-end">
                                         <span class="text-muted small d-block">Trạng thái đơn hàng:</span>
-                                        <span class="badge <?= $statusClass ?> px-3 py-2 rounded-pill fw-semibold"><?= $statusLabel ?></span>
+                                        <span class="status-badge <?= htmlspecialchars($si['class']) ?> px-3 py-1"><?= htmlspecialchars($si['label']) ?></span>
                                     </div>
                                 </div>
+
+                                <!-- Progress Timeline inside tracking card -->
+                                <?php if ($trangThai !== 'da_huy'): ?>
+                                    <div class="order-timeline border-bottom pb-3 mb-3">
+                                        <?php foreach ($timelineSteps as $step): ?>
+                                            <?php
+                                            $stepKey = $step['key'];
+                                            $stepLabel = $step['label'];
+                                            $stepIcon = $step['icon'];
+                                            
+                                            $isStepDone = false;
+                                            $isStepActive = false;
+                                            
+                                            $orderStepVal = $statusMap[$trangThai]['step'];
+                                            $currentStepVal = $statusMap[$stepKey]['step'];
+                                            
+                                            if ($orderStepVal >= $currentStepVal) {
+                                                $isStepDone = true;
+                                            }
+                                            if ($trangThai === $stepKey) {
+                                                $isStepActive = true;
+                                            }
+                                            
+                                            $stepClass = '';
+                                            if ($isStepActive) {
+                                                $stepClass = 'active-step';
+                                            } elseif ($isStepDone) {
+                                                $stepClass = 'done';
+                                            }
+                                            ?>
+                                            <div class="tl-step <?= $stepClass ?>">
+                                                <div class="tl-icon">
+                                                    <i class="bi <?= $stepIcon ?>"></i>
+                                                 </div>
+                                                <div class="tl-label"><?= $stepLabel ?></div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    </div>
+                                <?php else: ?>
+                                    <div class="order-timeline border-bottom pb-3 mb-3">
+                                        <div class="tl-step cancelled">
+                                            <div class="tl-icon">
+                                                <i class="bi bi-x-circle-fill"></i>
+                                            </div>
+                                            <div class="tl-label text-danger">Đã hủy đơn</div>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
 
                                 <div class="row g-3">
                                     <div class="col-sm-6 col-md-3">

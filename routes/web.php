@@ -113,14 +113,14 @@ return [
 		'view' => 'order/Success.php',
 		'controller' => \app\controllers\OrderController::class,
 		'action' => 'success',
-		'pageStyles' => ['assets/css/cart.css']
+		'pageStyles' => ['assets/css/cart.css', 'assets/css/my-orders.css']
 	],
 	'order-track' => [
 		'title' => 'Tra cứu đơn hàng | Bảo Đạt Sport',
 		'view' => 'order/Track.php',
 		'controller' => \app\controllers\OrderController::class,
 		'action' => 'track',
-		'pageStyles' => ['assets/css/cart.css']
+		'pageStyles' => ['assets/css/cart.css', 'assets/css/my-orders.css']
 	],
 	'my-orders' => [
 		'title' => 'Đơn hàng của tôi | Bảo Đạt Sport',

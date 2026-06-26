@@ -98,6 +98,25 @@ $totalAll = array_sum($statusCounts ?? []);
             $currentStep = $statusInfo['step'];
             ?>
             <div class="order-card">
+                <!-- Card Header -->
+                <div class="order-card-header" onclick="window.location='?page=order-success&code=<?= $order->getMa_don_hang() ?>'" style="cursor: pointer;">
+                    <div>
+                        <span class="text-muted small me-2">Mã đơn hàng:</span>
+                        <div class="d-flex gap-1 align-items-center"><strong class="order-code">#<?= htmlspecialchars($order->getMa_don_hang()) ?></strong>
+                            <div class="status-badge <?= htmlspecialchars($statusInfo['class']) ?>">
+                                <i class="bi <?= htmlspecialchars($statusInfo['icon']) ?>"></i>
+                                <span><?= htmlspecialchars($statusInfo['label']) ?></span>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="order-date small text-muted">
+                        <i class="bi bi-clock me-1"></i>
+                        <?= $order->getNgay_tao() ? $order->getNgay_tao()->format('d/m/Y H:i') : '' ?>
+                    </span>
+                </div>
+
+
+
                 <div class="d-flex justify-content-between flex-wrap"
                     onclick="window.location='?page=order-success&code=<?= $order->getMa_don_hang() ?>'">
 
@@ -133,7 +152,8 @@ $totalAll = array_sum($statusCounts ?? []);
                         <?php endif; ?>
                     </div>
                     <!-- Card Footer -->
-                    <div class="order-card-footer">
+                    <div class="order-card-footer  gap-3" style="background: #fff;">
+
                         <div>
                             <div class="order-total-label">Tổng thanh toán</div>
                             <div class="order-total-amount"><?= formatVND($order->getTong_thanh_toan()) ?></div>

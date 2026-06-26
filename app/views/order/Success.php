@@ -1,16 +1,93 @@
+<?php
+// Định nghĩa bộ trạng thái đơn hàng — đồng bộ với admin
+$statusMap = [
+    'cho_xac_nhan' => ['label' => 'Chờ xác nhận',  'icon' => 'bi-hourglass-split',  'class' => 'status-cho_xac_nhan', 'step' => 1],
+    'dang_xu_ly'   => ['label' => 'Đang xử lý',    'icon' => 'bi-gear-fill',        'class' => 'status-dang_xu_ly',   'step' => 2],
+    'dang_giao'    => ['label' => 'Đang giao hàng', 'icon' => 'bi-truck',            'class' => 'status-dang_giao',    'step' => 3],
+    'hoan_thanh'   => ['label' => 'Giao thành công', 'icon' => 'bi-patch-check-fill', 'class' => 'status-hoan_thanh',   'step' => 4],
+    'da_huy'       => ['label' => 'Đã hủy',         'icon' => 'bi-x-circle-fill',   'class' => 'status-da_huy',       'step' => 0],
+];
+
+$timelineSteps = [
+    ['key' => 'cho_xac_nhan', 'icon' => 'bi-hourglass-split',  'label' => 'Xác nhận'],
+    ['key' => 'dang_xu_ly',   'icon' => 'bi-gear-fill',        'label' => 'Xử lý'],
+    ['key' => 'dang_giao',    'icon' => 'bi-truck',            'label' => 'Vận chuyển'],
+    ['key' => 'hoan_thanh',   'icon' => 'bi-patch-check-fill', 'label' => 'Đã giao'],
+];
+
+$status = $order->getTrang_thai_don_hang();
+$statusInfo = $statusMap[$status] ?? ['label' => $status, 'icon' => 'bi-question-circle', 'class' => '', 'step' => 0];
+?>
 <div class="container-xl py-5">
     <div class="card text-center py-5 shadow-sm border-0 rounded-4 mb-4">
         <div class="card-body">
             <div class="mb-4 text-success">
                 <i class="bi bi-check-circle-fill" style="font-size: 5rem; color: #28a745;"></i>
             </div>
-            <h2 class="mb-3">Đặt Hàng Thành Công!</h2>
-            <p class="text-muted mb-4 fs-5">Cảm ơn bạn đã mua hàng tại <strong>Bảo Đạt Sport</strong>. Đơn hàng của bạn đang được xử lý.</p>
+            <h2 class="mb-3">Thông Tin Đơn Hàng</h2>
+            <p class="text-muted mb-4 fs-5">Cảm ơn bạn đã mua hàng tại <strong>Bảo Đạt Sport</strong>.</p>
             <div class="d-inline-block bg-light px-4 py-3 rounded-4 mb-3">
                 <span class="text-muted d-block small">Mã đơn hàng của bạn:</span>
                 <strong class="fs-4 text-primary text-uppercase"><?= htmlspecialchars($order->getMa_don_hang()) ?></strong>
             </div>
             <p class="text-muted small">Vui lòng lưu lại mã đơn hàng này để có thể <a href="?page=order-track&term=<?= htmlspecialchars($order->getMa_don_hang()) ?>">Tra cứu hành trình đơn hàng</a>.</p>
+            
+            <div class="mt-4 pt-4 border-top">
+                <h5 class="mb-3 text-dark fw-bold">
+                    Trạng thái đơn hàng: 
+                    <span class="status-badge <?= htmlspecialchars($statusInfo['class']) ?>" style="font-size: 1.2rem; padding: 6px 16px;">
+                        <i class="bi <?= htmlspecialchars($statusInfo['icon']) ?> me-1"></i>
+                        <?= htmlspecialchars($statusInfo['label']) ?>
+                    </span>
+                </h5>
+                
+                <?php if ($status !== 'da_huy'): ?>
+                    <div class="order-timeline">
+                        <?php foreach ($timelineSteps as $step): ?>
+                            <?php
+                            $stepKey = $step['key'];
+                            $stepLabel = $step['label'];
+                            $stepIcon = $step['icon'];
+                            
+                            $isStepDone = false;
+                            $isStepActive = false;
+                            
+                            $orderStepVal = $statusMap[$status]['step'];
+                            $currentStepVal = $statusMap[$stepKey]['step'];
+                            
+                            if ($orderStepVal >= $currentStepVal) {
+                                $isStepDone = true;
+                            }
+                            if ($status === $stepKey) {
+                                $isStepActive = true;
+                            }
+                            
+                            $stepClass = '';
+                            if ($isStepActive) {
+                                $stepClass = 'active-step';
+                            } elseif ($isStepDone) {
+                                $stepClass = 'done';
+                            }
+                            ?>
+                            <div class="tl-step <?= $stepClass ?>">
+                                <div class="tl-icon">
+                                    <i class="bi <?= $stepIcon ?>"></i>
+                                </div>
+                                <div class="tl-label"><?= $stepLabel ?></div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <div class="order-timeline">
+                        <div class="tl-step cancelled">
+                            <div class="tl-icon">
+                                <i class="bi bi-x-circle-fill"></i>
+                            </div>
+                            <div class="tl-label text-danger">Đã hủy đơn</div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
 
