@@ -421,8 +421,7 @@ img {
     font-weight: 700;
 }
 
-.cart-summary,
-.order-card {
+.cart-summary {
     padding: 1rem;
 }
 

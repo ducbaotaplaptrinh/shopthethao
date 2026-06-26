@@ -229,8 +229,8 @@ $mainImage = getProductImage("assets/images/products/" . $sanpham->getAnh_dai_di
                             <?php foreach ($reviews as $rv): ?>
                                 <div class="review-item mb-4 pb-3 border-bottom <?= ($rvIndex >= 3) ? 'd-none additional-review' : '' ?>">
                                     <div class="review-header d-flex align-items-center gap-3 mb-2">
-                                        <div class="review-avatar rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" 
-                                             style="width: 42px; height: 42px; font-size: 1.2rem; flex-shrink: 0; <?= !empty($rv['anh_dai_dien']) ? "background-image: url('assets/images/" . htmlspecialchars($rv['anh_dai_dien']) . "'); background-size: cover; background-position: center;" : 'background-color: #ff7b00;' ?>">
+                                        <div class="review-avatar rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                                            style="width: 42px; height: 42px; font-size: 1.2rem; flex-shrink: 0; <?= !empty($rv['anh_dai_dien']) ? "background-image: url('assets/images/" . htmlspecialchars($rv['anh_dai_dien']) . "'); background-size: cover; background-position: center;" : 'background-color: #ff7b00;' ?>">
                                             <?= empty($rv['anh_dai_dien']) ? htmlspecialchars(mb_substr($rv['ho_ten'], 0, 1)) : '' ?>
                                         </div>
                                         <div>
@@ -247,7 +247,7 @@ $mainImage = getProductImage("assets/images/products/" . $sanpham->getAnh_dai_di
                                         </div>
                                         <!-- Mô tả nhận xét -->
                                         <div class="review-comment text-secondary" style="font-size: 1.3rem; line-height: 1.5;">
-                                            <?= nl2br(htmlspecialchars($rv['binh_luan'])) ?>
+                                            <?= (htmlspecialchars(!empty($rv['binh_luan']) ? $rv['binh_luan'] : "")) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -262,17 +262,17 @@ $mainImage = getProductImage("assets/images/products/" . $sanpham->getAnh_dai_di
                                 </button>
                             </div>
                             <script>
-                            function loadMoreReviews() {
-                                const additional = document.querySelectorAll('#reviewsList .additional-review');
-                                const btn = document.getElementById('btnLoadMoreReviews');
-                                if (btn.innerHTML.includes('Xem thêm')) {
-                                    additional.forEach(el => el.classList.remove('d-none'));
-                                    btn.innerHTML = '<i class="bi bi-chevron-up me-1"></i>Thu gọn đánh giá';
-                                } else {
-                                    additional.forEach(el => el.classList.add('d-none'));
-                                    btn.innerHTML = '<i class="bi bi-chevron-down me-1"></i>Xem thêm đánh giá (' + additional.length + ')';
+                                function loadMoreReviews() {
+                                    const additional = document.querySelectorAll('#reviewsList .additional-review');
+                                    const btn = document.getElementById('btnLoadMoreReviews');
+                                    if (btn.innerHTML.includes('Xem thêm')) {
+                                        additional.forEach(el => el.classList.remove('d-none'));
+                                        btn.innerHTML = '<i class="bi bi-chevron-up me-1"></i>Thu gọn đánh giá';
+                                    } else {
+                                        additional.forEach(el => el.classList.add('d-none'));
+                                        btn.innerHTML = '<i class="bi bi-chevron-down me-1"></i>Xem thêm đánh giá (' + additional.length + ')';
+                                    }
                                 }
-                            }
                             </script>
                         <?php endif; ?>
                     <?php else: ?>

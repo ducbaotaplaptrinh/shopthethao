@@ -124,7 +124,16 @@ if (!function_exists('buildPageUrl')) {
                 </select>
             </div>
 
-            <div class="col-md-3 col-sm-12 d-flex align-items-end gap-2">
+            <div class="col-md-3 col-sm-6">
+                <label class="form-label fw-bold text-secondary small">Doanh số</label>
+                <select name="doanh_so" class="form-select bg-light">
+                    <option value="">-- Bộ lọc doanh số --</option>
+                    <option value="ban_chay" <?= (isset($filters['doanh_so']) && $filters['doanh_so'] === 'ban_chay') ? 'selected' : '' ?>>Sản phẩm bán chạy</option>
+                    <option value="ban_cham" <?= (isset($filters['doanh_so']) && $filters['doanh_so'] === 'ban_cham') ? 'selected' : '' ?>>Sản phẩm bán chậm</option>
+                </select>
+            </div>
+
+            <div class="col-md-3 col-sm-12 d-flex align-items-end gap-2 ms-auto">
                 <button type="submit" class="btn btn-primary flex-fill">
                     <i class="bi bi-funnel-fill me-1"></i> Lọc dữ liệu
                 </button>
@@ -184,6 +193,9 @@ if (!function_exists('buildPageUrl')) {
                                         <?= $p['so_bien_the_het_hang'] ?> SKU sắp hết
                                     </span>
                                 <?php endif; ?>
+                                <span class="text-muted small mt-1">
+                                    <i class="bi bi-cart-check me-1"></i>Đã bán: <strong><?= $p['da_ban'] ?? 0 ?></strong>
+                                </span>
                             </div>
                         </td>
                         <td>

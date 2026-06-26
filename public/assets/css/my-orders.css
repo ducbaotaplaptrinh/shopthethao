@@ -70,6 +70,7 @@
 
 /* ---- Order Card ---- */
 .order-card {
+    flex-direction: column;
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 2px 14px rgba(0, 0, 0, 0.06);
