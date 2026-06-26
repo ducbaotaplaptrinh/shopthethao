@@ -223,6 +223,27 @@ return [
 		'action' => 'storeBrand',
 		'pageStyles' => ['assets/css/admin.css']
 	],
+	'admin-brand-edit' => [
+		'title' => 'Sửa Thương hiệu | Quản trị',
+		'view' => 'admin/brand/Edit.php',
+		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
+		'action' => 'editBrand',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-brand-update' => [
+		'title' => 'Cập nhật Thương hiệu',
+		'view' => 'admin/brand/Index.php',
+		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
+		'action' => 'updateBrand',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-brand-delete' => [
+		'title' => 'Xóa Thương hiệu',
+		'view' => 'admin/brand/Index.php',
+		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
+		'action' => 'deleteBrand',
+		'pageStyles' => ['assets/css/admin.css']
+	],
 	'admin-attributes' => [
 		'title' => 'Thuộc tính | Quản trị',
 		'view' => 'admin/attribute/Index.php',

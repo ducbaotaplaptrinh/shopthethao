@@ -25,6 +25,9 @@ class HomeController
         $sanPhamSale = $this->sanPhamModel->getSanPhamSale();
         $sanPhamMoi = $this->sanPhamModel->getSanPhamMoi();
         $danhMucSanPham = $this->danhMucModel->getDanhSachDanhMuc();
+        
+        $thuongHieuModel = new \app\models\ThuongHieuModel();
+        $brands = $thuongHieuModel->getDanhSachThuongHieu() ?: [];
 
         $error = '';
         $success = '';
@@ -64,6 +67,7 @@ class HomeController
             'sanPhamSale' => $sanPhamSale,
             'sanPhamMoi' => $sanPhamMoi,
             'danhSachDanhMuc' =>  $danhMucSanPham,
+            'brands' => $brands,
             'error' => $error,
             'success' => $success,
             'ho_ten' => $ho_ten,

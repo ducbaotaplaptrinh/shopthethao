@@ -23,7 +23,9 @@ function getProductImage($imagePath)
         'assets/images/products/' . $filename,
         'assets/images/categories/' . $filename,
         'assets/images/banners/' . $filename,
+        'assets/images/brands/' . $filename,
         'assets/images/products/' . $cleanPath,
+        'assets/images/brands/' . $cleanPath,
     ];
 
     foreach ($candidates as $candidate) {

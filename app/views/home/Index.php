@@ -68,6 +68,7 @@
     </section>
     <?php require __DIR__ . "/../components/home/ProductFeaturedHome.php" ?>
     <?php require __DIR__ . '/../components/home/ProductSaleHome.php'; ?>
+    <?php require __DIR__ . '/../components/home/BrandHome.php'; ?>
     <?php require __DIR__ . '/../components/home/CategoryHome.php'; ?>
     <?php require __DIR__ . '/../components/home/tuVan.php'; ?>
 

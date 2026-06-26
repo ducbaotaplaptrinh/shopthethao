@@ -240,17 +240,151 @@ class AdminCategoryBrandController
             exit;
         }
 
-        $ten     = trim($_POST['ten_thuong_hieu'] ?? '');
-        $mota    = trim($_POST['mo_ta'] ?? '');
-        $hinh_anh = 'default-brand.png';
+        $ten = trim($_POST['ten_thuong_hieu'] ?? '');
+        $mota = trim($_POST['mo_ta'] ?? '');
+        $slug = $this->taoSlug($ten);
 
         if (empty($ten)) {
-            header("Location: ?page=admin-brands&error=empty_name");
+            header("Location: ?page=admin-brands&error=empty_fields");
             exit;
         }
 
-        $this->model->insertBrand($ten, $hinh_anh, $mota);
+        // Validate trùng tên
+        if ($this->model->findBrandByName($ten)) {
+            header("Location: ?page=admin-brands&error=duplicate_name");
+            exit;
+        }
+
+        // Validate trùng slug
+        if ($this->model->findBrandBySlug($slug)) {
+            header("Location: ?page=admin-brands&error=duplicate_slug");
+            exit;
+        }
+
+        // Upload logo
+        $anh_logo = null;
+        if (isset($_FILES['anh_logo']) && $_FILES['anh_logo']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['anh_logo']['tmp_name'];
+            $fileName = $_FILES['anh_logo']['name'];
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            $newFileName = 'brand_' . time() . '_' . rand(100, 999) . '.' . $fileExtension;
+            $uploadFileDir = BASE_PATH . '/public/assets/images/brands/';
+
+            if (!is_dir($uploadFileDir)) {
+                mkdir($uploadFileDir, 0777, true);
+            }
+
+            if (move_uploaded_file($fileTmpPath, $uploadFileDir . $newFileName)) {
+                $anh_logo = $newFileName;
+            }
+        }
+
+        $this->model->insertBrand($ten, $slug, $anh_logo, $mota);
         header("Location: ?page=admin-brands&success=created");
+        exit;
+    }
+
+    public function editBrand(): array
+    {
+        $this->kiemTraAdmin();
+        $id = intval($_GET['id'] ?? 0);
+        $brand = $this->model->getBrandById($id);
+
+        if (!$brand) {
+            header("Location: ?page=admin-brands&error=not_found");
+            exit;
+        }
+
+        return [
+            'title' => 'Chỉnh sửa Thương hiệu | Admin',
+            'view' => 'admin/brand/Edit.php',
+            'brand' => $brand
+        ];
+    }
+
+    public function updateBrand()
+    {
+        $this->kiemTraAdmin();
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: ?page=admin-brands");
+            exit;
+        }
+
+        $id = intval($_POST['id'] ?? 0);
+        $ten = trim($_POST['ten_thuong_hieu'] ?? '');
+        $slug = !empty(trim($_POST['duong_dan_slug'] ?? ''))
+            ? trim($_POST['duong_dan_slug'])
+            : $this->taoSlug($ten);
+        $mota = trim($_POST['mo_ta'] ?? '');
+        $trangthai = isset($_POST['trang_thai']) ? 1 : 0;
+
+        if ($id <= 0 || empty($ten) || empty($slug)) {
+            header("Location: ?page=admin-brands&error=empty_fields");
+            exit;
+        }
+
+        // Validate trùng tên (bỏ qua bản ghi hiện tại)
+        if ($this->model->findBrandByName($ten, $id)) {
+            header("Location: ?page=admin-brand-edit&id={$id}&error=duplicate_name");
+            exit;
+        }
+
+        // Validate trùng slug (bỏ qua bản ghi hiện tại)
+        if ($this->model->findBrandBySlug($slug, $id)) {
+            header("Location: ?page=admin-brand-edit&id={$id}&error=duplicate_slug");
+            exit;
+        }
+
+        // Lấy logo cũ
+        $brand = $this->model->getBrandById($id);
+        $anh_logo = $brand['anh_logo'] ?? null;
+
+        if (isset($_FILES['anh_logo']) && $_FILES['anh_logo']['error'] === UPLOAD_ERR_OK) {
+            $fileTmpPath = $_FILES['anh_logo']['tmp_name'];
+            $fileName = $_FILES['anh_logo']['name'];
+            $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+            $newFileName = 'brand_' . time() . '_' . rand(100, 999) . '.' . $fileExtension;
+            $uploadFileDir = BASE_PATH . '/public/assets/images/brands/';
+
+            if (!is_dir($uploadFileDir)) {
+                mkdir($uploadFileDir, 0777, true);
+            }
+
+            if (move_uploaded_file($fileTmpPath, $uploadFileDir . $newFileName)) {
+                // Xóa logo cũ
+                if (!empty($anh_logo) && file_exists($uploadFileDir . $anh_logo)) {
+                    @unlink($uploadFileDir . $anh_logo);
+                }
+                $anh_logo = $newFileName;
+            }
+        }
+
+        $this->model->updateBrand($id, $ten, $slug, $anh_logo, $mota, $trangthai);
+        header("Location: ?page=admin-brands&success=updated");
+        exit;
+    }
+
+    public function deleteBrand()
+    {
+        $this->kiemTraAdmin();
+        $id = intval($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            header("Location: ?page=admin-brands&error=invalid_id");
+            exit;
+        }
+
+        // Chặn xóa nếu còn sản phẩm đang dùng thương hiệu này
+        $soSanPham = $this->model->countProductsByBrand($id);
+        if ($soSanPham > 0) {
+            header("Location: ?page=admin-brands&error=has_products&count={$soSanPham}");
+            exit;
+        }
+
+        $this->model->xoaMemBrand($id);
+        header("Location: ?page=admin-brands&success=deleted");
         exit;
     }
 }

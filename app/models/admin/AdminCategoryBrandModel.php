@@ -120,16 +120,91 @@ class AdminCategoryBrandModel extends Model
     // THƯƠNG HIỆU (BRAND)
     // =========================================================
 
-    public function getAllBrands()
+    public function getAllBrands(): array
     {
-        $stmt = $this->conn->query("SELECT * FROM thuong_hieu ORDER BY id DESC");
-        return $stmt->fetchAll();
+        $stmt = $this->conn->query(
+            "SELECT th.*, 
+            (SELECT COUNT(*) FROM san_pham sp WHERE sp.ma_thuong_hieu = th.id AND sp.ngay_xoa IS NULL) as so_san_pham
+            FROM thuong_hieu th 
+            WHERE th.ngay_xoa IS NULL 
+            ORDER BY th.id DESC"
+        );
+        return $stmt->fetchAll() ?: [];
     }
 
-    public function insertBrand($ten, $hinh_anh, $mota)
+    public function insertBrand($ten, $slug, $anh_logo, $mota)
     {
-        $stmt = $this->conn->prepare("INSERT INTO thuong_hieu (ten_thuong_hieu, hinh_anh, mo_ta) VALUES (?, ?, ?)");
-        return $stmt->execute([$ten, $hinh_anh, $mota]);
+        // Kiểm tra xem thương hiệu đã bị xóa mềm trước đó chưa để khôi phục
+        $stmt = $this->conn->prepare("SELECT id FROM thuong_hieu WHERE duong_dan_slug = ? AND ngay_xoa IS NOT NULL");
+        $stmt->execute([$slug]);
+        $deleted = $stmt->fetch();
+
+        if ($deleted) {
+            $stmt = $this->conn->prepare(
+                "UPDATE thuong_hieu 
+                 SET ten_thuong_hieu = ?, anh_logo = ?, mo_ta = ?, trang_thai = 1, ngay_xoa = NULL 
+                 WHERE id = ?"
+            );
+            return $stmt->execute([$ten, $anh_logo, $mota, $deleted['id']]);
+        }
+
+        $stmt = $this->conn->prepare("INSERT INTO thuong_hieu (ten_thuong_hieu, duong_dan_slug, anh_logo, mo_ta, trang_thai) VALUES (?, ?, ?, ?, 1)");
+        return $stmt->execute([$ten, $slug, $anh_logo, $mota]);
     }
-    public function editBrand() {}
+
+    public function getBrandById($id)
+    {
+        $stmt = $this->conn->prepare("SELECT * FROM thuong_hieu WHERE id = ? AND ngay_xoa IS NULL");
+        $stmt->execute([$id]);
+        return $stmt->fetch() ?: null;
+    }
+
+    public function findBrandByName($ten, $excludeId = null)
+    {
+        if ($excludeId) {
+            $stmt = $this->conn->prepare("SELECT id FROM thuong_hieu WHERE ten_thuong_hieu = ? AND id != ? AND ngay_xoa IS NULL");
+            $stmt->execute([$ten, $excludeId]);
+        } else {
+            $stmt = $this->conn->prepare("SELECT id FROM thuong_hieu WHERE ten_thuong_hieu = ? AND ngay_xoa IS NULL");
+            $stmt->execute([$ten]);
+        }
+        return $stmt->fetch() ?: null;
+    }
+
+    public function findBrandBySlug($slug, $excludeId = null)
+    {
+        if ($excludeId) {
+            $stmt = $this->conn->prepare("SELECT id FROM thuong_hieu WHERE duong_dan_slug = ? AND id != ? AND ngay_xoa IS NULL");
+            $stmt->execute([$slug, $excludeId]);
+        } else {
+            $stmt = $this->conn->prepare("SELECT id FROM thuong_hieu WHERE duong_dan_slug = ? AND ngay_xoa IS NULL");
+            $stmt->execute([$slug]);
+        }
+        return $stmt->fetch() ?: null;
+    }
+
+    public function countProductsByBrand($brandId)
+    {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) FROM san_pham WHERE ma_thuong_hieu = ? AND ngay_xoa IS NULL");
+        $stmt->execute([$brandId]);
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function updateBrand($id, $ten, $slug, $anh_logo, $mota, $trang_thai)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE thuong_hieu 
+             SET ten_thuong_hieu = ?, duong_dan_slug = ?, anh_logo = ?, mo_ta = ?, trang_thai = ? 
+             WHERE id = ? AND ngay_xoa IS NULL"
+        );
+        return $stmt->execute([$ten, $slug, $anh_logo, $mota, $trang_thai, $id]);
+    }
+
+    public function xoaMemBrand($id)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE thuong_hieu SET trang_thai = 0, ngay_xoa = NOW() WHERE id = ? AND ngay_xoa IS NULL"
+        );
+        return $stmt->execute([$id]);
+    }
 }
