@@ -105,6 +105,13 @@ class AdminProductController
         ];
 
         $products = $this->model->getFilteredProducts($filters, $limit, $offset);
+        foreach ($products as &$p) {
+            if (isset($p['so_bien_the']) && $p['so_bien_the'] > 0) {
+                $p['variants'] = $this->model->getBienTheSanPham($p['id']);
+            } else {
+                $p['variants'] = [];
+            }
+        }
         $totalProducts = $this->model->countFilteredProducts($filters);
         $totalPages = ceil($totalProducts / $limit);
 

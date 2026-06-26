@@ -163,11 +163,22 @@ if (!function_exists('buildPageUrl')) {
             <tbody>
                 <?php foreach ($products as $p): ?>
                     <tr>
-                        <td class="text-muted fw-bold">#<?= $p['id'] ?></td>
+                        <td class="text-muted fw-bold">
+                            <?php if (!empty($p['so_bien_the']) && $p['so_bien_the'] > 0): ?>
+                                <span class="toggle-variants-btn me-1" data-product-id="<?= $p['id'] ?>" style="cursor: pointer;" title="Xem các biến thể">
+                                    <i class="bi bi-plus-square text-primary toggle-icon-<?= $p['id'] ?>"></i>
+                                </span>
+                            <?php endif; ?>
+                            #<?= $p['id'] ?>
+                        </td>
                         <td>
-                            <div style="width: 45px; height: 45px; border-radius: 8px; background: #f4f6fa; display:flex; align-items:center; justify-content:center;">
-                                <i class="bi bi-image text-muted"></i>
-                            </div>
+                            <?php if (!empty($p['anh_dai_dien'])): ?>
+                                <img src="<?= getProductImage('assets/images/products/' . $p['anh_dai_dien']) ?>" style="width: 45px; height: 45px; object-fit: cover; border-radius: 8px;">
+                            <?php else: ?>
+                                <div style="width: 45px; height: 45px; border-radius: 8px; background: #f4f6fa; display:flex; align-items:center; justify-content:center;">
+                                    <i class="bi bi-image text-muted"></i>
+                                </div>
+                            <?php endif; ?>
                         </td>
                         <td>
                             <div class="fw-bold text-dark"><?= htmlspecialchars($p['ten_san_pham']) ?></div>
@@ -227,6 +238,65 @@ if (!function_exists('buildPageUrl')) {
                             <?php endif; ?>
                         </td>
                     </tr>
+                    <?php if (!empty($p['variants'])): ?>
+                        <?php foreach ($p['variants'] as $v):
+                            $vAttrText = [];
+                            foreach ($v['attributes'] as $attr) {
+                                $vAttrText[] = htmlspecialchars($attr['ten_thuoc_tinh'] . ': ' . $attr['gia_tri']);
+                            }
+                            $attrSuffix = !empty($vAttrText) ? ' (' . implode(', ', $vAttrText) . ')' : '';
+                        ?>
+                            <tr class="variant-row parent-<?= $p['id'] ?> bg-light bg-opacity-50" style="display: none; border-left: 4px solid var(--bs-primary);">
+                                <td class="text-muted small ps-3">#<?= $v['id'] ?></td>
+                                <td>
+                                    <?php if (!empty($v['anh_rieng'])): ?>
+                                        <img src="<?= getProductImage('assets/images/products/' . $v['anh_rieng']) ?>" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px;">
+                                    <?php else: ?>
+                                        <?php if (!empty($p['anh_dai_dien'])): ?>
+                                            <img src="<?= getProductImage('assets/images/products/' . $p['anh_dai_dien']) ?>" style="width: 40px; height: 40px; object-fit: cover; border-radius: 6px;">
+                                        <?php else: ?>
+                                            <div style="width: 40px; height: 40px; border-radius: 6px; background: #f4f6fa; display:flex; align-items:center; justify-content:center;">
+                                                <i class="bi bi-image text-muted"></i>
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </td>
+                                <td>
+                                    <div class="fw-semibold text-secondary small">
+                                        <?= htmlspecialchars($p['ten_san_pham']) . $attrSuffix ?>
+                                    </div>
+                                    <div class="text-muted small" style="font-size: 0.75rem;">
+                                        SKU: <?= htmlspecialchars($v['ma_vach_sku'] ?? 'N/A') ?>
+                                    </div>
+                                    <div class="text-dark fw-bold small mt-1">
+                                        <?= number_format($v['gia_ban_rieng'], 0, ',', '.') ?> đ
+                                    </div>
+                                </td>
+                                <td><span class="text-muted small"><?= htmlspecialchars($p['ten_danh_muc'] ?? 'N/A') ?></span></td>
+                                <td><span class="text-muted small"><?= htmlspecialchars($p['ten_thuong_hieu'] ?? 'N/A') ?></span></td>
+                                <td>
+                                    <div class="d-flex flex-column small">
+                                        <span class="fw-semibold <?= $v['so_luong_ton'] <= 5 ? 'text-danger' : 'text-success' ?>">
+                                            <?= $v['so_luong_ton'] ?> sản phẩm
+                                        </span>
+                                        <span class="text-muted mt-1" style="font-size: 0.75rem;">
+                                            <i class="bi bi-cart-check me-1"></i>Đã bán: <strong><?= $v['da_ban'] ?></strong>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <?php if ($v['trang_thai'] == 1): ?>
+                                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25" style="font-size: 0.7rem;">Đang bán</span>
+                                    <?php else: ?>
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25" style="font-size: 0.7rem;">Đang ẩn</span>
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-end text-muted small italic" style="font-size: 0.75rem;">
+                                    Biến thể con
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                 <?php endforeach; ?>
                 <?php if (empty($products)): ?>
                     <tr>
@@ -292,3 +362,32 @@ if (!function_exists('buildPageUrl')) {
         </div>
     <?php endif; ?>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.toggle-variants-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                var productId = this.getAttribute('data-product-id');
+                var variantRows = document.querySelectorAll('.parent-' + productId);
+                var icon = this.querySelector('i');
+
+                variantRows.forEach(function(row) {
+                    if (row.style.display === 'none') {
+                        row.style.display = 'table-row';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+
+                if (icon.classList.contains('bi-plus-square')) {
+                    icon.classList.remove('bi-plus-square');
+                    icon.classList.add('bi-dash-square');
+                } else {
+                    icon.classList.remove('bi-dash-square');
+                    icon.classList.add('bi-plus-square');
+                }
+            });
+        });
+    });
+</script>

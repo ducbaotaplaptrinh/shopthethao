@@ -113,6 +113,7 @@ class AdminProductModel extends Model
         $sql = "SELECT sp.*, dm.ten_danh_muc, th.ten_thuong_hieu,
                 COALESCE((SELECT SUM(so_luong_ton) FROM bien_the_san_pham WHERE ma_san_pham = sp.id AND trang_thai = 1 AND ngay_xoa IS NULL), sp.so_luong_ton, 0) as tong_ton_kho,
                 (SELECT COUNT(*) FROM bien_the_san_pham WHERE ma_san_pham = sp.id AND so_luong_ton < 5 AND trang_thai = 1 AND ngay_xoa IS NULL) as so_bien_the_het_hang,
+                (SELECT COUNT(*) FROM bien_the_san_pham WHERE ma_san_pham = sp.id AND trang_thai = 1 AND ngay_xoa IS NULL) as so_bien_the,
                 COALESCE((
                     SELECT SUM(ct.so_luong) 
                     FROM chi_tiet_don_hang ct 
@@ -459,5 +460,37 @@ class AdminProductModel extends Model
         $placeholders = str_repeat('?,', count($imageIds) - 1) . '?';
         $sql = "DELETE FROM anh_san_pham WHERE id IN ($placeholders)";
         $this->conn->prepare($sql)->execute(array_values($imageIds));
+    }
+
+    public function getBienTheSanPham($productId)
+    {
+        $sql = "SELECT bt.* 
+                FROM bien_the_san_pham bt 
+                WHERE bt.ma_san_pham = :id AND bt.trang_thai = 1 AND bt.ngay_xoa IS NULL";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['id' => $productId]);
+        $variants = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+        foreach ($variants as &$bt) {
+            $sqlAttr = "SELECT tt.ten_thuoc_tinh, gt.gia_tri, gt.id as gia_tri_id
+                        FROM gia_tri_thuoc_tinh_bien_the gtttbt
+                        JOIN gia_tri_thuoc_tinh gt ON gt.id = gtttbt.ma_gia_tri_thuoc_tinh
+                        JOIN thuoc_tinh tt ON tt.id = gt.ma_thuoc_tinh
+                        WHERE gtttbt.ma_bien_the = :ma_bien_the";
+            $stmtAttr = $this->conn->prepare($sqlAttr);
+            $stmtAttr->execute(['ma_bien_the' => $bt['id']]);
+            $bt['attributes'] = $stmtAttr->fetchAll(PDO::FETCH_ASSOC) ?: [];
+            
+            // Lượng bán của từng biến thể
+            $sqlSales = "SELECT COALESCE(SUM(ct.so_luong), 0) as da_ban
+                         FROM chi_tiet_don_hang ct
+                         JOIN don_hang dh ON ct.ma_don_hang = dh.id
+                         WHERE ct.ma_bien_the = :ma_bien_the AND dh.trang_thai_don_hang != 'da_huy'";
+            $stmtSales = $this->conn->prepare($sqlSales);
+            $stmtSales->execute(['ma_bien_the' => $bt['id']]);
+            $bt['da_ban'] = (int)$stmtSales->fetchColumn();
+        }
+
+        return $variants;
     }
 }
