@@ -43,32 +43,36 @@ class AuthController
             } else {
                 $user = $this->nguoiDungModel->getUserByEmail($email);
                 if ($user && password_verify($password, $user->getMat_khau())) {
-                    //lay ra hang thanh vien 
-                    $rankInfo = $this->hangThanhVienModel->getHangThanhVien($user->getId());
-
-                    $_SESSION['user'] = [
-                        'id' => $user->getId(),
-                        'ho_ten' => $user->getHo_ten(),
-                        'email' => $user->getEmail(),
-                        'so_dien_thoai' => $user->getSo_dien_thoai(),
-                        'vai_tro' => $user->getVai_tro(),
-                        'hang_khach_hang' => [
-                            'ten_hang' => $rankInfo['ten_hang'] ?? 'Đồng',
-                            'mau_sac' => $rankInfo['mau_sac'] ?? '#cd7f32',
-                            'bieu_tuong' => $rankInfo['bieu_tuong'] ?? 'bi-star-half'
-                        ]
-                    ];
-
-                    // Chuyển hướng phù hợp với vai trò
-                    if ($user->getVai_tro() === 'quan_tri') {
-                        // Admin luôn được chuyển vào trang quản trị
-                        header("Location: ?page=admin-dashboard");
-                    } elseif ($redirect === 'checkout') {
-                        header("Location: ?page=checkout");
+                    if (!$user->getTrang_thai()) {
+                        $error = 'Tài khoản của bạn đã bị khóa hoặc tạm ngưng hoạt động!';
                     } else {
-                        header("Location: ?page=home");
+                        //lay ra hang thanh vien 
+                        $rankInfo = $this->hangThanhVienModel->getHangThanhVien($user->getId());
+
+                        $_SESSION['user'] = [
+                            'id' => $user->getId(),
+                            'ho_ten' => $user->getHo_ten(),
+                            'email' => $user->getEmail(),
+                            'so_dien_thoai' => $user->getSo_dien_thoai(),
+                            'vai_tro' => $user->getVai_tro(),
+                            'hang_khach_hang' => [
+                                'ten_hang' => $rankInfo['ten_hang'] ?? 'Đồng',
+                                'mau_sac' => $rankInfo['mau_sac'] ?? '#cd7f32',
+                                'bieu_tuong' => $rankInfo['bieu_tuong'] ?? 'bi-star-half'
+                            ]
+                        ];
+
+                        // Chuyển hướng phù hợp với vai trò
+                        if ($user->getVai_tro() === 'quan_tri') {
+                            // Admin luôn được chuyển vào trang quản trị
+                            header("Location: ?page=admin-dashboard");
+                        } elseif ($redirect === 'checkout') {
+                            header("Location: ?page=checkout");
+                        } else {
+                            header("Location: ?page=home");
+                        }
+                        exit;
                     }
-                    exit;
                 } else {
                     $error = 'Email hoặc mật khẩu không chính xác!';
                 }

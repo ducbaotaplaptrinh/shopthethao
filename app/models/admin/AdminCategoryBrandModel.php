@@ -19,7 +19,7 @@ class AdminCategoryBrandModel extends Model
                 (SELECT COUNT(*) FROM san_pham sp WHERE sp.ma_danh_muc = dm.id AND sp.ngay_xoa IS NULL) as so_san_pham
                 FROM danh_muc dm 
                 WHERE dm.ngay_xoa IS NULL 
-                ORDER BY dm.id DESC";
+                ORDER BY dm.thu_tu_sap_xep ASC, dm.id DESC";
         $stmt = $this->conn->query($sql);
         $categories = $stmt->fetchAll();
         $data = [];
@@ -74,8 +74,8 @@ class AdminCategoryBrandModel extends Model
         return (int) $stmt->fetchColumn();
     }
 
-    /** Thêm mới danh mục - Có hình ảnh */
-    public function insertCategory($ten, $slug, $trangthai, $hinh_anh = null)
+    /** Thêm mới danh mục - Có hình ảnh và thứ tự sắp xếp */
+    public function insertCategory($ten, $slug, $trangthai, $hinh_anh = null, $thu_tu = 0)
     {
         $stmt = $this->conn->prepare(
             "SELECT id FROM danh_muc WHERE duong_dan_slug = ? AND ngay_xoa IS NOT NULL"
@@ -86,25 +86,25 @@ class AdminCategoryBrandModel extends Model
         if ($deletedCategory) {
             $stmt = $this->conn->prepare(
                 "UPDATE danh_muc 
-             SET ten_danh_muc = ?, trang_thai = ?, hinh_anh = ?, ngay_xoa = NULL 
+             SET ten_danh_muc = ?, trang_thai = ?, hinh_anh = ?, thu_tu_sap_xep = ?, ngay_xoa = NULL 
              WHERE id = ?"
             );
-            return $stmt->execute([$ten, $trangthai, $hinh_anh, $deletedCategory['id']]);
+            return $stmt->execute([$ten, $trangthai, $hinh_anh, $thu_tu, $deletedCategory['id']]);
         }
 
         $stmt = $this->conn->prepare(
-            "INSERT INTO danh_muc (ten_danh_muc, duong_dan_slug, trang_thai, hinh_anh) VALUES (?, ?, ?, ?)"
+            "INSERT INTO danh_muc (ten_danh_muc, duong_dan_slug, trang_thai, hinh_anh, thu_tu_sap_xep) VALUES (?, ?, ?, ?, ?)"
         );
-        return $stmt->execute([$ten, $slug, $trangthai, $hinh_anh]);
+        return $stmt->execute([$ten, $slug, $trangthai, $hinh_anh, $thu_tu]);
     }
 
-    /** Cập nhật danh mục - Có hình ảnh */
-    public function updateCategory($id, $ten, $slug, $trangthai, $hinh_anh = null)
+    /** Cập nhật danh mục - Có hình ảnh và thứ tự sắp xếp */
+    public function updateCategory($id, $ten, $slug, $trangthai, $hinh_anh = null, $thu_tu = 0)
     {
         $stmt = $this->conn->prepare(
-            "UPDATE danh_muc SET ten_danh_muc = ?, duong_dan_slug = ?, trang_thai = ?, hinh_anh = ? WHERE id = ? AND ngay_xoa IS NULL"
+            "UPDATE danh_muc SET ten_danh_muc = ?, duong_dan_slug = ?, trang_thai = ?, hinh_anh = ?, thu_tu_sap_xep = ? WHERE id = ? AND ngay_xoa IS NULL"
         );
-        return $stmt->execute([$ten, $slug, $trangthai, $hinh_anh, $id]);
+        return $stmt->execute([$ten, $slug, $trangthai, $hinh_anh, $thu_tu, $id]);
     }
 
     /** Xóa mềm danh mục - chỉ cho phép khi không còn sản phẩm */

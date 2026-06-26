@@ -68,6 +68,7 @@ class AdminCategoryBrandController
             ? trim($_POST['duong_dan_slug'])
             : $this->taoSlug($ten);
         $trangthai = isset($_POST['trang_thai']) ? 1 : 0;
+        $thu_tu    = intval($_POST['thu_tu_sap_xep'] ?? 0);
 
         // Validate rỗng
         if (empty($ten) || empty($slug)) {
@@ -106,7 +107,7 @@ class AdminCategoryBrandController
             }
         }
 
-        $this->model->insertCategory($ten, $slug, $trangthai, $hinh_anh);
+        $this->model->insertCategory($ten, $slug, $trangthai, $hinh_anh, $thu_tu);
         header("Location: ?page=admin-categories&success=created");
         exit;
     }
@@ -144,6 +145,7 @@ class AdminCategoryBrandController
             ? trim($_POST['duong_dan_slug'])
             : $this->taoSlug($ten);
         $trangthai = isset($_POST['trang_thai']) ? 1 : 0;
+        $thu_tu    = intval($_POST['thu_tu_sap_xep'] ?? 0);
 
         if ($id <= 0 || empty($ten) || empty($slug)) {
             header("Location: ?page=admin-categories&error=empty_fields");
@@ -188,7 +190,7 @@ class AdminCategoryBrandController
         }
 
 
-        $this->model->updateCategory($id, $ten, $slug, $trangthai, $hinh_anh);
+        $this->model->updateCategory($id, $ten, $slug, $trangthai, $hinh_anh, $thu_tu);
         header("Location: ?page=admin-categories&success=updated");
         exit;
     }

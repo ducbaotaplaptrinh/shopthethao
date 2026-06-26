@@ -67,6 +67,11 @@ $categories = $categories ?? [];
                     <input type="file" name="hinh_anh" id="catImage" class="form-control" accept="image/*">
                     <div class="form-text">Định dạng: JPG, PNG, WEBP.</div>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Thứ tự sắp xếp</label>
+                    <input type="number" name="thu_tu_sap_xep" id="catOrder" class="form-control" value="0" min="0">
+                    <div class="form-text">Giá trị nhỏ hơn sẽ được ưu tiên hiển thị trước. Mặc định là 0.</div>
+                </div>
                 <div class="form-check form-switch mb-4">
                     <input class="form-check-input" type="checkbox" name="trang_thai" id="catStatus" checked>
                     <label class="form-check-label" for="catStatus">Hiển thị</label>
@@ -88,6 +93,7 @@ $categories = $categories ?? [];
                             <th>Ảnh</th>
                             <th>Tên Danh Mục</th>
                             <th>Đường dẫn</th>
+                            <th>Thứ tự</th>
                             <th>Số SP</th>
                             <th>Trạng thái</th>
                             <th class="text-end">Thao tác</th>
@@ -106,6 +112,11 @@ $categories = $categories ?? [];
                                 </td>
                                 <td class="fw-bold text-dark"><?= htmlspecialchars($c->getTen_danh_muc()) ?></td>
                                 <td class="text-muted">/<?= htmlspecialchars($c->getDuong_dan_slug()) ?></td>
+                                <td>
+                                    <span class="badge bg-info bg-opacity-10 text-info">
+                                        <?= $c->getThu_tu_sap_xep() ?>
+                                    </span>
+                                </td>
                                 <td>
                                     <span class="badge bg-secondary bg-opacity-10 text-secondary">
                                         <?= $c->getSo_san_pham() ?? 0 ?> SP
@@ -133,7 +144,7 @@ $categories = $categories ?? [];
                         <?php endforeach; ?>
                         <?php if (empty($categories)): ?>
                             <tr>
-                                <td colspan="6" class="text-center py-5 text-muted">
+                                <td colspan="8" class="text-center py-5 text-muted">
                                     <i class="bi bi-folder2-open fs-1 d-block mb-3"></i>
                                     Chưa có danh mục nào
                                 </td>

@@ -56,6 +56,12 @@ $errorMsg = $_GET['error'] ?? '';
                         <img src="<?= htmlspecialchars($currentImg) ?>" alt="" style="height: 60px; object-fit: contain; border-radius: 6px; border: 1px solid #eee; padding: 2px;">
                     </div>
                 </div>
+                <div class="mb-3">
+                    <label class="form-label">Thứ tự sắp xếp</label>
+                    <input type="number" name="thu_tu_sap_xep" id="editCatOrder" class="form-control"
+                        value="<?= htmlspecialchars(isset($category) ? $category->getThu_tu_sap_xep() : 0) ?>" min="0">
+                    <div class="form-text">Giá trị nhỏ hơn sẽ được ưu tiên hiển thị trước.</div>
+                </div>
                 <div class="form-check form-switch mb-4">
                     <input class="form-check-input" type="checkbox" name="trang_thai" id="editCatStatus"
                         <?= $category->getTrang_thai() == 1 ? 'checked' : '' ?>>
