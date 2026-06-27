@@ -22,14 +22,14 @@ class OrderModel extends Model
         ]);
         $row = $stmt->fetch();
         if ($row) {
-            return (int)$row['id'];
+            return (int) $row['id'];
         }
 
         // 2. Auto-create guest user
         $sqlInsert = "INSERT INTO nguoi_dung (ho_ten, email, mat_khau, so_dien_thoai, vai_tro, trang_thai) 
                       VALUES (:name, :email, :password, :phone, 'khach_hang', 1)";
         $stmtInsert = $this->conn->prepare($sqlInsert);
-        
+
         $guestEmail = !empty($email) ? $email : 'guest_' . time() . '_' . rand(100, 999) . '@sportpro.vn';
         $dummyPassword = password_hash('guest_sportpro_123', PASSWORD_DEFAULT);
 
@@ -40,9 +40,9 @@ class OrderModel extends Model
             'phone' => $so_dien_thoai
         ]);
 
-        $insertedId = (int)$this->conn->lastInsertId();
+        $insertedId = (int) $this->conn->lastInsertId();
         if ($insertedId <= 0) {
-            $insertedId = (int)$this->conn->query("SELECT LAST_INSERT_ID()")->fetchColumn();
+            $insertedId = (int) $this->conn->query("SELECT LAST_INSERT_ID()")->fetchColumn();
         }
         return $insertedId;
     }
@@ -66,7 +66,7 @@ class OrderModel extends Model
             $stmtCoupon = $this->conn->prepare($sqlCoupon);
             $stmtCoupon->execute([
                 'ma_hang' => $maHang,
-                'total'   => $totalPayment
+                'total' => $totalPayment
             ]);
             return $stmtCoupon->fetchAll(PDO::FETCH_ASSOC) ?: [];
         }
@@ -94,7 +94,7 @@ class OrderModel extends Model
             $stmtCoupon->execute([
                 'ma_hang' => $maHang,
                 'code' => $code,
-                'total'   => $totalPayment
+                'total' => $totalPayment
             ]);
             return $stmtCoupon->fetch(PDO::FETCH_ASSOC);
         }
@@ -111,12 +111,12 @@ class OrderModel extends Model
             foreach ($cartItems as $item) {
                 $tableName = !empty($item['variation_id']) ? "bien_the_san_pham" : "san_pham";
                 $targetId = !empty($item['variation_id']) ? $item['variation_id'] : $item['product_id'];
-                
+
                 $stmtCheck = $this->conn->prepare("SELECT so_luong_ton FROM {$tableName} WHERE id = ?");
                 $stmtCheck->execute([$targetId]);
                 $realStock = $stmtCheck->fetchColumn();
-                
-                if ($realStock !== false && $item['qty'] > (int)$realStock) {
+
+                if ($realStock !== false && $item['qty'] > (int) $realStock) {
                     throw new \Exception('Sản phẩm "' . $item['name'] . '" (hoặc biến thể của nó) chỉ còn lại ' . $realStock . ' sản phẩm trong kho. Vui lòng điều chỉnh lại số lượng trong giỏ hàng!');
                 }
             }
@@ -146,7 +146,7 @@ class OrderModel extends Model
                             :address, :notes, :subtotal, :shipping, :discount, 
                             :total, :payment_method, :payment_status, :order_status
                          )";
-            
+
             $stmtOrder = $this->conn->prepare($sqlOrder);
             $stmtOrder->execute([
                 'user_id' => $order->getMa_nguoi_dung(),
@@ -165,16 +165,16 @@ class OrderModel extends Model
                 'order_status' => $order->getTrang_thai_don_hang()
             ]);
 
-            $orderId = (int)$this->conn->lastInsertId();
+            $orderId = (int) $this->conn->lastInsertId();
             if ($orderId <= 0) {
-                $orderId = (int)$this->conn->query("SELECT LAST_INSERT_ID()")->fetchColumn();
+                $orderId = (int) $this->conn->query("SELECT LAST_INSERT_ID()")->fetchColumn();
             }
             $order->setId($orderId);
 
             // 4. Insert into chi_tiet_don_hang and deduct stock
             foreach ($cartItems as $item) {
                 $subtotalItem = $item['price'] * $item['qty'];
-                
+
                 $sqlItem = "INSERT INTO chi_tiet_don_hang (
                                 ma_don_hang, ma_san_pham, ma_bien_the, ten_san_pham, 
                                 thong_tin_bien_the, anh_dai_dien, gia_mua, so_luong, thanh_tien
@@ -182,7 +182,7 @@ class OrderModel extends Model
                                 :order_id, :product_id, :variation_id, :product_name, 
                                 :variation_info, :image, :price, :qty, :thanh_tien
                             )";
-                
+
                 $stmtItem = $this->conn->prepare($sqlItem);
                 $stmtItem->execute([
                     'order_id' => $orderId,
@@ -201,14 +201,14 @@ class OrderModel extends Model
                     $stmtTruVar = $this->conn->prepare(
                         "UPDATE bien_the_san_pham SET so_luong_ton = so_luong_ton - ? WHERE id = ?"
                     );
-                    $stmtTruVar->execute([(int)$item['qty'], $item['variation_id']]);
+                    $stmtTruVar->execute([(int) $item['qty'], $item['variation_id']]);
                 }
 
                 if (!empty($item['product_id'])) {
                     $stmtTruProd = $this->conn->prepare(
                         "UPDATE san_pham SET so_luong_ton = so_luong_ton - ? WHERE id = ?"
                     );
-                    $stmtTruProd->execute([(int)$item['qty'], $item['product_id']]);
+                    $stmtTruProd->execute([(int) $item['qty'], $item['product_id']]);
                 }
             }
 
@@ -233,7 +233,7 @@ class OrderModel extends Model
                                   WHERE id = :uid";
                 $stmtUpdateRank = $this->conn->prepare($sqlUpdateRank);
                 $stmtUpdateRank->execute(['uid' => $userId]);
-                
+
                 // Update session if the current user is placing the order
                 if (isset($_SESSION['user']) && $_SESSION['user']['id'] == $userId) {
                     // Fetch the updated rank info to update session
@@ -253,15 +253,12 @@ class OrderModel extends Model
                 }
             }
 
-<<<<<<< HEAD
             $this->conn->exec("SET FOREIGN_KEY_CHECKS = 1");
-=======
             if (!empty($couponCode)) {
                 $sqlUpdateCoupon = "UPDATE ma_giam_gia SET so_luong_da_dung = so_luong_da_dung + 1 WHERE ma_code = :code";
                 $this->conn->prepare($sqlUpdateCoupon)->execute(['code' => $couponCode]);
             }
 
->>>>>>> ducdat
             $this->conn->commit();
             return $orderCode;
 
@@ -358,7 +355,7 @@ class OrderModel extends Model
 
         $counts = [];
         foreach ($rows as $row) {
-            $counts[$row['trang_thai_don_hang']] = (int)$row['total'];
+            $counts[$row['trang_thai_don_hang']] = (int) $row['total'];
         }
         return $counts;
     }
@@ -402,8 +399,8 @@ class OrderModel extends Model
             // 2. Hoàn lại tồn kho cho sản phẩm và biến thể
             foreach ($items as $item) {
                 $prodId = $item->getMa_san_pham();
-                $varId  = $item->getMa_bien_the();
-                $qty    = (int)$item->getSo_luong();
+                $varId = $item->getMa_bien_the();
+                $qty = (int) $item->getSo_luong();
 
                 if (!empty($varId)) {
                     $stmtVar = $this->conn->prepare(
@@ -440,13 +437,13 @@ class OrderModel extends Model
         if (!$order) {
             throw new Exception("Đơn hàng không tồn tại.");
         }
-        if ((int)$order['ma_nguoi_dung'] !== $userId) {
+        if ((int) $order['ma_nguoi_dung'] !== $userId) {
             throw new Exception("Bạn không có quyền xác nhận đơn hàng này.");
         }
         if ($order['trang_thai_don_hang'] !== 'dang_giao') {
             throw new Exception("Đơn hàng phải ở trạng thái đang giao mới có thể xác nhận đã nhận hàng.");
         }
-        
+
         $sqlUp = "UPDATE don_hang SET trang_thai_don_hang = 'hoan_thanh' WHERE id = :id";
         $stmtUp = $this->conn->prepare($sqlUp);
         return $stmtUp->execute(['id' => $order['id']]);
@@ -460,7 +457,7 @@ class OrderModel extends Model
         $sql = "SELECT COUNT(*) FROM danh_gia_san_pham WHERE ma_nguoi_dung = :uid AND ma_san_pham = :pid";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute(['uid' => $userId, 'pid' => $productId]);
-        return (int)$stmt->fetchColumn() > 0;
+        return (int) $stmt->fetchColumn() > 0;
     }
 
     /**
@@ -477,7 +474,7 @@ class OrderModel extends Model
                           AND dh.trang_thai_don_hang = 'hoan_thanh'";
         $stmtCheck = $this->conn->prepare($sqlCheckBuy);
         $stmtCheck->execute(['uid' => $userId, 'pid' => $productId]);
-        if ((int)$stmtCheck->fetchColumn() <= 0) {
+        if ((int) $stmtCheck->fetchColumn() <= 0) {
             throw new Exception("Bạn chỉ có thể đánh giá những sản phẩm đã mua và giao thành công.");
         }
 

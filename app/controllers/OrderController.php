@@ -74,7 +74,7 @@ class OrderController
             'title' => 'Thanh toán đơn hàng | Bảo Đạt Sport',
             'cartItems' => $cartItems,
             'totalPayment' => $totalPayment,
-            'addresses' => $addresses,
+            'addresses' => $addresses
             'availableCoupons' => $availableCoupons,
             'bestCoupon' => $bestCoupon
         ];
