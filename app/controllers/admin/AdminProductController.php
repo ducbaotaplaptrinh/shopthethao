@@ -292,4 +292,33 @@ class AdminProductController
         header("Location: ?page=admin-products");
         exit;
     }
+
+    public function batchDiscount()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $productIds = $_POST['product_ids'] ?? [];
+            $percent = isset($_POST['discount_percent']) ? floatval($_POST['discount_percent']) : 0;
+
+            if (empty($productIds) || !is_array($productIds)) {
+                header("Location: ?page=admin-products&error=no_products_selected");
+                exit;
+            }
+
+            if ($percent < 0 || $percent > 100) {
+                header("Location: ?page=admin-products&error=invalid_discount_percentage");
+                exit;
+            }
+
+            try {
+                $this->model->applyBatchDiscount($productIds, $percent);
+                header("Location: ?page=admin-products&success=batch_discount_applied");
+                exit;
+            } catch (\Exception $e) {
+                header("Location: ?page=admin-products&error=" . urlencode($e->getMessage()));
+                exit;
+            }
+        }
+        header("Location: ?page=admin-products");
+        exit;
+    }
 }

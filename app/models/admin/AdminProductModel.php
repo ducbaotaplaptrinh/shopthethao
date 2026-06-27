@@ -554,4 +554,39 @@ class AdminProductModel extends Model
 
         return $variants;
     }
+
+    public function applyBatchDiscount(array $productIds, float $percent)
+    {
+        try {
+            $this->conn->beginTransaction();
+
+            $sql = "UPDATE san_pham SET gia_khuyen_mai = :gia_km WHERE id = :id AND ngay_xoa IS NULL";
+            $stmt = $this->conn->prepare($sql);
+
+            $sqlSelect = "SELECT gia_ban FROM san_pham WHERE id = ? AND ngay_xoa IS NULL";
+            $stmtSelect = $this->conn->prepare($sqlSelect);
+
+            foreach ($productIds as $id) {
+                $id = intval($id);
+                if ($id <= 0) continue;
+
+                $stmtSelect->execute([$id]);
+                $giaBan = floatval($stmtSelect->fetchColumn());
+
+                if ($giaBan > 0) {
+                    $giaKM = $percent > 0 ? ($giaBan * (1 - $percent / 100)) : null;
+                    $stmt->execute([
+                        'gia_km' => $giaKM,
+                        'id' => $id
+                    ]);
+                }
+            }
+
+            $this->conn->commit();
+            return true;
+        } catch (\Exception $e) {
+            $this->conn->rollBack();
+            throw $e;
+        }
+    }
 }

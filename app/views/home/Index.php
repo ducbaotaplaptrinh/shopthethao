@@ -71,5 +71,18 @@
     <?php require __DIR__ . '/../components/home/BrandHome.php'; ?>
     <?php require __DIR__ . '/../components/home/CategoryHome.php'; ?>
     <?php require __DIR__ . '/../components/home/tuVan.php'; ?>
+    <div class="contact-buttons">
+        <a href="tel:0123456789" class="contact-item phone" title="Gọi điện">
+            <div class="phone-glow"></div>
+            <i class="fas fa-phone-alt"></i>
+        </a>
 
+        <a href="https://zalo.me/your_number" target="_blank" class="contact-item zalo" title="Chat Zalo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" alt="Zalo" />
+        </a>
+
+        <a href="https://m.me/your_username" target="_blank" class="contact-item messenger" title="Chat Messenger">
+            <i class="fab fa-facebook-messenger"></i>
+        </a>
+    </div>
 </div>

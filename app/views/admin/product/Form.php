@@ -39,15 +39,20 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Giá bán chung (VNĐ) <span class="text-danger">*</span></label>
-                        <input type="number" name="gia_ban" class="form-control" required placeholder="Nhập giá bán chung" min="0">
-                        <small class="text-muted">Đây là giá áp dụng nếu biến thể không set giá riêng.</small>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Giá bán gốc (VNĐ) <span class="text-danger">*</span></label>
+                        <input type="number" name="gia_ban" class="form-control" required placeholder="Nhập giá bán gốc" min="0">
+                        <small class="text-muted">Bắt buộc nhập.</small>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Số lượng tồn kho (Sản phẩm gốc)</label>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Giá bán giảm (VNĐ)</label>
+                        <input type="number" name="gia_khuyen_mai" class="form-control" placeholder="Nhập giá khuyến mãi" min="0">
+                        <small class="text-muted">Bỏ trống nếu không giảm giá.</small>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Số lượng tồn kho</label>
                         <input type="number" name="so_luong_ton" class="form-control" placeholder="Nhập số lượng" min="0" value="0">
-                        <small class="text-muted">Dùng cho sản phẩm không có biến thể.</small>
+                        <small class="text-muted">Dùng cho sản phẩm gốc.</small>
                     </div>
                 </div>
 

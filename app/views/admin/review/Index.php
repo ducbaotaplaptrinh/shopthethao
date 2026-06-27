@@ -101,9 +101,15 @@
                                 <tr>
                                     <td class="ps-3">
                                         <div class="d-flex align-items-center gap-2">
+                                            <?php
+                                            $revAvatar = $rv['reviewer_avatar'];
+                                            if (!empty($revAvatar) && strpos($revAvatar, 'assets/') !== 0) {
+                                                $revAvatar = 'assets/images/' . $revAvatar;
+                                            }
+                                            ?>
                                             <div class="rounded-circle bg-warning text-white fw-bold d-flex align-items-center justify-content-center" 
-                                                 style="width: 32px; height: 32px; font-size: 1.1rem; flex-shrink: 0; <?= !empty($rv['reviewer_avatar']) ? "background-image: url('assets/images/" . htmlspecialchars($rv['reviewer_avatar']) . "'); background-size: cover; background-position: center;" : '' ?>">
-                                                <?= empty($rv['reviewer_avatar']) ? htmlspecialchars(mb_substr($rv['reviewer_name'], 0, 1)) : '' ?>
+                                                 style="width: 32px; height: 32px; font-size: 1.1rem; flex-shrink: 0; <?= !empty($revAvatar) ? "background-image: url('" . htmlspecialchars($revAvatar) . "'); background-size: cover; background-position: center;" : '' ?>">
+                                                <?= empty($revAvatar) ? htmlspecialchars(mb_substr($rv['reviewer_name'], 0, 1)) : '' ?>
                                             </div>
                                             <div style="min-width: 0; line-height: 1.2;">
                                                 <div class="fw-bold text-dark text-truncate" title="<?= htmlspecialchars($rv['reviewer_name']) ?>"><?= htmlspecialchars($rv['reviewer_name']) ?></div>

@@ -83,6 +83,47 @@ class MailService
         }
     }
 
+    private static function getProductImageLocalPath($imagePath)
+    {
+        if (empty($imagePath)) {
+            return null;
+        }
+
+        $cleanPath = trim($imagePath);
+        $filename = basename($cleanPath);
+
+        $candidates = [
+            $cleanPath,
+            'assets/images/' . $cleanPath,
+            'assets/images/products/' . $filename,
+            'assets/images/categories/' . $filename,
+            'assets/images/banners/' . $filename,
+            'assets/images/brands/' . $filename,
+            'assets/images/products/' . $cleanPath,
+            'assets/images/brands/' . $cleanPath,
+        ];
+
+        foreach ($candidates as $candidate) {
+            $candidate = str_replace('//', '/', $candidate);
+            if (strpos($candidate, 'assets/') !== 0) {
+                $candidate = 'assets/images/' . $candidate;
+                $candidate = str_replace('//', '/', $candidate);
+            }
+
+            $path1 = BASE_PATH . '/public/' . $candidate;
+            if (file_exists($path1)) {
+                return $path1;
+            }
+
+            $path2 = BASE_PATH . '/' . $candidate;
+            if (file_exists($path2)) {
+                return $path2;
+            }
+        }
+
+        return null;
+    }
+
     public static function sendOrderInvoice(string $toEmail, string $recipientName, DonHang $order, array $items): bool
     {
         // 2. Gửi mail qua PHPMailer SMTP
@@ -111,12 +152,27 @@ class MailService
             $itemsHtml = '';
             foreach ($items as $item) {
                 $info = $item->getThong_tin_bien_the() ? ' (' . $item->getThong_tin_bien_the() . ')' : '';
+                
+                // Xử lý đính kèm ảnh sản phẩm
+                $imageHtml = "<div style='width: 50px; height: 50px; background: #f3f4f6; border-radius: 6px; display: inline-block; text-align: center; line-height: 50px; color: #9ca3af; font-size: 10px;'>Không ảnh</div>";
+                $imageName = $item->getAnh_dai_dien();
+                if (!empty($imageName)) {
+                    $localPath = self::getProductImageLocalPath($imageName);
+                    if ($localPath && file_exists($localPath)) {
+                        $cid = 'prod_img_' . $item->getId() . '_' . md5($imageName);
+                        // Add embedded image to PHPMailer
+                        $mail->addEmbeddedImage($localPath, $cid, $imageName);
+                        $imageHtml = "<img src='cid:" . $cid . "' alt='' style='width: 50px; height: 50px; object-fit: contain; border-radius: 6px; border: 1px solid #eee; padding: 2px; background: #fff;'>";
+                    }
+                }
+
                 $itemsHtml .= "
                 <tr>
-                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: left;'>" . htmlspecialchars($item->getTen_san_pham()) . htmlspecialchars($info) . "</td>
-                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: center;'>" . $item->getSo_luong() . "</td>
-                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: right;'>" . number_format($item->getGia_mua(), 0, ',', '.') . " ₫</td>
-                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: right;'>" . number_format($item->getThanh_tien(), 0, ',', '.') . " ₫</td>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: left; vertical-align: middle;'>" . $imageHtml . "</td>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: left; vertical-align: middle;'><strong style='color: #333;'>" . htmlspecialchars($item->getTen_san_pham()) . "</strong>" . htmlspecialchars($info) . "</td>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: center; vertical-align: middle;'>" . $item->getSo_luong() . "</td>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: right; vertical-align: middle;'>" . number_format($item->getGia_mua(), 0, ',', '.') . " ₫</td>
+                    <td style='padding: 10px; border-bottom: 1px solid #eee; text-align: right; vertical-align: middle; font-weight: bold; color: #333;'>" . number_format($item->getThanh_tien(), 0, ',', '.') . " ₫</td>
                 </tr>";
             }
 
@@ -175,10 +231,11 @@ class MailService
                         <table class='table-products'>
                             <thead>
                                 <tr>
+                                    <th style='width: 12%; text-align: left;'>Ảnh</th>
                                     <th style='text-align: left;'>Sản phẩm</th>
                                     <th style='width: 10%; text-align: center;'>SL</th>
-                                    <th style='width: 25%; text-align: right;'>Đơn giá</th>
-                                    <th style='width: 25%; text-align: right;'>Thành tiền</th>
+                                    <th style='width: 20%; text-align: right;'>Đơn giá</th>
+                                    <th style='width: 20%; text-align: right;'>Thành tiền</th>
                                 </tr>
                             </thead>
                             <tbody>
