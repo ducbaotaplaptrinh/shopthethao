@@ -6,11 +6,11 @@ Tính năng áp dụng mã giảm giá (Voucher) cho đơn hàng đã được h
 ## 1. Xử lý Logic Database (app/models/OrderModel.php)
 
 - **`getAvailableCoupons($userId, $totalPayment)`**:
-  - **Cách vận hành**: Hàm này nhận vào ID của khách hàng và tổng giá trị giỏ hàng. Đầu tiên, nó truy vấn bảng `nguoi_dung` để lấy ra mã hạng (`ma_hang`) của khách hàng. Sau đó, nó truy vấn bảng `ma_giam_gia` để lọc ra tất cả các mã đang hoạt động (`trang_thai = 1`), còn lượt sử dụng, còn trong thời hạn sử dụng, và đặc biệt là thỏa mãn điều kiện hạng thành viên và giá trị đơn hàng tối thiểu.
+  - **Cách vận hành**: Hàm này nhận vào ID của khách hàng và tổng giá trị giỏ hàng. Nó truy vấn bảng `nguoi_dung` kết hợp `hang_thanh_vien` để lấy ra mức chi tiêu tối thiểu của hạng hiện tại. Sau đó, truy vấn bảng `ma_giam_gia` để lọc ra các mã đang hoạt động (`trang_thai = 1`), còn lượt sử dụng, còn thời hạn. Điều kiện áp dụng: Mã giảm giá phải là mã hạng 0 (dành cho mọi người) HOẶC mã giảm giá thuộc về hạng có mức chi tiêu tối thiểu nhỏ hơn hoặc bằng hạng của khách hàng (hạng cao có thể dùng mã hạng thấp hơn).
   - **Mục đích**: Cung cấp danh sách các mã giảm giá khả dụng để hiển thị cho khách hàng chọn tại trang thanh toán.
 
 - **`validateCoupon($code, $userId, $totalPayment)`**:
-  - **Cách vận hành**: Tương tự như hàm trên nhưng hàm này kiểm tra đích danh một mã code cụ thể (`ma_code`). Trả về chi tiết mã giảm giá nếu hợp lệ, hoặc trả về `false` nếu không hợp lệ.
+  - **Cách vận hành**: Tương tự như hàm trên nhưng hàm này kiểm tra đích danh một mã code cụ thể (`ma_code`). Trả về chi tiết mã giảm giá nếu hợp lệ (bao gồm cả kiểm tra điều kiện mã hạng 0 và tính kế thừa hạng), hoặc trả về `false` nếu không hợp lệ.
   - **Mục đích (Bảo mật)**: Là chốt chặn an toàn khi khách hàng bấm Đặt hàng, đảm bảo không ai có thể sửa đổi mã giảm giá hoặc số tiền giảm từ phía giao diện.
 
 - **`placeOrder(...)`**:

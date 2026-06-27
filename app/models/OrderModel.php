@@ -49,23 +49,29 @@ class OrderModel extends Model
 
     public function getAvailableCoupons(int $userId, float $totalPayment): array
     {
-        $sqlUser = "SELECT ma_hang FROM nguoi_dung WHERE id = :id";
+        $sqlUser = "SELECT nd.ma_hang, ht.muc_chi_tieu_toi_thieu 
+                    FROM nguoi_dung nd 
+                    LEFT JOIN hang_thanh_vien ht ON nd.ma_hang = ht.id 
+                    WHERE nd.id = :id";
         $stmtUser = $this->conn->prepare($sqlUser);
         $stmtUser->execute(['id' => $userId]);
-        $maHang = $stmtUser->fetchColumn();
+        $userRankInfo = $stmtUser->fetch(PDO::FETCH_ASSOC);
 
-        if ($maHang && $totalPayment > 0) {
-            $sqlCoupon = "SELECT * FROM ma_giam_gia 
-                          WHERE ma_hang = :ma_hang 
-                          AND don_hang_toi_thieu <= :total
-                          AND trang_thai = 1 
-                          AND so_luong_da_dung < tong_so_luong
-                          AND ngay_bat_dau <= NOW() 
-                          AND ngay_ket_thuc >= NOW()
-                          ORDER BY gia_tri_giam DESC";
+        if ($userRankInfo && $totalPayment > 0) {
+            $userTieuThieu = $userRankInfo['muc_chi_tieu_toi_thieu'] ?? 0;
+
+            $sqlCoupon = "SELECT m.* FROM ma_giam_gia m
+                          LEFT JOIN hang_thanh_vien ht ON m.ma_hang = ht.id
+                          WHERE (m.ma_hang = 0 OR ht.muc_chi_tieu_toi_thieu <= :user_tieu_thieu)
+                          AND m.don_hang_toi_thieu <= :total
+                          AND m.trang_thai = 1 
+                          AND m.so_luong_da_dung < m.tong_so_luong
+                          AND m.ngay_bat_dau <= NOW() 
+                          AND m.ngay_ket_thuc >= NOW()
+                          ORDER BY m.gia_tri_giam DESC";
             $stmtCoupon = $this->conn->prepare($sqlCoupon);
             $stmtCoupon->execute([
-                'ma_hang' => $maHang,
+                'user_tieu_thieu' => $userTieuThieu,
                 'total' => $totalPayment
             ]);
             return $stmtCoupon->fetchAll(PDO::FETCH_ASSOC) ?: [];
@@ -75,24 +81,30 @@ class OrderModel extends Model
 
     public function validateCoupon(string $code, int $userId, float $totalPayment)
     {
-        $sqlUser = "SELECT ma_hang FROM nguoi_dung WHERE id = :id";
+        $sqlUser = "SELECT nd.ma_hang, ht.muc_chi_tieu_toi_thieu 
+                    FROM nguoi_dung nd 
+                    LEFT JOIN hang_thanh_vien ht ON nd.ma_hang = ht.id 
+                    WHERE nd.id = :id";
         $stmtUser = $this->conn->prepare($sqlUser);
         $stmtUser->execute(['id' => $userId]);
-        $maHang = $stmtUser->fetchColumn();
+        $userRankInfo = $stmtUser->fetch(PDO::FETCH_ASSOC);
 
-        if ($maHang && $totalPayment > 0) {
-            $sqlCoupon = "SELECT * FROM ma_giam_gia 
-                          WHERE ma_hang = :ma_hang 
-                          AND ma_code = :code
-                          AND don_hang_toi_thieu <= :total
-                          AND trang_thai = 1 
-                          AND so_luong_da_dung < tong_so_luong
-                          AND ngay_bat_dau <= NOW() 
-                          AND ngay_ket_thuc >= NOW()
+        if ($userRankInfo && $totalPayment > 0) {
+            $userTieuThieu = $userRankInfo['muc_chi_tieu_toi_thieu'] ?? 0;
+
+            $sqlCoupon = "SELECT m.* FROM ma_giam_gia m
+                          LEFT JOIN hang_thanh_vien ht ON m.ma_hang = ht.id
+                          WHERE (m.ma_hang = 0 OR ht.muc_chi_tieu_toi_thieu <= :user_tieu_thieu)
+                          AND m.ma_code = :code
+                          AND m.don_hang_toi_thieu <= :total
+                          AND m.trang_thai = 1 
+                          AND m.so_luong_da_dung < m.tong_so_luong
+                          AND m.ngay_bat_dau <= NOW() 
+                          AND m.ngay_ket_thuc >= NOW()
                           LIMIT 1";
             $stmtCoupon = $this->conn->prepare($sqlCoupon);
             $stmtCoupon->execute([
-                'ma_hang' => $maHang,
+                'user_tieu_thieu' => $userTieuThieu,
                 'code' => $code,
                 'total' => $totalPayment
             ]);
