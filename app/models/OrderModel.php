@@ -47,7 +47,61 @@ class OrderModel extends Model
         return $insertedId;
     }
 
-    public function placeOrder(DonHang $order, $cartItems): string
+    public function getAvailableCoupons(int $userId, float $totalPayment): array
+    {
+        $sqlUser = "SELECT ma_hang FROM nguoi_dung WHERE id = :id";
+        $stmtUser = $this->conn->prepare($sqlUser);
+        $stmtUser->execute(['id' => $userId]);
+        $maHang = $stmtUser->fetchColumn();
+
+        if ($maHang && $totalPayment > 0) {
+            $sqlCoupon = "SELECT * FROM ma_giam_gia 
+                          WHERE ma_hang = :ma_hang 
+                          AND don_hang_toi_thieu <= :total
+                          AND trang_thai = 1 
+                          AND so_luong_da_dung < tong_so_luong
+                          AND ngay_bat_dau <= NOW() 
+                          AND ngay_ket_thuc >= NOW()
+                          ORDER BY gia_tri_giam DESC";
+            $stmtCoupon = $this->conn->prepare($sqlCoupon);
+            $stmtCoupon->execute([
+                'ma_hang' => $maHang,
+                'total'   => $totalPayment
+            ]);
+            return $stmtCoupon->fetchAll(PDO::FETCH_ASSOC) ?: [];
+        }
+        return [];
+    }
+
+    public function validateCoupon(string $code, int $userId, float $totalPayment)
+    {
+        $sqlUser = "SELECT ma_hang FROM nguoi_dung WHERE id = :id";
+        $stmtUser = $this->conn->prepare($sqlUser);
+        $stmtUser->execute(['id' => $userId]);
+        $maHang = $stmtUser->fetchColumn();
+
+        if ($maHang && $totalPayment > 0) {
+            $sqlCoupon = "SELECT * FROM ma_giam_gia 
+                          WHERE ma_hang = :ma_hang 
+                          AND ma_code = :code
+                          AND don_hang_toi_thieu <= :total
+                          AND trang_thai = 1 
+                          AND so_luong_da_dung < tong_so_luong
+                          AND ngay_bat_dau <= NOW() 
+                          AND ngay_ket_thuc >= NOW()
+                          LIMIT 1";
+            $stmtCoupon = $this->conn->prepare($sqlCoupon);
+            $stmtCoupon->execute([
+                'ma_hang' => $maHang,
+                'code' => $code,
+                'total'   => $totalPayment
+            ]);
+            return $stmtCoupon->fetch(PDO::FETCH_ASSOC);
+        }
+        return false;
+    }
+
+    public function placeOrder(DonHang $order, $cartItems, string $couponCode = ''): string
     {
         try {
             $this->conn->beginTransaction();
@@ -197,6 +251,11 @@ class OrderModel extends Model
                         ];
                     }
                 }
+            }
+
+            if (!empty($couponCode)) {
+                $sqlUpdateCoupon = "UPDATE ma_giam_gia SET so_luong_da_dung = so_luong_da_dung + 1 WHERE ma_code = :code";
+                $this->conn->prepare($sqlUpdateCoupon)->execute(['code' => $couponCode]);
             }
 
             $this->conn->exec("SET FOREIGN_KEY_CHECKS = 1");
