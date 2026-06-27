@@ -480,7 +480,7 @@ class AdminProductModel extends Model
         try {
             // 1. Khởi tạo Base URL cho sản phẩm
             $baseUrl = "https://baodatsport.onrender.com";
-            $productLink = $baseUrl . "/chi-tiet-san-pham?id=" . $productId;
+            $productLink = $baseUrl . "/?page=product-detail&id=" . $productId;
 
             // 2. Xây dựng câu query tìm email đăng ký nhận thông báo
             // Tìm các email đăng ký trang_thai = 0 khớp với mã sản phẩm.
