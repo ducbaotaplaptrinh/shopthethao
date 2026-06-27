@@ -437,13 +437,6 @@
     padding-bottom: 0;
 }
 
-.review-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-}
-
 .review-user {
     display: flex;
     align-items: center;

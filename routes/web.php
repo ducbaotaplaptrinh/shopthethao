@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 return [
 	'login' => [
@@ -113,14 +113,14 @@ return [
 		'view' => 'order/Success.php',
 		'controller' => \app\controllers\OrderController::class,
 		'action' => 'success',
-		'pageStyles' => ['assets/css/cart.css']
+		'pageStyles' => ['assets/css/cart.css', 'assets/css/my-orders.css']
 	],
 	'order-track' => [
 		'title' => 'Tra cứu đơn hàng | Bảo Đạt Sport',
 		'view' => 'order/Track.php',
 		'controller' => \app\controllers\OrderController::class,
 		'action' => 'track',
-		'pageStyles' => ['assets/css/cart.css']
+		'pageStyles' => ['assets/css/cart.css', 'assets/css/my-orders.css']
 	],
 	'my-orders' => [
 		'title' => 'Đơn hàng của tôi | Bảo Đạt Sport',
@@ -128,6 +128,12 @@ return [
 		'controller' => \app\controllers\OrderController::class,
 		'action' => 'myOrders',
 		'pageStyles' => ['assets/css/my-orders.css']
+	],
+	'order-cancel' => [
+		'title' => 'Hủy đơn hàng',
+		'view' => 'order/MyOrders.php',
+		'controller' => \app\controllers\OrderController::class,
+		'action' => 'cancel',
 	],
 	'profile' => [
 		'title' => 'Thông tin cá nhân | Bảo Đạt Sport',
@@ -215,6 +221,27 @@ return [
 		'view' => 'admin/brand/Index.php',
 		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
 		'action' => 'storeBrand',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-brand-edit' => [
+		'title' => 'Sửa Thương hiệu | Quản trị',
+		'view' => 'admin/brand/Edit.php',
+		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
+		'action' => 'editBrand',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-brand-update' => [
+		'title' => 'Cập nhật Thương hiệu',
+		'view' => 'admin/brand/Index.php',
+		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
+		'action' => 'updateBrand',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-brand-delete' => [
+		'title' => 'Xóa Thương hiệu',
+		'view' => 'admin/brand/Index.php',
+		'controller' => \app\controllers\admin\AdminCategoryBrandController::class,
+		'action' => 'deleteBrand',
 		'pageStyles' => ['assets/css/admin.css']
 	],
 	'admin-attributes' => [
@@ -381,5 +408,52 @@ return [
 		'view' => 'errors/404.php',
 		'controller' => \app\controllers\SanPhamController::class,
 		'action' => 'dangKyThongBao',
+	],
+	'order-confirm-received' => [
+		'title' => 'Xác nhận nhận hàng',
+		'view' => 'order/MyOrders.php',
+		'controller' => \app\controllers\OrderController::class,
+		'action' => 'confirmReceived',
+	],
+	'submit-review' => [
+		'title' => 'Gửi đánh giá sản phẩm',
+		'view' => 'order/MyOrders.php',
+		'controller' => \app\controllers\OrderController::class,
+		'action' => 'submitReview',
+	],
+	'admin-reviews' => [
+		'title' => 'Quản lý đánh giá | Quản trị',
+		'view' => 'admin/review/Index.php',
+		'controller' => \app\controllers\admin\AdminReviewController::class,
+		'action' => 'index',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-review-toggle' => [
+		'title' => 'Ẩn hiện đánh giá',
+		'view' => 'admin/review/Index.php',
+		'controller' => \app\controllers\admin\AdminReviewController::class,
+		'action' => 'toggleStatus',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-review-delete' => [
+		'title' => 'Xóa đánh giá',
+		'view' => 'admin/review/Index.php',
+		'controller' => \app\controllers\admin\AdminReviewController::class,
+		'action' => 'delete',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-review-edit' => [
+		'title' => 'Sửa đánh giá | Quản trị',
+		'view' => 'admin/review/Form.php',
+		'controller' => \app\controllers\admin\AdminReviewController::class,
+		'action' => 'edit',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-review-create' => [
+		'title' => 'Thêm đánh giá thủ công | Quản trị',
+		'view' => 'admin/review/Form.php',
+		'controller' => \app\controllers\admin\AdminReviewController::class,
+		'action' => 'create',
+		'pageStyles' => ['assets/css/admin.css']
 	],
 ];

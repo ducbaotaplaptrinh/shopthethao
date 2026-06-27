@@ -56,13 +56,13 @@
                             class="btn btn-primary w-100 form-login__btn form-submit">
                             Đăng nhập
                         </button>
-
-                    </form>
-
-                    <div class="text-center mt-3">
-                        <a href="?page=change-password<?= !empty($redirect) ? '&redirect=' . urlencode($redirect) : '' ?>" class="login-form__link">
+                        <a href="?page=change-password<?= !empty($redirect) ? '&redirect=' . urlencode($redirect) : '' ?>" class="login-form__link text-end">
                             Quên mật khẩu
                         </a>
+                    </form>
+
+                    <div class="text-center mt-3 ">
+
                         Chưa có tài khoản?
                         <a href="?page=register<?= !empty($redirect) ? '&redirect=' . urlencode($redirect) : '' ?>" class="login-form__link">
                             Đăng ký

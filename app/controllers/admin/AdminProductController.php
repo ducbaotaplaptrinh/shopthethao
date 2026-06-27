@@ -87,6 +87,7 @@ class AdminProductController
         $trangThai = $_GET['trang_thai'] ?? '';
         $daXoa = $_GET['da_xoa'] ?? '';
         $khuyenMai = $_GET['khuyen_mai'] ?? '';
+        $doanhSo = $_GET['doanh_so'] ?? '';
 
         $limit = 10;
         $page = isset($_GET['page_no']) ? max(1, intval($_GET['page_no'])) : 1;
@@ -99,10 +100,18 @@ class AdminProductController
             'kho' => $kho,
             'trang_thai' => $trangThai,
             'da_xoa' => $daXoa,
-            'khuyen_mai' => $khuyenMai
+            'khuyen_mai' => $khuyenMai,
+            'doanh_so' => $doanhSo
         ];
 
         $products = $this->model->getFilteredProducts($filters, $limit, $offset);
+        foreach ($products as &$p) {
+            if (isset($p['so_bien_the']) && $p['so_bien_the'] > 0) {
+                $p['variants'] = $this->model->getBienTheSanPham($p['id']);
+            } else {
+                $p['variants'] = [];
+            }
+        }
         $totalProducts = $this->model->countFilteredProducts($filters);
         $totalPages = ceil($totalProducts / $limit);
 

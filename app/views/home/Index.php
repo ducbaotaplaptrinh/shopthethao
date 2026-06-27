@@ -8,7 +8,7 @@
 <div class="container-xl">
     <section class="quick-info py-5 my-16-mobile  py-0-mobile">
         <div class="row g-3">
-            <div class="col-6 col-lg-3 quick-info__card ">
+            <div class="col-6 col-lg-3 quick-info__card " data-aos="zoom-in">
                 <div class="info-card">
                     <div class="info-card__icon">
                         <img
@@ -22,7 +22,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-3 quick-info__card">
+            <div class="col-6 col-lg-3 quick-info__card" data-aos="zoom-in">
                 <div class="info-card">
                     <div class="info-card__icon">
                         <img
@@ -36,7 +36,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-3 quick-info__card">
+            <div class="col-6 col-lg-3 quick-info__card" data-aos="zoom-in">
                 <div class="info-card">
                     <div class="info-card__icon">
                         <img
@@ -50,7 +50,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-6 col-lg-3 quick-info__card">
+            <div class="col-6 col-lg-3 quick-info__card" data-aos="zoom-in">
                 <div class="info-card">
                     <div class="info-card__icon">
                         <img
@@ -68,6 +68,7 @@
     </section>
     <?php require __DIR__ . "/../components/home/ProductFeaturedHome.php" ?>
     <?php require __DIR__ . '/../components/home/ProductSaleHome.php'; ?>
+    <?php require __DIR__ . '/../components/home/BrandHome.php'; ?>
     <?php require __DIR__ . '/../components/home/CategoryHome.php'; ?>
     <?php require __DIR__ . '/../components/home/tuVan.php'; ?>
 

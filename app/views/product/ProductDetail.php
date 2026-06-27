@@ -224,31 +224,57 @@ $mainImage = getProductImage("assets/images/products/" . $sanpham->getAnh_dai_di
                         </div>
 
                         <!-- Reviews list -->
-                        <div class="reviews-list mt-4">
+                        <div class="reviews-list mt-4" id="reviewsList">
+                            <?php $rvIndex = 0; ?>
                             <?php foreach ($reviews as $rv): ?>
-                                <div class="review-item">
-                                    <div class="review-header">
-                                        <div class="review-user">
-                                            <div class="review-avatar" style="<?= !empty($rv['anh_dai_dien']) ? "background-image: url('assets/images/" . htmlspecialchars($rv['anh_dai_dien']) . "')" : 'background-color: #ff7b00;' ?>">
-                                                <?= empty($rv['anh_dai_dien']) ? htmlspecialchars(mb_substr($rv['ho_ten'], 0, 1)) : '' ?>
-                                            </div>
-                                            <div>
-                                                <div class="review-name"><?= htmlspecialchars($rv['ho_ten']) ?></div>
-                                                <div class="rating-stars">
-                                                    <?php for ($s = 1; $s <= 5; $s++): ?>
-                                                        <i class="bi <?= ($s <= $rv['diem_so']) ? 'bi-star-fill' : 'bi-star' ?>"></i>
-                                                    <?php endfor; ?>
-                                                </div>
-                                            </div>
+                                <div class="review-item mb-4 pb-3 border-bottom <?= ($rvIndex >= 3) ? 'd-none additional-review' : '' ?>">
+                                    <div class="review-header d-flex align-items-center gap-3 mb-2">
+                                        <div class="review-avatar rounded-circle d-flex align-items-center justify-content-center text-white fw-bold"
+                                            style="width: 42px; height: 42px; font-size: 1.2rem; flex-shrink: 0; <?= !empty($rv['anh_dai_dien']) ? "background-image: url('assets/images/" . htmlspecialchars($rv['anh_dai_dien']) . "'); background-size: cover; background-position: center;" : 'background-color: #ff7b00;' ?>">
+                                            <?= empty($rv['anh_dai_dien']) ? htmlspecialchars(mb_substr($rv['ho_ten'], 0, 1)) : '' ?>
                                         </div>
-                                        <span class="review-date"><?= date('d/m/Y H:i', strtotime($rv['ngay_tao'])) ?></span>
+                                        <div>
+                                            <div class="review-name fw-bold text-dark" style="font-size: 1.3rem;"><?= htmlspecialchars($rv['ho_ten']) ?></div>
+                                            <span class="review-date text-muted small" style="font-size: 1.1rem;"><?= date('d/m/Y H:i', strtotime($rv['ngay_tao'])) ?></span>
+                                        </div>
                                     </div>
-                                    <div class="review-comment mt-2">
-                                        <?= nl2br(htmlspecialchars($rv['binh_luan'])) ?>
+                                    <div class="review-content ps-2">
+                                        <!-- Số sao nằm phía dưới -->
+                                        <div class="rating-stars mb-1">
+                                            <?php for ($s = 1; $s <= 5; $s++): ?>
+                                                <i class="bi <?= ($s <= $rv['diem_so']) ? 'bi-star-fill text-warning' : 'bi-star text-muted' ?>" style="font-size: 1.2rem;"></i>
+                                            <?php endfor; ?>
+                                        </div>
+                                        <!-- Mô tả nhận xét -->
+                                        <div class="review-comment text-secondary" style="font-size: 1.3rem; line-height: 1.5;">
+                                            <?= (htmlspecialchars(!empty($rv['binh_luan']) ? $rv['binh_luan'] : "")) ?>
+                                        </div>
                                     </div>
                                 </div>
+                                <?php $rvIndex++; ?>
                             <?php endforeach; ?>
                         </div>
+
+                        <?php if (count($reviews) > 3): ?>
+                            <div class="text-center mt-3">
+                                <button type="button" class="btn btn-outline-primary btn-sm rounded-3 px-4 py-2 fw-semibold" id="btnLoadMoreReviews" onclick="loadMoreReviews()">
+                                    <i class="bi bi-chevron-down me-1"></i>Xem thêm đánh giá (<?= count($reviews) - 3 ?>)
+                                </button>
+                            </div>
+                            <script>
+                                function loadMoreReviews() {
+                                    const additional = document.querySelectorAll('#reviewsList .additional-review');
+                                    const btn = document.getElementById('btnLoadMoreReviews');
+                                    if (btn.innerHTML.includes('Xem thêm')) {
+                                        additional.forEach(el => el.classList.remove('d-none'));
+                                        btn.innerHTML = '<i class="bi bi-chevron-up me-1"></i>Thu gọn đánh giá';
+                                    } else {
+                                        additional.forEach(el => el.classList.add('d-none'));
+                                        btn.innerHTML = '<i class="bi bi-chevron-down me-1"></i>Xem thêm đánh giá (' + additional.length + ')';
+                                    }
+                                }
+                            </script>
+                        <?php endif; ?>
                     <?php else: ?>
                         <div class="text-center py-5">
                             <i class="bi bi-chat-left-text text-muted" style="font-size: 2.5rem;"></i>

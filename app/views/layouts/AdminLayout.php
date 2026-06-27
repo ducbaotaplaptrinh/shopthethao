@@ -55,6 +55,10 @@ $currentPage = $_GET['page'] ?? 'admin-dashboard';
                     <i class="bi bi-box-seam"></i>
                     <span>Quản lý sản phẩm</span>
                 </a>
+                <a href="?page=admin-reviews" class="sidebar-menu-item <?= strpos($currentPage, 'admin-review') === 0 ? 'active' : '' ?>">
+                    <i class="bi bi-chat-right-text"></i>
+                    <span>Đánh giá sản phẩm</span>
+                </a>
                 <a href="?page=admin-attributes" class="sidebar-menu-item <?= strpos($currentPage, 'admin-attribute') === 0 ? 'active' : '' ?>">
                     <i class="bi bi-tags"></i>
                     <span>Thuộc tính động</span>

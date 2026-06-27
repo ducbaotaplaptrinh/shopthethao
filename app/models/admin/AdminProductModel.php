@@ -101,14 +101,31 @@ class AdminProductModel extends Model
         $whereSql = $filterData['where'];
         $params = $filterData['params'];
 
+        // Determine sorting order based on doanh_so filter
+        $orderBy = "sp.ngay_xoa ASC, sp.id DESC";
+        if (!empty($filters['doanh_so'])) {
+            if ($filters['doanh_so'] === 'ban_chay') {
+                $orderBy = "sp.ngay_xoa ASC, da_ban DESC, sp.id DESC";
+            } elseif ($filters['doanh_so'] === 'ban_cham') {
+                $orderBy = "sp.ngay_xoa ASC, da_ban ASC, sp.id DESC";
+            }
+        }
+
         $sql = "SELECT sp.*, dm.ten_danh_muc, th.ten_thuong_hieu,
                 COALESCE((SELECT SUM(so_luong_ton) FROM bien_the_san_pham WHERE ma_san_pham = sp.id AND trang_thai = 1 AND ngay_xoa IS NULL), sp.so_luong_ton, 0) as tong_ton_kho,
-                (SELECT COUNT(*) FROM bien_the_san_pham WHERE ma_san_pham = sp.id AND so_luong_ton < 5 AND trang_thai = 1 AND ngay_xoa IS NULL) as so_bien_the_het_hang
+                (SELECT COUNT(*) FROM bien_the_san_pham WHERE ma_san_pham = sp.id AND so_luong_ton < 5 AND trang_thai = 1 AND ngay_xoa IS NULL) as so_bien_the_het_hang,
+                (SELECT COUNT(*) FROM bien_the_san_pham WHERE ma_san_pham = sp.id AND trang_thai = 1 AND ngay_xoa IS NULL) as so_bien_the,
+                COALESCE((
+                    SELECT SUM(ct.so_luong) 
+                    FROM chi_tiet_don_hang ct 
+                    JOIN don_hang dh ON ct.ma_don_hang = dh.id 
+                    WHERE ct.ma_san_pham = sp.id AND dh.trang_thai_don_hang != 'da_huy'
+                ), 0) AS da_ban
                 FROM san_pham sp
                 LEFT JOIN danh_muc dm ON sp.ma_danh_muc = dm.id
                 LEFT JOIN thuong_hieu th ON sp.ma_thuong_hieu = th.id
                 WHERE $whereSql
-                ORDER BY sp.ngay_xoa ASC, sp.id DESC
+                ORDER BY $orderBy
                 LIMIT :limit OFFSET :offset";
 
         $stmt = $this->conn->prepare($sql);
@@ -505,5 +522,36 @@ class AdminProductModel extends Model
             // Bắt lỗi Database để không văng lỗi màn hình của Admin đang cập nhật sản phẩm
             error_log("Lỗi xử lý gửi thông báo hết hàng: " . $e->getMessage());
         }
+    }
+    public function getBienTheSanPham($productId)
+    {
+        $sql = "SELECT bt.* 
+                FROM bien_the_san_pham bt 
+                WHERE bt.ma_san_pham = :id AND bt.trang_thai = 1 AND bt.ngay_xoa IS NULL";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute(['id' => $productId]);
+        $variants = $stmt->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+        foreach ($variants as &$bt) {
+            $sqlAttr = "SELECT tt.ten_thuoc_tinh, gt.gia_tri, gt.id as gia_tri_id
+                        FROM gia_tri_thuoc_tinh_bien_the gtttbt
+                        JOIN gia_tri_thuoc_tinh gt ON gt.id = gtttbt.ma_gia_tri_thuoc_tinh
+                        JOIN thuoc_tinh tt ON tt.id = gt.ma_thuoc_tinh
+                        WHERE gtttbt.ma_bien_the = :ma_bien_the";
+            $stmtAttr = $this->conn->prepare($sqlAttr);
+            $stmtAttr->execute(['ma_bien_the' => $bt['id']]);
+            $bt['attributes'] = $stmtAttr->fetchAll(PDO::FETCH_ASSOC) ?: [];
+
+            // Lượng bán của từng biến thể
+            $sqlSales = "SELECT COALESCE(SUM(ct.so_luong), 0) as da_ban
+                         FROM chi_tiet_don_hang ct
+                         JOIN don_hang dh ON ct.ma_don_hang = dh.id
+                         WHERE ct.ma_bien_the = :ma_bien_the AND dh.trang_thai_don_hang != 'da_huy'";
+            $stmtSales = $this->conn->prepare($sqlSales);
+            $stmtSales->execute(['ma_bien_the' => $bt['id']]);
+            $bt['da_ban'] = (int) $stmtSales->fetchColumn();
+        }
+
+        return $variants;
     }
 }

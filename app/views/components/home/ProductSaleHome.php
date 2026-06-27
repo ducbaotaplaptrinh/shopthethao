@@ -1,6 +1,6 @@
 <section class="product-sale py-4">
 
-    <div class="container-xl">
+    <div class="container-xl" data-aos="zoom-in">
 
         <div class="d-flex align-items-center justify-content-between mb-4">
 

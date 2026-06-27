@@ -35,7 +35,7 @@ if (isset($danhSachDanhMuc) && is_array($danhSachDanhMuc)) {
                 <div class="row g-3">
                     <?php foreach (array_slice($child, 0, 8)  as $index => $dmc): ?>
 
-                        <div class="col-6 col-md-3 h-100">
+                        <div class="col-6 col-md-3 h-100" data-aos="zoom-out">
 
                             <a href="?page=product-index&category=<?php echo htmlspecialchars($dmc->GetDuong_dan_slug()) ?>" class="categories-content__card card">
                                 <div class="categories-content__thumb h-100">

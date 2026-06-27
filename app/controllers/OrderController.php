@@ -235,11 +235,132 @@ class OrderController
         $orders       = $this->orderModel->getOrdersByUser($userId, $filterStatus);
         $statusCounts = $this->orderModel->countOrdersByStatus($userId);
 
+        $error = $_SESSION['order_error'] ?? '';
+        $success = $_SESSION['order_success'] ?? '';
+        unset($_SESSION['order_error'], $_SESSION['order_success']);
+
         return [
             'title'        => 'Đơn hàng của tôi | Bảo Đạt Sport',
             'orders'       => $orders,
             'statusCounts' => $statusCounts,
             'activeTab'    => $activeTab,
+            'error'        => $error,
+            'success'      => $success,
         ];
+    }
+
+    public function cancel(): void
+    {
+        // Bắt buộc phải đăng nhập
+        if (!isset($_SESSION['user'])) {
+            header("Location: ?page=login");
+            exit;
+        }
+
+        $userId = (int)$_SESSION['user']['id'];
+        $code = $_GET['code'] ?? '';
+
+        if (empty($code)) {
+            $_SESSION['order_error'] = 'Mã đơn hàng không hợp lệ.';
+            header("Location: ?page=my-orders");
+            exit;
+        }
+
+        try {
+            $this->orderModel->cancelOrder($userId, $code);
+            $_SESSION['order_success'] = 'Hủy đơn hàng thành công.';
+        } catch (\Exception $e) {
+            $_SESSION['order_error'] = 'Không thể hủy đơn hàng: ' . $e->getMessage();
+        }
+
+        header("Location: ?page=my-orders");
+        exit;
+    }
+
+    /**
+     * Khách hàng xác nhận đã nhận hàng
+     */
+    public function confirmReceived(): void
+    {
+        // Bắt buộc phải đăng nhập
+        if (!isset($_SESSION['user'])) {
+            header("Location: ?page=login");
+            exit;
+        }
+
+        $userId = (int)$_SESSION['user']['id'];
+        $code = $_GET['code'] ?? '';
+
+        if (empty($code)) {
+            $_SESSION['order_error'] = 'Mã đơn hàng không hợp lệ.';
+            header("Location: ?page=my-orders");
+            exit;
+        }
+
+        try {
+            $this->orderModel->confirmReceived($userId, $code);
+            $_SESSION['order_success'] = 'Xác nhận đã nhận hàng thành công. Bạn có thể đánh giá sản phẩm ngay bây giờ.';
+        } catch (\Exception $e) {
+            $_SESSION['order_error'] = 'Không thể xác nhận nhận hàng: ' . $e->getMessage();
+        }
+
+        header("Location: ?page=my-orders");
+        exit;
+    }
+
+    /**
+     * Lưu đánh giá từ biểu mẫu gửi lên
+     */
+    public function submitReview(): void
+    {
+        // Bắt buộc phải đăng nhập
+        if (!isset($_SESSION['user'])) {
+            header("Location: ?page=login");
+            exit;
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            header("Location: ?page=my-orders");
+            exit;
+        }
+
+        $userId = (int)$_SESSION['user']['id'];
+        $reviews = $_POST['reviews'] ?? [];
+
+        if (empty($reviews) || !is_array($reviews)) {
+            $_SESSION['order_error'] = 'Dữ liệu đánh giá không hợp lệ.';
+            header("Location: ?page=my-orders");
+            exit;
+        }
+
+        $successCount = 0;
+        $errorMsg = '';
+
+        foreach ($reviews as $productId => $reviewData) {
+            $productId = (int)$productId;
+            $diemSo = isset($reviewData['diem_so']) ? (int)$reviewData['diem_so'] : 5;
+            $binhLuan = isset($reviewData['binh_luan']) ? trim($reviewData['binh_luan']) : '';
+
+            // Kiểm tra điểm số hợp lệ
+            if ($diemSo < 1 || $diemSo > 5) {
+                $diemSo = 5;
+            }
+
+            try {
+                $this->orderModel->submitProductReview($userId, $productId, $diemSo, $binhLuan);
+                $successCount++;
+            } catch (\Exception $e) {
+                $errorMsg = $e->getMessage();
+            }
+        }
+
+        if ($successCount > 0) {
+            $_SESSION['order_success'] = 'Gửi đánh giá thành công cho ' . $successCount . ' sản phẩm.';
+        } else {
+            $_SESSION['order_error'] = 'Không thể gửi đánh giá: ' . $errorMsg;
+        }
+
+        header("Location: ?page=my-orders");
+        exit;
     }
 }

@@ -10,7 +10,7 @@ class DanhMucModel extends Model
 {
     public function getDanhSachDanhMuc(): ?array
     {
-        $sql = "SELECT * from danh_muc WHERE ngay_xoa is null and trang_thai = 1 ORDER BY ma_danh_muc_cha ASC";
+        $sql = "SELECT * from danh_muc WHERE ngay_xoa is null and trang_thai = 1 ORDER BY ma_danh_muc_cha ASC, thu_tu_sap_xep ASC, id DESC";
         $stmt = $this->conn->prepare($sql);
         $stmt->execute();
         $data = $stmt->fetchAll();

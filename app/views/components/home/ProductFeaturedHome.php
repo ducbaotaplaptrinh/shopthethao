@@ -10,7 +10,7 @@
     }
 ?>
     <section class="product-new py-4 my-16-mobile py-0-mobile">
-        <div class="container-xl ">
+        <div class="container-xl " data-aos="zoom-in">
             <h2 class="product-new__title ">
                 Sản phẩm nổi bật
             </h2>

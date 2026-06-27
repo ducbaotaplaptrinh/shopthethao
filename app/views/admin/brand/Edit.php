@@ -1,10 +1,11 @@
 <?php
 $errorMsg = $_GET['error'] ?? '';
+$brand = $brand ?? [];
 ?>
 
 <?php if ($errorMsg === 'duplicate_name'): ?>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <i class="bi bi-exclamation-triangle me-2"></i> Tên danh mục đã tồn tại! Vui lòng chọn tên khác.
+        <i class="bi bi-exclamation-triangle me-2"></i> Tên thương hiệu đã tồn tại! Vui lòng chọn tên khác.
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 <?php elseif ($errorMsg === 'duplicate_slug'): ?>
@@ -21,57 +22,60 @@ $errorMsg = $_GET['error'] ?? '';
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
-        <a href="?page=admin-categories" class="text-muted text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Danh mục</a>
-        <h2 class="page-title mb-0 mt-1">Chỉnh sửa Danh mục</h2>
+        <a href="?page=admin-brands" class="text-muted text-decoration-none"><i class="bi bi-arrow-left me-1"></i>Thương hiệu</a>
+        <h2 class="page-title mb-0 mt-1">Chỉnh sửa Thương hiệu</h2>
     </div>
 </div>
 
 <div class="row g-4">
     <div class="col-12 col-lg-6">
         <div class="admin-card">
-            <h4 class="admin-card-title mb-4">Thông tin Danh mục</h4>
-            <form action="?page=admin-category-update" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="id" value="<?= isset($category) ? $category->getId() : 'Trống' ?>">
+            <h4 class="admin-card-title mb-4">Thông tin Thương hiệu</h4>
+            <form action="?page=admin-brand-update" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="id" value="<?= htmlspecialchars($brand['id'] ?? '') ?>">
 
                 <div class="mb-3">
-                    <label class="form-label">Tên danh mục <span class="text-danger">*</span></label>
-                    <input type="text" name="ten_danh_muc" id="editCatName" class="form-control" required
-                        value="<?= htmlspecialchars(isset($category) ? $category->getTen_danh_muc() : "Trống") ?>"
+                    <label class="form-label">Tên thương hiệu <span class="text-danger">*</span></label>
+                    <input type="text" name="ten_thuong_hieu" id="editBrandName" class="form-control" required
+                        value="<?= htmlspecialchars($brand['ten_thuong_hieu'] ?? '') ?>"
                         onkeyup="generateEditSlug()">
                 </div>
+                
                 <div class="mb-3">
                     <label class="form-label">Đường dẫn (Slug) <span class="text-danger">*</span></label>
-                    <input type="text" name="duong_dan_slug" id="editCatSlug" class="form-control" required readonly
+                    <input type="text" name="duong_dan_slug" id="editBrandSlug" class="form-control" required readonly
                         style="background-color: #f8f9fa;"
-                        value="<?= htmlspecialchars(isset($category) ? $category->getDuong_dan_slug() : "Trống") ?>">
+                        value="<?= htmlspecialchars($brand['duong_dan_slug'] ?? '') ?>">
                 </div>
+
                 <div class="mb-3">
-                    <label class="form-label">Hình ảnh danh mục</label>
-                    <input type="file" name="hinh_anh" id="editCatImage" class="form-control mb-2" accept="image/*">
+                    <label class="form-label">Mô tả</label>
+                    <textarea name="mo_ta" class="form-control" rows="4" placeholder="Nhập mô tả..."><?= htmlspecialchars($brand['mo_ta'] ?? '') ?></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Logo thương hiệu</label>
+                    <input type="file" name="anh_logo" id="editBrandLogo" class="form-control mb-2" accept="image/*">
                     <?php
-                    $currentImg = getProductImage("assets/images/products/" . $category->getHinh_anh() ?? '');
+                    $currentImg = getProductImage("assets/images/brands/" . ($brand['anh_logo'] ?? ''));
                     ?>
                     <div class="d-flex align-items-center gap-2">
-                        <span class="text-muted small">Ảnh hiện tại:</span>
-                        <img src="<?= htmlspecialchars($currentImg) ?>" alt="" style="height: 60px; object-fit: contain; border-radius: 6px; border: 1px solid #eee; padding: 2px;">
+                        <span class="text-muted small">Logo hiện tại:</span>
+                        <img src="<?= htmlspecialchars($currentImg) ?>" alt="" style="height: 50px; width: 100px; object-fit: contain; border-radius: 6px; border: 1px solid #eee; padding: 2px; background: #fff;">
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Thứ tự sắp xếp</label>
-                    <input type="number" name="thu_tu_sap_xep" id="editCatOrder" class="form-control"
-                        value="<?= htmlspecialchars(isset($category) ? $category->getThu_tu_sap_xep() : 0) ?>" min="0">
-                    <div class="form-text">Giá trị nhỏ hơn sẽ được ưu tiên hiển thị trước.</div>
-                </div>
+
                 <div class="form-check form-switch mb-4">
-                    <input class="form-check-input" type="checkbox" name="trang_thai" id="editCatStatus"
-                        <?= $category->getTrang_thai() == 1 ? 'checked' : '' ?>>
-                    <label class="form-check-label" for="editCatStatus">Hiển thị</label>
+                    <input class="form-check-input" type="checkbox" name="trang_thai" id="editBrandStatus"
+                        <?= ($brand['trang_thai'] ?? 1) == 1 ? 'checked' : '' ?>>
+                    <label class="form-check-label" for="editBrandStatus">Hiển thị</label>
                 </div>
+
                 <div class="d-flex gap-2">
                     <button type="submit" class="btn btn-primary flex-fill">
                         <i class="bi bi-save me-1"></i> Cập nhật
                     </button>
-                    <a href="?page=admin-categories" class="btn btn-outline-secondary flex-fill">
+                    <a href="?page=admin-brands" class="btn btn-outline-secondary flex-fill">
                         <i class="bi bi-x-lg me-1"></i> Hủy
                     </a>
                 </div>
@@ -82,7 +86,7 @@ $errorMsg = $_GET['error'] ?? '';
 
 <script>
     function generateEditSlug() {
-        let title = document.getElementById('editCatName').value;
+        let title = document.getElementById('editBrandName').value;
         let slug = title.toLowerCase();
 
         slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
@@ -101,6 +105,6 @@ $errorMsg = $_GET['error'] ?? '';
 
         slug = slug.replace(/^-+|-+$/g, '');
 
-        document.getElementById('editCatSlug').value = slug;
+        document.getElementById('editBrandSlug').value = slug;
     }
 </script>
