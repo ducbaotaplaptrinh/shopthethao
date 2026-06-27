@@ -253,12 +253,15 @@ class OrderModel extends Model
                 }
             }
 
+<<<<<<< HEAD
+            $this->conn->exec("SET FOREIGN_KEY_CHECKS = 1");
+=======
             if (!empty($couponCode)) {
                 $sqlUpdateCoupon = "UPDATE ma_giam_gia SET so_luong_da_dung = so_luong_da_dung + 1 WHERE ma_code = :code";
                 $this->conn->prepare($sqlUpdateCoupon)->execute(['code' => $couponCode]);
             }
 
-            $this->conn->exec("SET FOREIGN_KEY_CHECKS = 1");
+>>>>>>> ducdat
             $this->conn->commit();
             return $orderCode;
 

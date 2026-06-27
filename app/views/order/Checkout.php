@@ -175,6 +175,40 @@
     </div>
 </div>
 
+<<<<<<< HEAD
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const addressCards = document.querySelectorAll('.address-select-card');
+    const inputHoTen = document.getElementById('ho_ten');
+    const inputSDT = document.getElementById('so_dien_thoai');
+    const textareaDiaChi = document.getElementById('dia_chi');
+
+    addressCards.forEach(card => {
+        card.addEventListener('click', function() {
+            // Remove active style from all cards
+            addressCards.forEach(c => {
+                c.classList.remove('border-primary', 'bg-primary-subtle');
+                c.style.borderColor = '#ececec';
+            });
+            // Add active style to selected card
+            this.classList.add('border-primary', 'bg-primary-subtle');
+            this.style.borderColor = '#ff7b00';
+
+            // Fill inputs
+            inputHoTen.value = this.getAttribute('data-name');
+            inputSDT.value = this.getAttribute('data-phone');
+            textareaDiaChi.value = this.getAttribute('data-address');
+        });
+    });
+
+    // Auto-fill default address on load
+    const defaultCard = document.querySelector('.address-select-card.border-primary');
+    if (defaultCard) {
+        inputHoTen.value = defaultCard.getAttribute('data-name');
+        inputSDT.value = defaultCard.getAttribute('data-phone');
+        textareaDiaChi.value = defaultCard.getAttribute('data-address');
+    }
+=======
 <!-- Modal Chọn Mã Giảm Giá -->
 <div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-scrollable">
@@ -206,40 +240,7 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // ---- Logic Chọn Địa Chỉ ----
-    const addressCards = document.querySelectorAll('.address-select-card');
-    const inputHoTen = document.getElementById('ho_ten');
-    const inputSDT = document.getElementById('so_dien_thoai');
-    const textareaDiaChi = document.getElementById('dia_chi');
-
-    addressCards.forEach(card => {
-        card.addEventListener('click', function() {
-            // Remove active style from all cards
-            addressCards.forEach(c => {
-                c.classList.remove('border-primary', 'bg-primary-subtle');
-                c.style.borderColor = '#ececec';
-            });
-            // Add active style to selected card
-            this.classList.add('border-primary', 'bg-primary-subtle');
-            this.style.borderColor = '#ff7b00';
-
-            // Fill inputs
-            inputHoTen.value = this.getAttribute('data-name');
-            inputSDT.value = this.getAttribute('data-phone');
-            textareaDiaChi.value = this.getAttribute('data-address');
-        });
-    });
-
-    // Auto-fill default address on load
-    const defaultCard = document.querySelector('.address-select-card.border-primary');
-    if (defaultCard) {
-        inputHoTen.value = defaultCard.getAttribute('data-name');
-        inputSDT.value = defaultCard.getAttribute('data-phone');
-        textareaDiaChi.value = defaultCard.getAttribute('data-address');
-    }
-
-    // ---- Logic Chọn Mã Giảm Giá ----
+document.addEventListener("DOMContentLoaded", function() {
     // Nhận dữ liệu từ PHP
     const baseTotal = <?= $totalPayment ?>;
     
@@ -291,5 +292,6 @@ document.addEventListener('DOMContentLoaded', function() {
             calculateTotal();
         });
     });
+>>>>>>> ducdat
 });
 </script>

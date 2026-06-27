@@ -65,9 +65,8 @@ class OrderController
         }
 
         $userId = (int)$_SESSION['user']['id'];
-        $nguoiDungModel = new \app\models\NguoiDungModel();
+        $nguoiDungModel = new NguoiDungModel();
         $addresses = $nguoiDungModel->getUserAddresses($userId);
-        
         $availableCoupons = $this->orderModel->getAvailableCoupons($userId, $totalPayment);
         $bestCoupon = !empty($availableCoupons) ? $availableCoupons[0] : null;
 
@@ -130,7 +129,12 @@ class OrderController
         foreach ($cartItems as $item) {
             $subtotal += $item['price'] * $item['qty'];
         }
+<<<<<<< HEAD
+
+=======
+        
         $ma_code_su_dung = isset($_POST['ma_code_su_dung']) ? trim($_POST['ma_code_su_dung']) : '';
+>>>>>>> ducdat
         $shipping = 0.00; // Free shipping
         $discount = 0.00;
 
@@ -166,7 +170,13 @@ class OrderController
         $order->setTrang_thai_don_hang('cho_xac_nhan');
 
         try {
+<<<<<<< HEAD
+            $orderCode = $this->orderModel->placeOrder($order, $cartItems);
+
+=======
             $orderCode = $this->orderModel->placeOrder($order, $cartItems, $ma_code_su_dung);
+            
+>>>>>>> ducdat
             // Gửi email hóa đơn cho khách hàng nếu có địa chỉ email
             $targetEmail = !empty($email) ? $email : ($_SESSION['user']['email'] ?? '');
             if (!empty($targetEmail)) {
