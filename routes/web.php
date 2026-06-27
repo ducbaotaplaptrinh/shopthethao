@@ -462,6 +462,20 @@ return [
 		'action' => 'toggleStatus',
 		'pageStyles' => ['assets/css/admin.css']
 	],
+	'admin-setting' => [
+		'title' => 'Quản lý Giao diện | Quản trị',
+		'view' => 'admin/setting/index.php',
+		'controller' => \app\controllers\admin\AdminSettingController::class,
+		'action' => 'index',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+	'admin-setting-update' => [
+		'title' => 'Lưu Cấu hình Giao diện | Quản trị',
+		'view' => 'admin/setting/index.php',
+		'controller' => \app\controllers\admin\AdminSettingController::class,
+		'action' => 'update',
+		'pageStyles' => ['assets/css/admin.css']
+	],
 	'notify-out-of-stock' => [
 		'title' => 'Đăng ký thông báo hết hàng',
 		'view' => 'errors/404.php',

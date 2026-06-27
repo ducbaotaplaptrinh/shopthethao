@@ -144,6 +144,10 @@ try {
                     <i class="bi bi-newspaper"></i>
                     <span>Quản lý Tin tức</span>
                 </a>
+                <a href="?page=admin-setting" class="sidebar-menu-item <?= strpos($currentPage, 'admin-setting') === 0 ? 'active' : '' ?>">
+                    <i class="bi bi-sliders"></i>
+                    <span>Quản lý Giao diện</span>
+                </a>
                 <a href="?page=home" class="sidebar-menu-item text-primary bg-light mt-2 border border-primary-subtle">
                     <i class="bi bi-shop"></i>
                     <span>Ra trang cửa hàng</span>
