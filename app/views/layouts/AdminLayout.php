@@ -5,6 +5,59 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['vai_tro'] !== 'quan_tri') {
     exit;
 }
 $currentPage = $_GET['page'] ?? 'admin-dashboard';
+
+// Fetch dynamic admin notifications
+try {
+    $db = (new \app\core\Model())->conn;
+    
+    // Count of new orders
+    $qNewOrdersCount = $db->query("SELECT COUNT(*) FROM don_hang WHERE trang_thai_don_hang = 'cho_xac_nhan'");
+    $newOrdersCount = (int)$qNewOrdersCount->fetchColumn();
+    
+    // Count of low stock items
+    // Base products low stock count
+    $qLowStockBase = $db->query("SELECT COUNT(*) FROM san_pham WHERE (SELECT COUNT(*) FROM bien_the_san_pham WHERE ma_san_pham = san_pham.id AND ngay_xoa IS NULL) = 0 AND so_luong_ton <= 5 AND ngay_xoa IS NULL");
+    $lowStockBaseCount = (int)$qLowStockBase->fetchColumn();
+    
+    // Variants low stock count
+    $qLowStockVar = $db->query("SELECT COUNT(*) FROM bien_the_san_pham v JOIN san_pham p ON v.ma_san_pham = p.id WHERE v.so_luong_ton <= 5 AND v.ngay_xoa IS NULL AND p.ngay_xoa IS NULL");
+    $lowStockVarCount = (int)$qLowStockVar->fetchColumn();
+    
+    $lowStockTotalCount = $lowStockBaseCount + $lowStockVarCount;
+    $totalNotificationCount = $newOrdersCount + $lowStockTotalCount;
+
+    // Fetch up to 4 new orders details
+    $qNewOrders = $db->query("SELECT id, ngay_tao FROM don_hang WHERE trang_thai_don_hang = 'cho_xac_nhan' ORDER BY id DESC LIMIT 4");
+    $newOrdersList = $qNewOrders->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+    
+    // Fetch up to 4 low stock base products details
+    $qLowStockBaseItems = $db->query("
+        SELECT id, ten_san_pham as name, so_luong_ton as stock 
+        FROM san_pham 
+        WHERE (SELECT COUNT(*) FROM bien_the_san_pham WHERE ma_san_pham = san_pham.id AND ngay_xoa IS NULL) = 0 
+          AND so_luong_ton <= 5 AND ngay_xoa IS NULL 
+        LIMIT 4
+    ");
+    $lowStockBaseList = $qLowStockBaseItems->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
+    // Fetch up to 4 low stock variants details
+    $qLowStockVarItems = $db->query("
+        SELECT v.id, v.ten_bien_the as name, v.so_luong_ton as stock, p.id as parent_id, p.ten_san_pham as parent_name 
+        FROM bien_the_san_pham v
+        JOIN san_pham p ON v.ma_san_pham = p.id
+        WHERE v.so_luong_ton <= 5 AND v.ngay_xoa IS NULL AND p.ngay_xoa IS NULL
+        LIMIT 4
+    ");
+    $lowStockVarList = $qLowStockVarItems->fetchAll(\PDO::FETCH_ASSOC) ?: [];
+
+} catch (\Exception $e) {
+    $totalNotificationCount = 0;
+    $newOrdersCount = 0;
+    $lowStockTotalCount = 0;
+    $newOrdersList = [];
+    $lowStockBaseList = [];
+    $lowStockVarList = [];
+}
 ?>
 <!DOCTYPE html>
 <html lang="vi">
@@ -115,16 +168,81 @@ $currentPage = $_GET['page'] ?? 'admin-dashboard';
                     <div class="dropdown">
                         <button class="btn btn-light position-relative rounded-circle p-2" type="button" data-bs-toggle="dropdown">
                             <i class="bi bi-bell fs-5"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
-                                3
-                            </span>
+                            <?php if ($totalNotificationCount > 0): ?>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.65rem; padding: 0.25em 0.5em;">
+                                    <?= $totalNotificationCount ?>
+                                </span>
+                            <?php endif; ?>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                        <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-0" style="width: 320px; border-radius: 12px; overflow: hidden; font-size: 13px;">
                             <li>
-                                <h6 class="dropdown-header">Thông báo mới</h6>
+                                <div class="bg-primary text-white p-3 d-flex align-items-center justify-content-between">
+                                    <h6 class="m-0 fw-bold" style="font-size: 14px;"><i class="bi bi-bell-fill me-2"></i>Thông báo mới</h6>
+                                    <?php if ($totalNotificationCount > 0): ?>
+                                        <span class="badge bg-white text-primary rounded-pill fw-bold" style="font-size: 0.75rem;"><?= $totalNotificationCount ?></span>
+                                    <?php endif; ?>
+                                </div>
                             </li>
-                            <li><a class="dropdown-item py-2" href="#">Đơn hàng DH-123 vừa được đặt</a></li>
-                            <li><a class="dropdown-item py-2" href="#">Vợt Yonex Astrox 99 sắp hết hàng</a></li>
+                            <div style="max-height: 320px; overflow-y: auto;">
+                                <?php if ($totalNotificationCount === 0): ?>
+                                    <li class="p-4 text-center text-muted">
+                                        <i class="bi bi-bell-slash fs-3 d-block mb-2"></i>
+                                        <span>Không có thông báo mới nào</span>
+                                    </li>
+                                <?php else: ?>
+                                    <!-- Hiển thị đơn hàng mới -->
+                                    <?php foreach ($newOrdersList as $order): ?>
+                                        <li>
+                                            <a class="dropdown-item py-2 px-3 border-bottom d-flex align-items-start gap-2" href="?page=admin-order-detail&id=<?= $order['id'] ?>" style="white-space: normal;">
+                                                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center p-2" style="width: 32px; height: 32px; flex-shrink: 0;">
+                                                    <i class="bi bi-cart-plus" style="font-size: 1rem;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-size: 0.85rem; font-weight: 600; color: #212529;">Đơn hàng mới #<?= $order['id'] ?></div>
+                                                    <div class="text-muted" style="font-size: 0.75rem;">Đang chờ bạn xác nhận và xử lý</div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+
+                                    <!-- Hiển thị sản phẩm gốc sắp hết hàng -->
+                                    <?php foreach ($lowStockBaseList as $item): ?>
+                                        <li>
+                                            <a class="dropdown-item py-2 px-3 border-bottom d-flex align-items-start gap-2" href="?page=admin-product-edit&id=<?= $item['id'] ?>" style="white-space: normal;">
+                                                <div class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center p-2" style="width: 32px; height: 32px; flex-shrink: 0;">
+                                                    <i class="bi bi-exclamation-triangle" style="font-size: 1rem;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-size: 0.85rem; font-weight: 600; color: #212529; text-overflow: ellipsis; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;"><?= htmlspecialchars($item['name']) ?></div>
+                                                    <div class="text-danger fw-semibold" style="font-size: 0.75rem;">Sắp hết hàng (còn <?= $item['stock'] ?> sp)</div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+
+                                    <!-- Hiển thị biến thể sắp hết hàng -->
+                                    <?php foreach ($lowStockVarList as $item): ?>
+                                        <li>
+                                            <a class="dropdown-item py-2 px-3 border-bottom d-flex align-items-start gap-2" href="?page=admin-product-edit&id=<?= $item['parent_id'] ?>" style="white-space: normal;">
+                                                <div class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center p-2" style="width: 32px; height: 32px; flex-shrink: 0;">
+                                                    <i class="bi bi-exclamation-triangle" style="font-size: 1rem;"></i>
+                                                </div>
+                                                <div>
+                                                    <div style="font-size: 0.85rem; font-weight: 600; color: #212529; text-overflow: ellipsis; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical;"><?= htmlspecialchars($item['parent_name'] . ' - ' . $item['name']) ?></div>
+                                                    <div class="text-danger fw-semibold" style="font-size: 0.75rem;">Biến thể sắp hết hàng (còn <?= $item['stock'] ?> sp)</div>
+                                                </div>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </div>
+                            <?php if ($newOrdersCount > 0 || $lowStockTotalCount > 0): ?>
+                                <li>
+                                    <div class="text-center py-2 bg-light">
+                                        <a href="?page=admin-orders" class="text-primary fw-bold text-decoration-none" style="font-size: 0.8rem;">Xem tất cả đơn hàng</a>
+                                    </div>
+                                </li>
+                            <?php endif; ?>
                         </ul>
                     </div>
 
@@ -133,8 +251,9 @@ $currentPage = $_GET['page'] ?? 'admin-dashboard';
                             <div class="text-dark mb-0 lh-1"><?= htmlspecialchars($_SESSION['user']['ho_ten'] ?? 'Admin') ?></div>
                             <small class="text-muted" style="font-size: 12px;">Quản trị viên</small>
                         </div>
-                        <div class="user-avatar">
-                            <?= strtoupper(substr($_SESSION['user']['ho_ten'] ?? 'A', 0, 1)) ?>
+                        <div class="user-avatar rounded-circle d-flex align-items-center justify-content-center bg-warning text-white fw-bold" 
+                             style="width: 36px; height: 36px; <?= !empty($_SESSION['user']['anh_dai_dien']) ? "background-image: url('" . htmlspecialchars($_SESSION['user']['anh_dai_dien']) . "'); background-size: cover; background-position: center;" : '' ?>">
+                            <?= empty($_SESSION['user']['anh_dai_dien']) ? htmlspecialchars(mb_substr($_SESSION['user']['ho_ten'] ?? 'A', 0, 1)) : '' ?>
                         </div>
                         <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
                             <li><a class="dropdown-item" href="?page=home"><i class="bi bi-shop me-2"></i>Xem cửa hàng</a></li>

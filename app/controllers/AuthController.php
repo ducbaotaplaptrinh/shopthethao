@@ -55,6 +55,7 @@ class AuthController
                             'email' => $user->getEmail(),
                             'so_dien_thoai' => $user->getSo_dien_thoai(),
                             'vai_tro' => $user->getVai_tro(),
+                            'anh_dai_dien' => $user->getAnh_dai_dien(),
                             'hang_khach_hang' => [
                                 'ten_hang' => $rankInfo['ten_hang'] ?? 'Đồng',
                                 'mau_sac' => $rankInfo['mau_sac'] ?? '#cd7f32',
@@ -583,6 +584,7 @@ class AuthController
                     $_SESSION['user']['ho_ten'] = $fullname;
                     $_SESSION['user']['email'] = $email;
                     $_SESSION['user']['so_dien_thoai'] = $phone;
+                    $_SESSION['user']['anh_dai_dien'] = $user->getAnh_dai_dien();
                     $_SESSION['profile_success'] = 'Cập nhật thông tin cá nhân thành công!';
                 } else {
                     $_SESSION['profile_error'] = 'Không thể cập nhật thông tin cá nhân. Vui lòng thử lại!';

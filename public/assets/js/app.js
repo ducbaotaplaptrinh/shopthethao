@@ -80,4 +80,22 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+    const backToTopBtn = document.getElementById("backToTopBtn");
+
+    // Theo dõi hành động cuộn trang của người dùng
+    window.onscroll = function () {
+        scrollFunction();
+    };
+
+    function scrollFunction() {
+        // Nếu cuộn xuống hơn 300px thì thêm class 'show' để hiện nút, ngược lại xóa class để ẩn đi
+        if (
+            document.body.scrollTop > 300 ||
+            document.documentElement.scrollTop > 300
+        ) {
+            backToTopBtn.classList.add("show");
+        } else {
+            backToTopBtn.classList.remove("show");
+        }
+    }
 });

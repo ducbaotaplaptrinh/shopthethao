@@ -23,3 +23,102 @@
     object-fit: contain;
     transition: 0.3s;
 }
+/* --- Định dạng chung cho khung chứa --- */
+.contact-buttons {
+    position: fixed;
+    bottom: 20px; /* Cách cạnh dưới 20px */
+    right: 20px; /* Cách cạnh phải 20px */
+    z-index: 9999; /* Luôn nằm trên các phần tử khác */
+    display: flex;
+    flex-direction: column; /* Sắp xếp các icon theo hàng dọc */
+    gap: 15px; /* Khoảng cách giữa các icon */
+}
+
+/* --- Định dạng chung cho từng nút --- */
+.contact-item {
+    position: relative;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    font-size: 24px;
+    text-decoration: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease; /* Chuyển động mượt mà */
+}
+
+/* Hiệu ứng phóng to và xoay nhẹ khi di chuột vào (Hover) */
+.contact-item:hover {
+    transform: scale(1.1) translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Màu sắc riêng cho từng Icon --- */
+.messenger {
+    background: linear-gradient(135deg, #006aff, #00c6ff);
+}
+
+.zalo {
+    background-color: #0068ff;
+    padding: 10px; /* Để hình ảnh logo vừa vặn */
+}
+.zalo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.phone {
+    background-color: #dd3333;
+}
+
+/* --- Hiệu ứng rung và tỏa sóng đặc biệt cho nút Điện thoại --- */
+@keyframes quick-shake {
+    0%,
+    100% {
+        transform: rotate(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+        transform: rotate(-10deg);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+        transform: rotate(10deg);
+    }
+}
+
+@keyframes Custom_Glow {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(1.6);
+        opacity: 0;
+    }
+}
+
+/* Tạo vòng tròn tỏa sóng phía sau nút phone */
+.phone-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #dd3333;
+    border-radius: 50%;
+    z-index: -1;
+    animation: Custom_Glow 1.5s infinite ease-out;
+}
+
+/* Icon điện thoại tự động rung để gây chú ý */
+.phone i {
+    animation: quick-shake 2s infinite inset;
+}

@@ -1,3 +1,20 @@
+        <div class="contact-buttons">
+            <a href="#" id="backToTopBtn" class="contact-item back-to-top" title="Lên đầu trang">
+                <i class="fas fa-arrow-up"></i>
+            </a>
+            <a href="tel:0123456789" class="contact-item phone" title="Gọi điện">
+                <div class="phone-glow"></div>
+                <i class="fas fa-phone-alt"></i>
+            </a>
+
+            <a href="https://zalo.me/your_number" target="_blank" class="contact-item zalo" title="Chat Zalo">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Icon_of_Zalo.svg" alt="Zalo" />
+            </a>
+
+            <a href="https://m.me/your_username" target="_blank" class="contact-item messenger" title="Chat Messenger">
+                <i class="fab fa-facebook-messenger"></i>
+            </a>
+        </div>
         <footer id="contact" class="site-footer">
             <div class="container-xl py-5">
                 <div class="row g-4">

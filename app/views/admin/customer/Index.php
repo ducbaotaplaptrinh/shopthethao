@@ -43,8 +43,9 @@
                     <tr>
                         <td>
                             <div class="d-flex align-items-center gap-2">
-                                <div class="user-avatar" style="width: 35px; height: 35px; font-size: 0.85rem;">
-                                    <?= strtoupper(substr($c['ho_ten'], 0, 1)) ?>
+                                <div class="user-avatar rounded-circle d-flex align-items-center justify-content-center bg-warning text-white fw-bold" 
+                                     style="width: 35px; height: 35px; font-size: 0.85rem; flex-shrink: 0; <?= !empty($c['anh_dai_dien']) ? "background-image: url('" . htmlspecialchars($c['anh_dai_dien']) . "'); background-size: cover; background-position: center;" : '' ?>">
+                                    <?= empty($c['anh_dai_dien']) ? htmlspecialchars(mb_substr($c['ho_ten'], 0, 1)) : '' ?>
                                 </div>
                                 <div>
                                     <div class="fw-bold text-dark"><?= htmlspecialchars($c['ho_ten']) ?></div>

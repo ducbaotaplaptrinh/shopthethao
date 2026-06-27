@@ -328,6 +328,13 @@ return [
 		'action' => 'update',
 		'pageStyles' => ['assets/css/admin.css']
 	],
+	'admin-product-batch-discount' => [
+		'title' => 'Áp dụng giảm giá hàng loạt | Quản trị',
+		'view' => 'admin/product/Index.php',
+		'controller' => \app\controllers\admin\AdminProductController::class,
+		'action' => 'batchDiscount',
+		'pageStyles' => ['assets/css/admin.css']
+	],
 	'admin-product-delete' => [
 		'title' => 'Xóa Sản phẩm | Quản trị',
 		'view' => 'admin/product/Index.php',
