@@ -361,5 +361,70 @@ class MailService
             return false;
         }
     }
+    public static function mailThongBaoCoHang(string $toEmail, string $productName, string $productLink): bool
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Cấu hình Server gửi mail
+            $mail->isSMTP();
+            $mail->Host       = 'smtp.gmail.com';                     // Máy chủ SMTP của Gmail
+            $mail->SMTPAuth   = true;                                 // Bật xác thực SMTP
+            $mail->Username   = 'nbao33446@gmail.com';               // Email gửi tin
+            $mail->Password   = 'mqma nont tgvq fvmp';                  // Mật khẩu ứng dụng Gmail
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;       // Mã hóa STARTTLS
+            $mail->Port       = 587;                                  // Cổng TCP kết nối
+            $mail->CharSet    = 'UTF-8';
+
+            // Người nhận & Người gửi
+            $mail->setFrom('nbao33446@gmail.com', 'Bảo Đạt Sport');
+            $mail->addAddress($toEmail);
+
+            // Nội dung thư
+            $mail->isHTML(true);
+            $mail->Subject = 'Sản phẩm bạn quan tâm đã có hàng - Bảo Đạt Sport';
+
+            $mail->Body = "
+            <html>
+            <head>
+                <title>Thông báo có hàng</title>
+                <style>
+                    body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #333; }
+                    .container { max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+                    .header { background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%); color: white; padding: 20px; text-align: center; border-radius: 12px 12px 0 0; }
+                    .content { padding: 30px; background-color: #f8f9fa; border-radius: 0 0 12px 12px; }
+                    .btn { display: inline-block; padding: 12px 24px; background: #0d6efd; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; margin-top: 15px; }
+                    .footer { font-size: 12px; color: #888; text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>
+                        <h2 style='margin:0; font-size: 24px; font-weight: 700;'>Tin Vui Cho Bạn!</h2>
+                    </div>
+                    <div class='content'>
+                        <p>Xin chào,</p>
+                        <p>Sản phẩm <strong>" . htmlspecialchars($productName) . "</strong> mà bạn quan tâm hiện đã có hàng trở lại tại Bảo Đạt Sport.</p>
+                        <p>Hãy nhanh tay xem và đặt hàng trước khi sản phẩm lại hết nhé!</p>
+                        <div style='text-align: center;'>
+                            <a href='" . htmlspecialchars($productLink) . "' class='btn' style='color: white;'>Xem sản phẩm ngay</a>
+                        </div>
+                    </div>
+                    <div class='footer'>
+                        Đây là email gửi tự động từ hệ thống Bảo Đạt Sport. Vui lòng không phản hồi email này.<br>
+                        &copy; " . date('Y') . " Bảo Đạt Sport. All rights reserved.
+                    </div>
+                </div>
+            </body>
+            </html>
+            ";
+
+            $mail->send();
+            return true;
+        } catch (Exception $e) {
+            error_log("Đã có lỗi khi gửi mail thông báo có hàng: " . $e->getMessage());
+            return false;
+        }
+    }
 }
 

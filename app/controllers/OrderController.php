@@ -67,12 +67,16 @@ class OrderController
         $userId = (int)$_SESSION['user']['id'];
         $nguoiDungModel = new NguoiDungModel();
         $addresses = $nguoiDungModel->getUserAddresses($userId);
+        $availableCoupons = $this->orderModel->getAvailableCoupons($userId, $totalPayment);
+        $bestCoupon = !empty($availableCoupons) ? $availableCoupons[0] : null;
 
         return [
             'title' => 'Thanh toán đơn hàng | Bảo Đạt Sport',
             'cartItems' => $cartItems,
             'totalPayment' => $totalPayment,
-            'addresses' => $addresses
+            'addresses' => $addresses,
+            'availableCoupons' => $availableCoupons,
+            'bestCoupon' => $bestCoupon
         ];
     }
 
@@ -125,10 +129,24 @@ class OrderController
         foreach ($cartItems as $item) {
             $subtotal += $item['price'] * $item['qty'];
         }
-
+        $ma_code_su_dung = isset($_POST['ma_code_su_dung']) ? trim($_POST['ma_code_su_dung']) : '';
         $shipping = 0.00; // Free shipping
         $discount = 0.00;
+
+        if (!empty($ma_code_su_dung)) {
+            $coupon = $this->orderModel->validateCoupon($ma_code_su_dung, (int)$_SESSION['user']['id'], (float)$subtotal);
+            if ($coupon) {
+                // Based on UI JS assumption, the discount is fixed amount (gia_tri_giam)
+                $discount = (float)$coupon['gia_tri_giam'];
+            } else {
+                $_SESSION['order_error'] = 'Mã giảm giá không hợp lệ hoặc không đủ điều kiện!';
+                header("Location: ?page=checkout");
+                exit;
+            }
+        }
+
         $total = $subtotal + $shipping - $discount;
+        if ($total < 0) $total = 0;
 
         // Construct DonHang Entity
         $order = new DonHang();
@@ -147,8 +165,7 @@ class OrderController
         $order->setTrang_thai_don_hang('cho_xac_nhan');
 
         try {
-            $orderCode = $this->orderModel->placeOrder($order, $cartItems);
-
+            $orderCode = $this->orderModel->placeOrder($order, $cartItems, $ma_code_su_dung);
             // Gửi email hóa đơn cho khách hàng nếu có địa chỉ email
             $targetEmail = !empty($email) ? $email : ($_SESSION['user']['email'] ?? '');
             if (!empty($targetEmail)) {

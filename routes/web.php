@@ -410,6 +410,23 @@ return [
 		'action' => 'detail',
 		'pageStyles' => ['assets/css/news.css']
 	],
+	// Thêm mới bài viết (Form)
+	'admin-news-create' => [
+		'title' => 'Thêm bài viết mới | Quản trị',
+		'view' => 'admin/news/create.php', // Đảm bảo đường dẫn này khớp với thư mục của bạn
+		'controller' => \app\controllers\admin\AdminNewsController::class,
+		'action' => 'create',
+		'pageStyles' => ['assets/css/admin.css']
+	],
+
+	// Lưu bài viết vào Database
+	'admin-news-store' => [
+		'title' => 'Xử lý thêm bài viết | Quản trị',
+		'view' => 'admin/news/create.php',
+		'controller' => \app\controllers\admin\AdminNewsController::class,
+		'action' => 'store',
+		'pageStyles' => ['assets/css/admin.css']
+	],
 	'notify-out-of-stock' => [
 		'title' => 'Đăng ký thông báo hết hàng',
 		'view' => 'errors/404.php',

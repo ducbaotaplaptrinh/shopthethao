@@ -4,6 +4,7 @@ namespace app\models\admin;
 
 use app\core\Model;
 use PDO;
+use app\services\MailService;
 
 class AdminProductModel extends Model
 {
@@ -132,8 +133,8 @@ class AdminProductModel extends Model
         foreach ($params as $key => $value) {
             $stmt->bindValue(':' . $key, $value);
         }
-        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int) $offset, PDO::PARAM_INT);
 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -156,7 +157,7 @@ class AdminProductModel extends Model
             $stmt->bindValue(':' . $key, $value);
         }
         $stmt->execute();
-        return (int)$stmt->fetchColumn();
+        return (int) $stmt->fetchColumn();
     }
 
     public function getCategoriesForDropdown()
@@ -194,22 +195,22 @@ class AdminProductModel extends Model
             $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['ten_san_pham'])));
 
             // Xử lý giá khuyến mãi: nếu rỗng hoặc = 0 thì lưu NULL
-            $giaKhuyenMai = !empty($data['gia_khuyen_mai']) && (float)$data['gia_khuyen_mai'] > 0
-                ? (float)$data['gia_khuyen_mai']
+            $giaKhuyenMai = !empty($data['gia_khuyen_mai']) && (float) $data['gia_khuyen_mai'] > 0
+                ? (float) $data['gia_khuyen_mai']
                 : null;
 
             $stmtProd = $this->conn->prepare($sqlProd);
             $stmtProd->execute([
-                'ten'          => $data['ten_san_pham'],
-                'slug'         => $slug,
-                'dm'           => $data['ma_danh_muc'],
-                'th'           => !empty($data['ma_thuong_hieu']) ? $data['ma_thuong_hieu'] : null,
-                'mota'         => $data['mo_ta_chi_tiet'] ?? '',
-                'gia'          => (float)($data['gia_ban'] ?? 0),
-                'gia_km'       => $giaKhuyenMai,
-                'sl_ton'       => (int)($data['so_luong_ton'] ?? 0),
-                'noibat'       => isset($data['la_noi_bat']) ? 1 : 0,
-                'trangthai'    => isset($data['trang_thai']) ? 1 : 0,
+                'ten' => $data['ten_san_pham'],
+                'slug' => $slug,
+                'dm' => $data['ma_danh_muc'],
+                'th' => !empty($data['ma_thuong_hieu']) ? $data['ma_thuong_hieu'] : null,
+                'mota' => $data['mo_ta_chi_tiet'] ?? '',
+                'gia' => (float) ($data['gia_ban'] ?? 0),
+                'gia_km' => $giaKhuyenMai,
+                'sl_ton' => (int) ($data['so_luong_ton'] ?? 0),
+                'noibat' => isset($data['la_noi_bat']) ? 1 : 0,
+                'trangthai' => isset($data['trang_thai']) ? 1 : 0,
                 'anh_dai_dien' => !empty($data['anh_dai_dien']) ? $data['anh_dai_dien'] : null
             ]);
 
@@ -297,25 +298,30 @@ class AdminProductModel extends Model
             $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['ten_san_pham'])));
 
             // Xử lý giá khuyến mãi: nếu rỗng hoặc = 0 thì lưu NULL
-            $giaKhuyenMai = !empty($data['gia_khuyen_mai']) && (float)$data['gia_khuyen_mai'] > 0
-                ? (float)$data['gia_khuyen_mai']
+            $giaKhuyenMai = !empty($data['gia_khuyen_mai']) && (float) $data['gia_khuyen_mai'] > 0
+                ? (float) $data['gia_khuyen_mai']
                 : null;
 
             $stmtProd = $this->conn->prepare($sqlProd);
             $stmtProd->execute([
-                'ten'          => $data['ten_san_pham'],
-                'slug'         => $slug,
-                'dm'           => $data['ma_danh_muc'],
-                'th'           => !empty($data['ma_thuong_hieu']) ? $data['ma_thuong_hieu'] : null,
-                'mota'         => $data['mo_ta_chi_tiet'] ?? '',
-                'gia'          => (float)($data['gia_ban'] ?? 0),
-                'gia_km'       => $giaKhuyenMai,
-                'sl_ton'       => (int)($data['so_luong_ton'] ?? 0),
-                'noibat'       => isset($data['la_noi_bat']) ? 1 : 0,
-                'trangthai'    => isset($data['trang_thai']) ? 1 : 0,
+                'ten' => $data['ten_san_pham'],
+                'slug' => $slug,
+                'dm' => $data['ma_danh_muc'],
+                'th' => !empty($data['ma_thuong_hieu']) ? $data['ma_thuong_hieu'] : null,
+                'mota' => $data['mo_ta_chi_tiet'] ?? '',
+                'gia' => (float) ($data['gia_ban'] ?? 0),
+                'gia_km' => $giaKhuyenMai,
+                'sl_ton' => (int) ($data['so_luong_ton'] ?? 0),
+                'noibat' => isset($data['la_noi_bat']) ? 1 : 0,
+                'trangthai' => isset($data['trang_thai']) ? 1 : 0,
                 'anh_dai_dien' => !empty($data['anh_dai_dien']) ? $data['anh_dai_dien'] : null,
-                'id'           => $id
+                'id' => $id
             ]);
+
+            // Gắn Trigger thông báo có hàng cho sản phẩm gốc (nếu sản phẩm này KHÔNG dùng biến thể và có số lượng tồn kho > 0)
+            if (empty($variantsJson) && (int) ($data['so_luong_ton'] ?? 0) > 0) {
+                $this->xuLyThongBaoCoHang($id, null, $data['ten_san_pham']);
+            }
 
             // 2. Handle Variants
             // Lấy danh sách ID biến thể hiện tại để biết biến thể nào bị xóa
@@ -339,6 +345,11 @@ class AdminProductModel extends Model
                             'sl' => $variant['stock'],
                             'id_var' => $variant['id']
                         ]);
+
+                        // Gắn Trigger thông báo có hàng cho biến thể này (nếu số lượng cập nhật > 0)
+                        if ((int) $variant['stock'] > 0) {
+                            $this->xuLyThongBaoCoHang($id, $variant['id'], $data['ten_san_pham']);
+                        }
 
                         // Xóa liên kết thuộc tính cũ và insert lại (để chắc chắn)
                         $this->conn->prepare("DELETE FROM gia_tri_thuoc_tinh_bien_the WHERE ma_bien_the = ?")->execute([$variant['id']]);
@@ -392,7 +403,7 @@ class AdminProductModel extends Model
         // 1. Kiểm tra xem sản phẩm có nằm trong đơn hàng nào không
         $stmtCheck = $this->conn->prepare("SELECT COUNT(*) FROM chi_tiet_don_hang WHERE ma_san_pham = ?");
         $stmtCheck->execute([$id]);
-        $count = (int)$stmtCheck->fetchColumn();
+        $count = (int) $stmtCheck->fetchColumn();
         if ($count > 0) {
             throw new \Exception("Không thể xóa sản phẩm này vì sản phẩm đã tồn tại trong các đơn hàng trước đó!");
         }
@@ -446,7 +457,8 @@ class AdminProductModel extends Model
 
     public function insertProductGalleryImages($productId, $images)
     {
-        if (empty($images)) return;
+        if (empty($images))
+            return;
         $sql = "INSERT INTO anh_san_pham (ma_san_pham, duong_dan_anh, la_anh_chinh, thu_tu_sap_xep, ngay_tao) VALUES (?, ?, 0, 0, NOW())";
         $stmt = $this->conn->prepare($sql);
         foreach ($images as $img) {
@@ -456,12 +468,61 @@ class AdminProductModel extends Model
 
     public function deleteProductGalleryImages($imageIds)
     {
-        if (empty($imageIds)) return;
+        if (empty($imageIds))
+            return;
         $placeholders = str_repeat('?,', count($imageIds) - 1) . '?';
         $sql = "DELETE FROM anh_san_pham WHERE id IN ($placeholders)";
         $this->conn->prepare($sql)->execute(array_values($imageIds));
     }
 
+    private function xuLyThongBaoCoHang($productId, $variantId, $productName)
+    {
+        try {
+            // 1. Khởi tạo Base URL cho sản phẩm
+            $baseUrl = "https://baodatsport.onrender.com";
+            $productLink = $baseUrl . "/?page=product-detail&id=" . $productId;
+
+            // 2. Xây dựng câu query tìm email đăng ký nhận thông báo
+            // Tìm các email đăng ký trang_thai = 0 khớp với mã sản phẩm.
+            // Nếu có biến thể, ưu tiên gửi cho những người đăng ký đúng biến thể đó HOẶC đăng ký sản phẩm gốc (ma_bien_the IS NULL)
+            if ($variantId !== null) {
+                $sql = "SELECT id, email FROM thong_bao_het_hang 
+                        WHERE ma_san_pham = :pid AND (ma_bien_the = :vid OR ma_bien_the IS NULL) AND trang_thai = 0";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute(['pid' => $productId, 'vid' => $variantId]);
+            } else {
+                $sql = "SELECT id, email FROM thong_bao_het_hang 
+                        WHERE ma_san_pham = :pid AND ma_bien_the IS NULL AND trang_thai = 0";
+                $stmt = $this->conn->prepare($sql);
+                $stmt->execute(['pid' => $productId]);
+            }
+
+            $subscribers = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+            // 3. Lặp qua danh sách để gửi mail và cập nhật trạng thái
+            if (!empty($subscribers)) {
+                $idsToUpdate = [];
+                foreach ($subscribers as $sub) {
+                    $isSent = MailService::mailThongBaoCoHang($sub['email'], $productName, $productLink);
+
+                    if ($isSent) {
+                        $idsToUpdate[] = $sub['id'];
+                    }
+                }
+
+                // 4. Đánh dấu đã gửi (trang_thai = 1) cho những email gửi thành công
+                if (!empty($idsToUpdate)) {
+                    $placeholders = implode(',', array_fill(0, count($idsToUpdate), '?'));
+                    $sqlUpdate = "UPDATE thong_bao_het_hang SET trang_thai = 1 WHERE id IN ($placeholders)";
+                    $stmtUpdate = $this->conn->prepare($sqlUpdate);
+                    $stmtUpdate->execute($idsToUpdate);
+                }
+            }
+        } catch (\PDOException $e) {
+            // Bắt lỗi Database để không văng lỗi màn hình của Admin đang cập nhật sản phẩm
+            error_log("Lỗi xử lý gửi thông báo hết hàng: " . $e->getMessage());
+        }
+    }
     public function getBienTheSanPham($productId)
     {
         $sql = "SELECT bt.* 
@@ -480,7 +541,7 @@ class AdminProductModel extends Model
             $stmtAttr = $this->conn->prepare($sqlAttr);
             $stmtAttr->execute(['ma_bien_the' => $bt['id']]);
             $bt['attributes'] = $stmtAttr->fetchAll(PDO::FETCH_ASSOC) ?: [];
-            
+
             // Lượng bán của từng biến thể
             $sqlSales = "SELECT COALESCE(SUM(ct.so_luong), 0) as da_ban
                          FROM chi_tiet_don_hang ct
@@ -488,7 +549,7 @@ class AdminProductModel extends Model
                          WHERE ct.ma_bien_the = :ma_bien_the AND dh.trang_thai_don_hang != 'da_huy'";
             $stmtSales = $this->conn->prepare($sqlSales);
             $stmtSales->execute(['ma_bien_the' => $bt['id']]);
-            $bt['da_ban'] = (int)$stmtSales->fetchColumn();
+            $bt['da_ban'] = (int) $stmtSales->fetchColumn();
         }
 
         return $variants;
