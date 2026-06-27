@@ -68,6 +68,8 @@
                         </div>
                     </div>
 
+                    <input type="hidden" name="ma_code_su_dung" id="input-coupon-code" value="">
+                    
                     <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold border-0 py-3 rounded-3" style="background: linear-gradient(135deg, #ff7b00, #ff9500);">
                         Xác nhận đặt hàng
                     </button>
@@ -96,23 +98,130 @@
                     <?php endforeach; ?>
                 </div>
 
-                <div class="d-flex justify-content-between mb-3">
-                    <span class="text-muted">Tạm tính:</span>
-                    <span class="fw-semibold text-dark"><?= htmlspecialchars(formatVND($totalPayment)) ?></span>
+                <div class="card mb-3 border-info">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="mb-1 text-info"><i class="fas fa-ticket-alt"></i> Mã Giảm Giá</h6>
+                            <?php if (!empty($availableCoupons)): ?>
+                                <small class="text-success">Bạn có <strong><?= count($availableCoupons) ?></strong> mã khả dụng</small>
+                            <?php else: ?>
+                                <small class="text-muted">Không có mã nào khả dụng cho đơn hàng này.</small>
+                            <?php endif; ?>
+                        </div>
+                        
+                        <?php if (!empty($availableCoupons)): ?>
+                            <button type="button" class="btn btn-outline-info btn-sm" data-bs-toggle="modal" data-bs-target="#couponModal">
+                                Chọn Mã
+                            </button>
+                        <?php endif; ?>
+                    </div>
                 </div>
 
-                <div class="d-flex justify-content-between mb-3">
-                    <span class="text-muted">Phí giao hàng:</span>
-                    <span class="text-success fw-semibold">Miễn phí</span>
-                </div>
-
-                <hr class="my-3">
-
-                <div class="d-flex justify-content-between align-items-center mb-0">
-                    <span class="fs-5 fw-bold">Tổng thanh toán:</span>
-                    <span class="fs-4 fw-bold text-danger"><?= htmlspecialchars(formatVND($totalPayment)) ?></span>
-                </div>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Tạm tính</span>
+                        <strong><?= number_format($totalPayment) ?>đ</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        <span>Phí giao hàng</span>
+                        <strong class="text-success">Miễn phí</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between text-success">
+                        <span>Giảm giá (<span id="applied-coupon-code">Chưa áp dụng</span>)</span>
+                        <strong>- <span id="discount-amount">0</span>đ</strong>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between bg-light">
+                        <span>Tổng cộng</span>
+                        <strong class="text-danger fs-5"><span id="final-total"><?= number_format($totalPayment) ?></span>đ</strong>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal Chọn Mã Giảm Giá -->
+<div class="modal fade" id="couponModal" tabindex="-1" aria-labelledby="couponModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="couponModalLabel">Chọn Mã Giảm Giá</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <?php if (!empty($availableCoupons)): foreach ($availableCoupons as $coupon): ?>
+                    <div class="border rounded p-3 mb-2 d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-primary mb-1"><?= htmlspecialchars($coupon['ma_code']) ?></h6>
+                            <small><?= htmlspecialchars($coupon['tieu_de']) ?></small><br>
+                            <small class="text-danger">Giảm <?= number_format($coupon['gia_tri_giam']) ?>đ</small>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary apply-coupon-btn" 
+                                data-code="<?= htmlspecialchars($coupon['ma_code']) ?>" 
+                                data-discount="<?= htmlspecialchars($coupon['gia_tri_giam']) ?>" 
+                                data-type="<?= htmlspecialchars($coupon['loai_giam_gia']) ?>"
+                                data-bs-dismiss="modal">
+                            Áp dụng
+                        </button>
+                    </div>
+                <?php endforeach; endif; ?>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Nhận dữ liệu từ PHP
+    const baseTotal = <?= $totalPayment ?>;
+    
+    // JS object của mã ngon nhất (nếu có)
+    let currentCoupon = <?= $bestCoupon ? json_encode([
+        'code' => $bestCoupon['ma_code'],
+        'discount' => $bestCoupon['gia_tri_giam'],
+        'type' => $bestCoupon['loai_giam_gia']
+    ]) : 'null' ?>;
+
+    const discountEl = document.getElementById('discount-amount');
+    const finalTotalEl = document.getElementById('final-total');
+    const couponCodeEl = document.getElementById('applied-coupon-code');
+    const inputCoupon = document.getElementById('input-coupon-code');
+
+    // Hàm cập nhật giao diện tính tiền
+    function calculateTotal() {
+        let discountValue = 0;
+        if (currentCoupon) {
+            discountValue = parseFloat(currentCoupon.discount);
+            
+            couponCodeEl.innerText = currentCoupon.code;
+            if (inputCoupon) inputCoupon.value = currentCoupon.code;
+        } else {
+            couponCodeEl.innerText = "Chưa áp dụng";
+            if (inputCoupon) inputCoupon.value = "";
+        }
+
+        let finalPrice = baseTotal - discountValue;
+        if (finalPrice < 0) finalPrice = 0; // Đảm bảo không bị âm tiền
+
+        // Format số tiền kiểu Việt Nam (VD: 100.000)
+        discountEl.innerText = discountValue.toLocaleString('vi-VN');
+        finalTotalEl.innerText = finalPrice.toLocaleString('vi-VN');
+    }
+
+    // Chạy mặc định lần đầu khi load trang (Auto-apply)
+    calculateTotal();
+
+    // Bắt sự kiện khi khách bấm "Áp dụng" mã khác trong Modal
+    const applyButtons = document.querySelectorAll('.apply-coupon-btn');
+    applyButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            currentCoupon = {
+                code: this.getAttribute('data-code'),
+                discount: this.getAttribute('data-discount'),
+                type: this.getAttribute('data-type')
+            };
+            calculateTotal();
+        });
+    });
+});
+</script>
